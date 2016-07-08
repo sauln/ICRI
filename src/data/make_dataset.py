@@ -5,7 +5,8 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from src.prototype.SolomonProblem import Customer, SolomonProblem
+from src.model.SolomonProblem import Customer, SolomonProblem
+
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -33,9 +34,16 @@ def main(input_filepath, output_filepath):
             c = Customer(*data)
             customers.append(c)
 
-    problem = SolomonProblem(problem_name, num_vehicles, capacity, customers) 
 
-    pickle.dump(problem, open(output_filepath, "wb"))
+    problem = SolomonProblem(problem_name, num_vehicles, capacity, customers) 
+    print(problem)
+
+    with open(output_filepath, "wb") as f:
+        pickle.dump(problem, f)
+
+    with open(output_filepath, "rb") as f:
+        p = pickle.load(f)
+        print(p)
 
     logger.info("Problem: %s", problem_name)
     logger.info("Number of vehicles: %s", num_vehicles)

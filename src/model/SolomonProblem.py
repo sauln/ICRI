@@ -7,6 +7,14 @@ class SolomonProblem():
         self.capacity        = capacity
         self.customers       = customers
 
+    def __str__(self):
+        return "{} Num Vehicles: {}  Capacity: {}  Num Customers: {}".\
+            format(self.problem_name,self.number_vehicles,self.capacity,len(self.customers))
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class Customer():
     def __init__(self, cust_no, xcoord, ycoord, demand, ready_time, due_date, service_time):
         self.cust_no      = cust_no
@@ -20,5 +28,8 @@ class Customer():
     def __str__(self):
         return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})".\
             format(self.cust_no, self.xcoord, self.ycoord, self.ready_time, self.due_date)
+
+    def __repr__(self):
+        return self.__str__()
 
 

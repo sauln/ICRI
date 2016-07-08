@@ -1,3 +1,4 @@
+
 from src.prototype.generalizedCost import g
 from src.model.SolomonProblem import Customer
 

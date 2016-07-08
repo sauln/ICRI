@@ -5,7 +5,6 @@ class Route():
     def __init__(self):
         pass
 
-
 class Vehicle():
     capacity_max = 0
     capacity_curr = 0
@@ -25,58 +24,11 @@ class Service():
         service_time = max(self.arrival_time, self.service_time[0])
 
 
-class SolomonProblem():
-    def __init__(self, name, num_veh, capacity, customers):
-        self.problem_name    = name
-        self.number_vehicles = num_veh
-        self.capacity        = capacity
-        self.customers       = customers
-
-
-
-
-class Customer():
-    def __init__(self, cust_no, xcoord, ycoord, demand, ready_time, due_date, service_time):
-        self.cust_no      = cust_no
-        self.xcoord       = xcoord
-        self.ycoord       = ycoord
-        self.demand       = demand
-        self.ready_time   = ready_time
-        self.due_date     = due_date
-        self.service_time = service_time
-   
-    def __str__(self):
-        return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})".\
-            format(self.cust_no, self.xcoord, self.ycoord, self.ready_time, self.due_date)
-
-
-
-
-'''
-class Customer():
-    cid = 0                 # customer id
-    demand = 0              # 
-    service_window = (0,0)  # with start and end
-    max_violation = 0       # in same units as time
-    location = (0,0)        # for reference - distance between nodes in distance matrix
-    service_len = 0
-   
-    depot = 0 #flag if node is depot
-
-    def __init__(self):
-        pass
-    def penalty_early(self, service_time):
-        return 0
-    def penalty_late(self, service_time):
-        return 0
-''' 
-
 ## these will be matrices - indexed by customer ids
 def distance(cid1, cid2):
     return 0
 def travel_time(cid1, cid2):
     return 0
-
 
 def g(c_from, c_to, vehicle):
     next_arrival_time = c_from.service_time + c_from.service_len + travel_time(c_from, c_to)

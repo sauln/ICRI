@@ -5,7 +5,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from src.prototype.icri import Customer, SolomonProblem
+from src.prototype.SolomonProblem import Customer, SolomonProblem
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -40,9 +40,6 @@ def main(input_filepath, output_filepath):
     logger.info("Problem: %s", problem_name)
     logger.info("Number of vehicles: %s", num_vehicles)
     logger.info("Number of customers: %s", len(customers))
-
-
-
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

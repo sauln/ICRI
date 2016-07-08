@@ -41,13 +41,7 @@ def main(input_filepath, output_filepath):
     with open(output_filepath, "wb") as f:
         pickle.dump(problem, f)
 
-    with open(output_filepath, "rb") as f:
-        p = pickle.load(f)
-        print(p)
-
-    logger.info("Problem: %s", problem_name)
-    logger.info("Number of vehicles: %s", num_vehicles)
-    logger.info("Number of customers: %s", len(customers))
+    logger.info("Problem: %s", problem)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

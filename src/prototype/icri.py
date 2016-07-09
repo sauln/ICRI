@@ -7,11 +7,6 @@ import numpy as np
 import pickle
 
 
-class matrices():
-    distance = np.ndarray
-
-
-
 
 class Route():
     service_time_min = 0
@@ -37,12 +32,6 @@ class Service():
     def find_service_time(self, arrival_time):
         service_time = max(self.arrival_time, self.service_time[0])
 
-
-## these will be matrices - indexed by customer ids
-def distance(cid1, cid2):
-    return 0
-def travel_time(cid1, cid2):
-    return 0
 
 def vehicleRoutingAlgorithm():
     pass

@@ -30,8 +30,24 @@ class Matrices():
     def build_timeMatrix(self, customers):
         return self.distMatrix
         
+    def __eq__(self, other):
+        return np.array_equal(self.distMatrix, other.distMatrix) and \
+               np.array_equal(self.timeMatrix, other.timeMatrix)
+
+    def __str__(self):
+        return "Shape: {}\nDistMatrix: {}".format(self.distMatrix.shape, self.distMatrix)
+
+    def __repr__(self):
+        return self.__str__()
 
 
+def buildMatricesFromCustomerFile(input_filepath):
+    with open(input_filepath, "rb") as f:
+        problem = pickle.load(f)
+        customers = problem.customers
+
+    dmat = Matrices(customers)
+    return dmat
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -42,11 +58,9 @@ def main(input_filepath):
     logger.info("Generate distance matrices")
     logger.info('Loading problem file {}'.format(input_filepath))
 
-    with open(input_filepath, "rb") as f:
-        problem = pickle.load(f)
-        customers = problem.customers
+    dmat = buildMatricesFromCustomerFile(input_filepath)
 
-    dmat = Matrices(customers)
+
     logger.info(dmat.distMatrix) 
     #logger.info("\n".join(c.__str__() for c in customers))
 

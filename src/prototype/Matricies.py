@@ -7,19 +7,27 @@ import pickle
 import numpy as np
 
 
-
-
 from src.model.SolomonProblem import Customer, SolomonProblem
 
 
 
-def distance(x,y):
+def distEuclid(x,y):
     return np.sqrt((x.xcoord - y.xcoord)**2 + (x.ycoord - y.ycoord)**2)
 
 
-def find_distance_matrix(customers):
-    #take the x and the y and find the distance between each 
-    pass
+def distanceMatrix(customers):
+
+    distance_matrix = np.empty([len(customers), len(customers)])
+
+
+    # there were some basic matrix multiplications that did this, werent' there?
+    for i in range(len(customers)):
+        for j in range(len(customers)):
+            distance_matrix[i,j] = distEuclid(customers[i], customers[j])
+
+
+
+    return distance_matrix
 
 
 

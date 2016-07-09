@@ -3,6 +3,11 @@ bline
 
 Prototype of ICRI algorithm for B-line freight bicycle route optimization
 
+Run stable pipeline with ./run_problem.sh r101
+
+
+
+
 (built with Cookiecutter-data-science) 
 
 Project Organization

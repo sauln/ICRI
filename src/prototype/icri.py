@@ -3,6 +3,14 @@ from src.prototype.generalizedCost import g
 from src.model.SolomonProblem import Customer
 
 
+import numpy as np
+
+class matrices():
+    distance = []
+
+
+
+
 class Route():
     service_time_min = 0
     service_time_max = 0

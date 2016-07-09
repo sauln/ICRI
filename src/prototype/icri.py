@@ -4,9 +4,11 @@ from src.model.SolomonProblem import Customer
 
 
 import numpy as np
+import pickle
+
 
 class matrices():
-    distance = []
+    distance = np.ndarray
 
 
 

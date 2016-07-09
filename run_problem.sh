@@ -18,5 +18,5 @@ python3 src/data/make_dataset.py data/raw/$PROBLEM.txt data/interim/$PROBLEM.p
 
 # Compute distance matrix for the customer set
 
-python3 src/prototype/Matrices.py data/interim/$PROBLEM.p
+python3 src/model/Matrices.py data/interim/$PROBLEM.p
 

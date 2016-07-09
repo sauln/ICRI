@@ -47,7 +47,7 @@ def main(input_filepath):
         customers = problem.customers
 
     dmat = Matrices(customers)
-    
+    logger.info(dmat.distMatrix) 
     #logger.info("\n".join(c.__str__() for c in customers))
 
 if __name__ == '__main__':

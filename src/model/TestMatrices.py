@@ -1,5 +1,5 @@
 import unittest
-import src.prototype.Matrices as mat
+import src.model.Matrices as mat
 import pickle
 
 class stub():

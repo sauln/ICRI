@@ -8,27 +8,28 @@ import numpy as np
 
 from src.model.SolomonProblem import Customer, SolomonProblem
 
-def distEuclid(x,y):
-    return np.sqrt((x.xcoord - y.xcoord)**2 + (x.ycoord - y.ycoord)**2)
+class Matrices():
+    def __init__(self, customers):
+        self.distMatrix = self.build_distMatrix(customers)
+        self.timeMatrix = self.build_timeMatrix(customers)
 
+    def distEuclid(self, x,y):
+        return np.sqrt((x.xcoord - y.xcoord)**2 + (x.ycoord - y.ycoord)**2)
 
-def distanceMatrix(customers):
+    def build_distMatrix(self, customers):
 
-    distance_matrix = np.empty([len(customers), len(customers)])
+        distance_matrix = np.empty([len(customers), len(customers)])
 
-    # there were some basic matrix multiplications that did this, werent' there?
-    for i in range(len(customers)):
-        for j in range(len(customers)):
-            distance_matrix[i,j] = distEuclid(customers[i], customers[j])
+        # there were some basic matrix multiplications that did this, werent' there?
+        for i in range(len(customers)):
+            for j in range(len(customers)):
+                distance_matrix[i,j] = self.distEuclid(customers[i], customers[j])
 
-    return distance_matrix
+        return distance_matrix
 
-
-
-
-
-
-
+    def build_timeMatrix(self, customers):
+        return self.distMatrix
+        
 
 
 
@@ -45,14 +46,9 @@ def main(input_filepath):
         problem = pickle.load(f)
         customers = problem.customers
 
-    #logger.info("\n".join(c.__str__() for c in customers))
-   
-
+    dmat = Matrices(customers)
     
-
-
-
-
+    #logger.info("\n".join(c.__str__() for c in customers))
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

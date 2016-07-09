@@ -1,6 +1,13 @@
 #!/bin/bash
 
 PROBLEM=$1
+
+if [ -z "$1" ] 
+    then
+    PROBLEM=r101
+fi
+
+
 echo Begin setup for problem $PROBLEM
 
 # Convert the original Solomon Problem dataset into a set saved using our structs.

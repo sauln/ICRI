@@ -1,5 +1,4 @@
 
-
 class SolomonProblem():
     def __init__(self, name, num_veh, capacity, customers):
         self.problem_name    = name
@@ -45,5 +44,3 @@ class Customer():
                self.ready_time == other.ready_time and \
                self.due_date == other.due_date and \
                self.service_len == other.service_len
-
-    

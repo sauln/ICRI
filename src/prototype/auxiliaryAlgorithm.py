@@ -8,48 +8,33 @@ import pickle
 import numpy as np
 
 from src.model.SolomonProblem import Customer, SolomonProblem
-import generalizedCost as g
+import src.prototype.generalizedCost as g
 import src.model.Matrices as mat
+import src.model.Route as rt
 
+def H_gamma(cf, delta, startCust, customers, depot):
+    customers = list(customers)
+    route = rt.Route()
+    route.append((0, startCust))
 
-class Route():
-    def __init__(self):
-        self.route = []
+    for i in range(len(customers)):
+        nextCust = cf.w(delta, route[-1][1], customers, 1)[0]
+        customers.remove(nextCust[1])
+        route.append(nextCust)
+    
+    route.append((cf.g(delta, route[-1][1], depot), depot))
 
-    def append(self, item):
-        self.route.append(item)
+    return route
 
-    def __str__(self):
-        a = '-'.join(str(i[1].cust_no) for i in self.route)
-        s = sum(i[0] for i in self.route)
-        return "Total: {0:.4g} {1}".format(s, a)
-
-    def __getitem__(self, index):
-        return self.route[index]
-
-    def __setitem__(self,index,value):
-        self.route[index] = value
-
-def aux(solomonProblem, matrices):
+def test_aux(solomonProblem, matrices):
     #run the generalized cost function to the entire customer set
-
     cf = g.CostFunction(matrices.distMatrix) 
     
-    route = Route()
-
     depot = solomonProblem.customers[0]
     cs    = solomonProblem.customers[1:]
     delta = [1]*7
     
-    #a = [cf.g("d", depot,c) for c in cs]
-    
-    route.append((0, depot))
-
-    for i in range(len(cs)):
-        ns = [(cf.g("d", route[-1][1], c), c) for c in cs] 
-        nextCust = sorted(ns, key=lambda c: c[0])[0] 
-        cs.remove(nextCust[1])
-        route.append(nextCust)
+    route = H_gamma(cf, delta, depot, cs, depot)    
     
     print(route)
 
@@ -65,8 +50,7 @@ def main(input_filepath):
 
     logger.info('Generating matrices for problem')
     m = mat.Matrices(sp.customers)
-
-    aux(sp, m)
+    test_aux(sp, m)
 
 
 if __name__ == '__main__':

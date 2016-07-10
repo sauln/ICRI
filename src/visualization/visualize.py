@@ -9,7 +9,7 @@ import pickle
 import networkx as nx
 
 import src.prototype.routeConstructionAlgorithm as rt
-
+import src.model.Matrices as mat
 
 
 
@@ -24,15 +24,35 @@ def visualizeProblem(sp):
     plt.scatter(depot.xcoord, depot.ycoord, 250)
     plt.show()
 
-def visualizeRoute(sp, route):
+def visualizeRoute(sp, m):
     logging.info("Open route: \n -- {}".format(sp))
+    route = rt.routeConstruction(sp, m) 
+    naive = rt.naiveRoute(sp, m)
 
-    G = nx.Graph()
-    G.add_node(1)
-    G.add_node(2)
-    G.add_note(3)
-    G.add_edges_from([(1,2),(1,3)])
-    nx.draw(G)
+    xs = [c.xcoord for c in sp.customers]
+    ys = [c.ycoord for c in sp.customers]
+    depot = sp.customers[0]
+
+    edges = [(a[1].xcoord, a[1].ycoord) for a in route]
+    edgesX = [edge[0] for edge in edges]
+    edgesY = [edge[1] for edge in edges]
+
+    nEdges = [(a[1].xcoord, a[1].ycoord) for a in naive]
+    nEdgeX = [edge[0] for edge in nEdges]
+    nEdgeY = [edge[1] for edge in nEdges]
+
+    f = plt.figure(1)
+    plt.scatter(xs, ys)
+    plt.plot(edgesX, edgesY)
+    plt.scatter(depot.xcoord, depot.ycoord, 250)
+    plt.title("Route with single vehicle of Route Contruction Algorithm")
+
+    g = plt.figure(2)
+    plt.scatter(xs, ys)
+    plt.plot(nEdgeX, nEdgeY)
+    plt.title("Naive/greedy approach")
+    plt.scatter(depot.xcoord, depot.ycoord, 250)
+
     plt.show()
 
 @click.command()
@@ -50,8 +70,7 @@ def main(input_filepath):
 
     logging.info("Find route")
     m = mat.Matrices(sp.customers)
-    route = rt.routeConstruction(sp, m) 
-    visualizeRoute(sp, route)
+    visualizeRoute(sp, m)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

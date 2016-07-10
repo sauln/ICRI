@@ -8,8 +8,8 @@ import pickle
 import numpy as np
 
 from src.model.SolomonProblem import Customer, SolomonProblem
-import auxiliaryAlgorithm as aux
-import generalizedCost as g
+import src.prototype.auxiliaryAlgorithm as aux
+import src.prototype.generalizedCost as g
 import src.model.Matrices as mat
 from src.model.Route import Route
 
@@ -87,12 +87,4 @@ if __name__ == '__main__':
     load_dotenv(find_dotenv())
 
     main()
-
-
-
-
-
-
-
-
 

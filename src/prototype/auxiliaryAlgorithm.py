@@ -30,9 +30,6 @@ class Route():
     def __setitem__(self,index,value):
         self.route[index] = value
 
-
-
-
 def aux(solomonProblem, matrices):
     #run the generalized cost function to the entire customer set
 
@@ -41,15 +38,14 @@ def aux(solomonProblem, matrices):
     route = Route()
 
     depot = solomonProblem.customers[0]
-    cs    = solomonProblem.customers[1:11]
+    cs    = solomonProblem.customers[1:]
     delta = [1]*7
     
     #a = [cf.g("d", depot,c) for c in cs]
     
     route.append((0, depot))
 
-
-    for i in range(4):
+    for i in range(len(cs)):
         ns = [(cf.g("d", route[-1][1], c), c) for c in cs] 
         nextCust = sorted(ns, key=lambda c: c[0])[0] 
         cs.remove(nextCust[1])

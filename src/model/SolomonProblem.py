@@ -14,9 +14,10 @@ class SolomonProblem():
         return self.__str__()
 
     def __eq__(self, other):
-        return (self.name == other.name) and \
+        return (self.problem_name == other.problem_name) and \
                (self.number_vehicles == other.number_vehicles) and \
-               (self.capacity == other.capacity)
+               (self.capacity == other.capacity) and \
+               (self.customers == other.customers)
 
 
 class Customer():

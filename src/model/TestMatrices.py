@@ -1,6 +1,7 @@
 import unittest
-import src.model.Matrices as mat
 import pickle
+
+import src.model.Matrices as mat
 
 class stub():
     def __init__(self, x, y):

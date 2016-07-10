@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import click
-import logging
-from dotenv import find_dotenv, load_dotenv
 import pickle
 import numpy as np
 
@@ -48,32 +45,4 @@ def buildMatricesFromCustomerFile(input_filepath):
 
     dmat = Matrices(customers)
     return dmat
-
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-def main(input_filepath):
-    logger = logging.getLogger(__name__)
-    logger.info("Write unite tests")
-    logger.info("Loan the customers")
-    logger.info("Generate distance matrices")
-    logger.info('Loading problem file {}'.format(input_filepath))
-
-    dmat = buildMatricesFromCustomerFile(input_filepath)
-
-
-    logger.info(dmat.distMatrix) 
-    #logger.info("\n".join(c.__str__() for c in customers))
-
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
-    
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
-    main()
 

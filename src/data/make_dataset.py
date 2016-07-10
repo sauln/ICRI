@@ -9,10 +9,10 @@ from src.model.SolomonProblem import Customer, SolomonProblem
 
 
 @click.command()
-@click.argument('input_filepath', type=click.path(exists=true))
-@click.argument('output_filepath', type=click.path())
+@click.argument('input_filepath', type=click.Path(exists=True))
+@click.argument('output_filepath', type=click.Path())
 def main(input_filepath, output_filepath):
-    logger = logging.getlogger(__name__)
+    logger = logging.getLogger(__name__)
     logger.info('parsing solomon file {}'.format(input_filepath))
 
     customers = []
@@ -31,11 +31,10 @@ def main(input_filepath, output_filepath):
             
             assert len(data) == 7, "must be 7 attributes for solomon dataset"
             
-            c = customer(*data)
+            c = Customer(*data)
             customers.append(c)
 
-
-    problem = solomonproblem(problem_name, num_vehicles, capacity, customers) 
+    problem = SolomonProblem(problem_name, num_vehicles, capacity, customers) 
     print(problem)
 
     with open(output_filepath, "wb") as f:
@@ -45,7 +44,7 @@ def main(input_filepath, output_filepath):
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicconfig(level=logging.info, format=log_fmt)
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # not used in this stub but often useful for finding various files
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)

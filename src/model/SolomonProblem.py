@@ -20,14 +20,14 @@ class SolomonProblem():
 
 
 class Customer():
-    def __init__(self, cust_no, xcoord, ycoord, demand, ready_time, due_date, service_time):
+    def __init__(self, cust_no, xcoord, ycoord, demand, ready_time, due_date, service_len):
         self.cust_no      = cust_no
         self.xcoord       = xcoord
         self.ycoord       = ycoord
         self.demand       = demand
         self.ready_time   = ready_time
         self.due_date     = due_date
-        self.service_len = service_len
+        self.service_len  = service_len
    
     def __str__(self):
         return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})".\

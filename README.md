@@ -1,14 +1,20 @@
 bline
 ==============================
 
-Prototype of ICRI algorithm for B-line freight bicycle route optimization
+Prototype for the ICRI algorithm found in 
 
-Run stable pipeline with ./run_problem.sh r101
+> Figliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement
+> Algorithm for the Vehicle Routing Problem with Soft-Time Windows.
+> Transportation Research Part C,
+> Vol. 18, No. 5, pp. 668–679.
 
 
+Intent is to develop a stochastic generalization of the problem and apply it specifically to the  B-line freight bicycle routing.
+
+Run current tests and demonstration of capabilities with 
+$./run_problem.sh r101
 
 
-(built with Cookiecutter-data-science) 
 
 Project Organization
 ------------
@@ -25,10 +31,6 @@ Project Organization
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │

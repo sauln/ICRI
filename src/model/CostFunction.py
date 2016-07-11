@@ -10,12 +10,10 @@ class CostFunction():
         return sorted(ns, key=lambda c: c[0])[:lim] 
 
     def g(self, delta, custStart, custEnd):
-        #need to know if it is infeasible beforehand
-
-        # need to 
-
-        #if infeasible, return -1
-        #need to start the all infeasible nodes at depot
+        # Infeasible nodes would be filtered before here - 
+        # 
+        if(custStart == custEnd):
+            return 0
         return delta[0] * (custStart.custNo == 0) +\
                delta[1] * self.distMatrix[custStart.custNo, custEnd.custNo] +\
                delta[2] * self.timeMatrix[custStart.custNo, custEnd.custNo]

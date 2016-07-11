@@ -9,7 +9,6 @@ class TestSolomonProblem(unittest.TestCase):
     def setUp(self):
         pass
 
-
     def test_Eq(self):
         s = sp.SolomonProblem("test1", 4,4,4)
         r = sp.SolomonProblem("test1", 4,4,4)

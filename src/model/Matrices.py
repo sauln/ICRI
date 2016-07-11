@@ -14,7 +14,6 @@ class Matrices():
         return np.sqrt((x.xcoord - y.xcoord)**2 + (x.ycoord - y.ycoord)**2)
 
     def build_distMatrix(self, customers):
-
         distance_matrix = np.empty([len(customers), len(customers)])
 
         # there were some basic matrix multiplications that did this, werent' there?

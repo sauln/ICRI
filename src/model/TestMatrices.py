@@ -41,9 +41,9 @@ class TestMatrices(unittest.TestCase):
         filename="tmp.p"
         with open(filename, "wb") as f:
             pickle.dump(self.problem, f)
-        
         m = mat.buildMatricesFromCustomerFile(filename)
 
+        print("Dont forget to remove the file")
         self.assertEqual(m, self.m)
 
     def test_Eq(self):

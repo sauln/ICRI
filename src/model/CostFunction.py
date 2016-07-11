@@ -6,21 +6,20 @@ class CostFunction():
         self.distMatrix = m.distMatrix
         self.timeMatrix = m.timeMatrix
 
-    def partitionFeasible(self, customers, start):
+    def feasible(self, start, end):
+        return start.serviceTime() + self.timeMatrix[start.custNo, end.custNo] <= \
+               end.dueDate + end.serviceLen
+    
+    def partitionFeasible(self, start, customers):
         # a feasible customer is one whose last time is greater than start.time + travel_time
+        fs = dict()
+        fs[0], fs[1] = [], []
+
+        for c in customers:
+            fs[self.feasible(start, c)].append(c)
         
-        #def feasible(timeMatrix, start, end):
-        #    return end.dueDate - end.serviceLen >= \
-        #        start._serviceTime + timeMatrix[start.custNo, end.custNo]
-
-        # feasible: 
-        # add feasible bool and matrices to route
-
-        feasible = filter(lambda c: \
-            start.serviceTime + self.timeMatrix[start.custNo,c.custNo] <= \
-            c.dueDate + c.serviceLen, customers)
-
-        infeasible = [c for c in customers if c not in feasible]
+        infeasible, feasible = fs[0], fs[1]
+        
         return (feasible, infeasible)
 
 

@@ -31,13 +31,15 @@ class Customer():
         self.dueDate      = dueDate
         self.serviceLen   = serviceLen
 
-        self.serviceTime = 0 # will the be actual time this customer was serviced
-
+        self._serviceTime = 0 # will the be actual time this customer was serviced
+    
+    def serviceTime(self):
+        return max(self.readyTime + self.serviceLen, self._serviceTime)
 
 
     def __str__(self):
-        return "ID: {:3}  x.({:3},{:3}) Service: {}".\
-            format(self.custNo, self.xcoord, self.ycoord, self.serviceTime)
+        return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})+{}".\
+            format(self.custNo, self.xcoord, self.ycoord, self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):
         return self.__str__()

@@ -24,6 +24,9 @@ def naiveRoute(solomonProblem, matrices):
     naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
     return naive
 
+def H_c(H_gamma, w, c, C, LLimit, W, delta):
+    pass
+
 
 def routeConstruction(solomonProblem, costFunction):
     #start from depot
@@ -46,17 +49,26 @@ def routeConstruction(solomonProblem, costFunction):
     # does not account for the depot node in the route construction cost!
     for i in range(len(cs)):
         #print("Loop section {}".format(i)) 
-        infeasible, feasible = cf.partitionFeasible(cs, route[-1][1])
-        bestCs = cf.w(delta, route[-1][1], cs, depot, w)
+        feasible, infeasible = cf.partitionFeasible(route[-1][1], cs)
+        bestCs = cf.w(delta, route[-1][1], feasible, depot, w)
          
         potentialRoutes = []
+        print("{}:{}".format(len(feasible), len(infeasible)))
         for c in bestCs:
-            tmpCS = list(cs)
+            tmpCS = list(feasible)
             tmpCS.remove(c[1])
             croute = aux.H_gamma(cf, delta, c[1], tmpCS,  depot)
             potentialRoutes.append((c, croute))
-    
 
+        bestCs = cf.w(delta, depot, infeasible, depot, w)
+        for c in bestCs:
+            tmpCS = list(infeasible)
+            tmpCS.remove(c[1])
+            croute = aux.H_gamma(cf, delta, c[1], tmpCS,  depot)
+            potentialRoutes.append((c, croute))
+
+    
+        
 
         best = min(potentialRoutes, key = lambda r: r[1].cost())
            
@@ -73,17 +85,18 @@ def routeConstruction(solomonProblem, costFunction):
 @click.argument('input_filepath', type=click.Path(exists=True))
 def main(input_filepath):
     logger = logging.getLogger(__name__)
+    logger.info("Begin route construction algorithm file")
     logger.info('Loading Solomon Problem file {}'.format(input_filepath))
 
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
 
     logger.info('Generating matrices for problem')
+    logger.info('Constructing routes!')
     
     cf = g.CostFunction(sp.customers) 
-
-    logger.info('Constructing routes!')
-    routeConstruction(sp, cf)
+    r = routeConstruction(sp, cf)
+    print(r)
 
 
 if __name__ == '__main__':

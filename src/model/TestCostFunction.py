@@ -39,8 +39,23 @@ class TestCostFunction(unittest.TestCase):
             cost = self.cf.g(delta, c, c)
             self.assertEqual(cost, 0)
 
+    def test_feasiblePartition(self):
+        for i in range(100):
+            c = self.problem.customers[i]
+            cs = list(self.problem.customers)
+            cs.remove(c)
+            feasible, infeasible = self.cf.partitionFeasible(c, cs)
+            self.assertEqual(len(feasible)+len(infeasible), len(self.problem.customers)-1)
 
-
+    def test_feasibleIsFeasible(self):
+        for i in range(100):
+            c = self.problem.customers[i]
+            cs = list(self.problem.customers)
+            cs.remove(c)
+            feasible, infeasible = self.cf.partitionFeasible(c, cs)
+           
+            for f in feasible:
+                c.dueDate <= f.readyTime
 
 
 if __name__ == "__main__":

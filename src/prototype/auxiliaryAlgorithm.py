@@ -8,7 +8,7 @@ import pickle
 import numpy as np
 
 from src.model.SolomonProblem import Customer, SolomonProblem
-import src.prototype.generalizedCost as g
+import src.model.CostFunction as g
 import src.model.Matrices as mat
 import src.model.Route as rt
 

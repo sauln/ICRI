@@ -9,7 +9,7 @@ import numpy as np
 
 from src.model.SolomonProblem import Customer, SolomonProblem
 import src.prototype.auxiliaryAlgorithm as aux
-import src.prototype.generalizedCost as g
+import src.model.CostFunction as g
 import src.model.Matrices as mat
 from src.model.Route import Route
 
@@ -20,7 +20,6 @@ def naiveRoute(solomonProblem, matrices):
     delta = [1]*7
     naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
     return naive
-
 
 def partitionFeasible(timeMatrix, start, customers):
     # a feasible customer is one whose last time is greater than start.time + travel_time
@@ -35,8 +34,6 @@ def partitionFeasible(timeMatrix, start, customers):
 
     infeasible = [c for c in customers if c not in feasible]
     return (feasible, infeasible)
-
-
 
 def routeConstruction(solomonProblem, matrices):
     #start from depot

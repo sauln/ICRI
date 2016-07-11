@@ -25,8 +25,10 @@ def visualizeProblem(sp):
     plt.show()
 
 def visualizeRoute(sp, m):
-    logging.info("Open route: \n -- {}".format(sp))
+    print("Begin Visualize Route")
     route = rt.routeConstruction(sp, m) 
+    
+    print("Enter Naive route")
     naive = rt.naiveRoute(sp, m)
 
     xs = [c.xcoord for c in sp.customers]
@@ -63,12 +65,6 @@ def main(input_filepath):
 
     with open(input_filepath, 'rb') as pickle_file:
         sp = pickle.load(pickle_file)
-    logging.info("Open Problem: \n -- {}".format(sp))
-
-    
-    #visualizeProblem(sp)
-
-    logging.info("Find route")
     m = mat.Matrices(sp.customers)
     visualizeRoute(sp, m)
 

@@ -13,14 +13,29 @@ import src.model.Matrices as mat
 import src.model.Route as rt
 
 def H_gamma(cf, delta, startCust, customers, depot):
+    #H_gamma is supposed to return a set of routes
+    #  - if a customer is infeasible, the cost of starting a new route is used
+
+    #print("Begin H_gamma for {}".format(startCust))
     customers = list(customers)
     route = rt.Route()
+
+    # dangerous - is this start time correct 
+    #startCust.serviceTime = startCust.readyTime + startCust.serviceLen
     route.append((0, startCust))
 
     for i in range(len(customers)):
-        nextCust = cf.w(delta, route[-1][1], customers, 1)[0]
+        #print("Previous: {}".format(route[-1]))
+        nextCust = cf.w(delta, route[-1][1], customers, depot, 1)[0]
         customers.remove(nextCust[1])
+        #print("Found next best: {}".format(nextCust[1]))
+
+        #print("Next: {} ".format(nextCust))
+        #nextCust[1].serviceTime = \
+        #    max(route[-1][1].serviceTime + cf.timeMatrix[route[-1][1], nextCust[1]]) 
+
         route.append(nextCust)
+
     
     route.append((cf.g(delta, route[-1][1], depot), depot))
 
@@ -28,7 +43,7 @@ def H_gamma(cf, delta, startCust, customers, depot):
 
 def test_aux(solomonProblem, matrices):
     #run the generalized cost function to the entire customer set
-    cf = g.CostFunction(matrices.distMatrix) 
+    cf = g.CostFunction(matrices) 
     
     depot = solomonProblem.customers[0]
     cs    = solomonProblem.customers[1:]

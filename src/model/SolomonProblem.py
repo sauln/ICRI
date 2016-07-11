@@ -14,7 +14,7 @@ class SolomonProblem():
         return self.__str__()
 
     def __eq__(self, other):
-        return (self.problem_name == other.problem_name) and \
+        return (self.problemName == other.problemName) and \
                (self.numVehicles == other.numVehicles) and \
                (self.capacity == other.capacity) and \
                (self.customers == other.customers)
@@ -30,10 +30,14 @@ class Customer():
         self.readyTime    = readyTime
         self.dueDate      = dueDate
         self.serviceLen   = serviceLen
-   
+
+        self.serviceTime = 0 # will the be actual time this customer was serviced
+
+
+
     def __str__(self):
-        return "ID: {:3}  x.({:3},{:3})".\
-            format(self.custNo, self.xcoord, self.ycoord)
+        return "ID: {:3}  x.({:3},{:3}) Service: {}".\
+            format(self.custNo, self.xcoord, self.ycoord, self.serviceTime)
 
     def __repr__(self):
         return self.__str__()

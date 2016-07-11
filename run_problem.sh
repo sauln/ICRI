@@ -24,7 +24,7 @@ python3 src/model/TestMatrices.py
 python3 src/model/TestSolomonProblem.py
 
 # Plot the dataset with the depot highlighted.
-#python3 src/visualization/visualize.py data/interim/$PROBLEM.p
+python3 src/visualization/visualize.py data/interim/$PROBLEM.p
 
 # Generate a route
 

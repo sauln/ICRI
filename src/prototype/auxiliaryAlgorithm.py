@@ -41,10 +41,8 @@ def H_gamma(cf, delta, startCust, customers, depot):
 
     return route
 
-def test_aux(solomonProblem, matrices):
+def test_aux(solomonProblem, cf):
     #run the generalized cost function to the entire customer set
-    cf = g.CostFunction(matrices) 
-    
     depot = solomonProblem.customers[0]
     cs    = solomonProblem.customers[1:]
     delta = [1]*7
@@ -64,8 +62,8 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Generating matrices for problem')
-    m = mat.Matrices(sp.customers)
-    test_aux(sp, m)
+    cf = g.CostFunction(sp.customers) 
+    test_aux(sp, cf)
 
 
 if __name__ == '__main__':

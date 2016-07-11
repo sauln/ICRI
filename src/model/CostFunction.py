@@ -1,9 +1,28 @@
-
+import src.model.Matrices as mat
 
 class CostFunction():
-    def __init__(self, matrix):
-        self.distMatrix = matrix.distMatrix
-        self.timeMatrix = matrix.timeMatrix
+    def __init__(self, customers):
+        m = mat.Matrices(customers)
+        self.distMatrix = m.distMatrix
+        self.timeMatrix = m.timeMatrix
+
+    def partitionFeasible(self, customers, start):
+        # a feasible customer is one whose last time is greater than start.time + travel_time
+        
+        #def feasible(timeMatrix, start, end):
+        #    return end.dueDate - end.serviceLen >= \
+        #        start._serviceTime + timeMatrix[start.custNo, end.custNo]
+
+        # feasible: 
+        # add feasible bool and matrices to route
+
+        feasible = filter(lambda c: \
+            start.serviceTime + self.timeMatrix[start.custNo,c.custNo] <= \
+            c.dueDate + c.serviceLen, customers)
+
+        infeasible = [c for c in customers if c not in feasible]
+        return (feasible, infeasible)
+
 
     def w(self, delta, custStart, customers, depot, lim): 
         ns = [(self.g(delta, custStart, c), c) for c in customers] 

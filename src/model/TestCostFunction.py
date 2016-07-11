@@ -23,8 +23,7 @@ class TestCostFunction(unittest.TestCase):
     def setUp(self):
         with open("data/interim/r101.p", "rb") as f: 
             self.problem = pickle.load(f)
-        self.m = mat.Matrices(self.problem.customers)
-        self.cf = cf.CostFunction(self.m)
+        self.cf = cf.CostFunction(self.problem.customers)
 
     def test_costGTzero(self):
         cs = list(self.problem.customers)

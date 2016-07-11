@@ -14,6 +14,9 @@ import src.model.Matrices as mat
 from src.model.Route import Route
 
 
+
+
+
 def naiveRoute(solomonProblem, matrices):
     cf = g.CostFunction(matrices) 
     depot = solomonProblem.customers[0]
@@ -21,21 +24,8 @@ def naiveRoute(solomonProblem, matrices):
     naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
     return naive
 
-def partitionFeasible(timeMatrix, start, customers):
-    # a feasible customer is one whose last time is greater than start.time + travel_time
-    
-    #def feasible(timeMatrix, start, end):
-    #    return end.dueDate - end.serviceLen >= \
-    #        start._serviceTime + timeMatrix[start.custNo, end.custNo]
 
-    feasible = filter(lambda c: \
-        start.serviceTime + timeMatrix[start.custNo,c.custNo] <= \
-        c.dueDate + c.serviceLen, customers)
-
-    infeasible = [c for c in customers if c not in feasible]
-    return (feasible, infeasible)
-
-def routeConstruction(solomonProblem, matrices):
+def routeConstruction(solomonProblem, costFunction):
     #start from depot
     # find the best 10 next notes
     # run the auxalgorithm on these 10 and choose the best of them
@@ -43,19 +33,20 @@ def routeConstruction(solomonProblem, matrices):
     print("Begin route construction")
     w = 10
 
-    cf = g.CostFunction(matrices) 
+    cf = costFunction
        
     depot = solomonProblem.customers[0]
     cs    = list(solomonProblem.customers[1:])
     delta = [1]*7
-    
+
+    # should the route get the matrices?
     route = Route()
     route.append((0,depot))
    
     # does not account for the depot node in the route construction cost!
     for i in range(len(cs)):
         #print("Loop section {}".format(i)) 
-        infeasible, feasible = partitionFeasible(matrices.timeMatrix, route[-1][1], cs)
+        infeasible, feasible = cf.partitionFeasible(cs, route[-1][1])
         bestCs = cf.w(delta, route[-1][1], cs, depot, w)
          
         potentialRoutes = []
@@ -88,10 +79,11 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Generating matrices for problem')
-    m = mat.Matrices(sp.customers)
+    
+    cf = g.CostFunction(sp.customers) 
 
     logger.info('Constructing routes!')
-    routeConstruction(sp, m)
+    routeConstruction(sp, cf)
 
 
 if __name__ == '__main__':

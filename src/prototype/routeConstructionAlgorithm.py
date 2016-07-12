@@ -11,7 +11,7 @@ from src.model.SolomonProblem import Customer, SolomonProblem
 import src.prototype.auxiliaryAlgorithm as aux
 import src.model.CostFunction as g
 import src.model.Matrices as mat
-from src.model.Route import Route
+from src.model.Route import Route, Node
 
 
 
@@ -27,6 +27,11 @@ def naiveRoute(solomonProblem, matrices):
 def H_c(H_gamma, w, c, C, LLimit, W, delta):
     pass
 
+def findRoutes(cf, delta, start, customers, depot):
+    tmpCS = list(customers)
+    tmpCS.remove(start)
+    croute = aux.H_gamma(cf, delta, start, tmpCS, depot)
+    return croute
 
 def routeConstruction(solomonProblem, costFunction):
     #start from depot
@@ -44,38 +49,20 @@ def routeConstruction(solomonProblem, costFunction):
 
     # should the route get the matrices?
     route = Route()
-    route.append((0,depot))
+    route.append(Node(depot, depot,0))
    
     # does not account for the depot node in the route construction cost!
     for i in range(len(cs)):
-        #print("Loop section {}".format(i)) 
-        feasible, infeasible = cf.partitionFeasible(route[-1][1], cs)
-        bestCs = cf.w(delta, route[-1][1], feasible, depot, w)
+        bestCs = cf.w(delta, route[-1].end, cs, depot, w)
          
-        potentialRoutes = []
-        print("{}:{}".format(len(feasible), len(infeasible)))
-        for c in bestCs:
-            tmpCS = list(feasible)
-            tmpCS.remove(c[1])
-            croute = aux.H_gamma(cf, delta, c[1], tmpCS,  depot)
-            potentialRoutes.append((c, croute))
-
-        bestCs = cf.w(delta, depot, infeasible, depot, w)
-        for c in bestCs:
-            tmpCS = list(infeasible)
-            tmpCS.remove(c[1])
-            croute = aux.H_gamma(cf, delta, c[1], tmpCS,  depot)
-            potentialRoutes.append((c, croute))
-
-    
-        
-
+        potentialRoutes = [(c.end, findRoutes(cf, delta, c.end, cs, depot)) for c in bestCs]
         best = min(potentialRoutes, key = lambda r: r[1].cost())
-           
-        route.append(best[0])
-        cs.remove(best[0][1])
+        print("Best: {}".format(best))
+        print(type(best[0]))
+        route.append(Node(route[-1].end, best[0], 0))
+        cs.remove(best[0])
 
-    route.append((cf.g(delta, route[-1][1], depot), depot))
+    route.append(Node(route[-1].end, depot, cf.g(delta, route[-1].end, depot)))
 
     naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
     return route

@@ -1,4 +1,7 @@
+import sortedcontainers
 import src.model.Matrices as mat
+from src.model.Route import Node
+
 
 class CostFunction():
     def __init__(self, customers):
@@ -22,10 +25,21 @@ class CostFunction():
         
         return (feasible, infeasible)
 
+    def w(self, delta, custStart, customers, depot, lim):
+        feasible, infeasible = self.partitionFeasible(custStart, customers)
 
-    def w(self, delta, custStart, customers, depot, lim): 
-        ns = [(self.g(delta, custStart, c), c) for c in customers] 
-        return sorted(ns, key=lambda c: c[0])[:lim] 
+        #implements fast insertion sort, sorting on last element in key
+        cs = sortedcontainers.SortedListWithKey(key=lambda x: x.cost)
+
+        for c in feasible:
+            cs.add( Node(custStart, c, self.g(delta, custStart, c)) )
+        for c in infeasible:
+            cs.add( Node(depot, c, self.g(delta, depot, c)) )
+
+        #ns = [(self.g(delta, custStart, c), c) for c in customers] 
+        #return sorted(ns, key=lambda c: c[0])[:lim] 
+        return cs[:lim] 
+
 
     def g(self, delta, custStart, custEnd):
         # Infeasible nodes would be filtered before here - 

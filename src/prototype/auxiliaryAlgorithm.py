@@ -23,15 +23,18 @@ def H_gamma(cf, delta, startCust, customers, depot):
 
     # dangerous - is this start time correct 
     # startCust.serviceTime = startCust.readyTime + startCust.serviceLen
-    route.append(rt.Node(depot, startCust, 0))
+    nextEdge = rt.Node(depot, startCust, 0) 
+    route.append(nextEdge)
 
     for i in range(len(customers)):
         #nextCust = cf.w(delta, route[-1][1], customers, depot, 1)[0]
-        nextEdge = cf.w(delta, route[-1].end, customers, depot, 1)[0]
+        nextEdge = cf.w(delta, nextEdge.end, customers, depot, 1)[0]
         customers.remove(nextEdge.end)
         route.append(nextEdge)
-    
-    route.append(rt.Node(route[-1].end, depot, cf.g(delta, route[-1].end, depot)))
+   
+
+    lastCost = cf.g(delta, nextEdge.end, depot)
+    route.append(rt.Node(nextEdge.end, depot, lastCost))
 
     return route
 

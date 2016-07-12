@@ -4,6 +4,10 @@ class Node():
         self.end   = end
         self.cost  = cost
 
+    def __str__(self):
+        return "Node: ({}, {})+{}".format(self.start, self.end, self.cost)
+
+
 
 class Route():
     def __init__(self):

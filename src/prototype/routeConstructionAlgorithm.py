@@ -13,58 +13,53 @@ import src.model.CostFunction as g
 import src.model.Matrices as mat
 from src.model.Route import Route, Node
 
-
-
-
-
-def naiveRoute(solomonProblem, matrices):
-    cf = g.CostFunction(matrices) 
+def naiveRoute(solomonProblem, cf):
     depot = solomonProblem.customers[0]
     delta = [1]*7
     naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
     return naive
 
-def H_c(H_gamma, w, c, C, LLimit, W, delta):
-    pass
+#def H_c(H_gamma, w, start, customers, W, delta):
+     
 
-def findRoutes(cf, delta, start, customers, depot):
+
+def greedyRoute(cf, delta, start, customers, depot):
     tmpCS = list(customers)
     tmpCS.remove(start)
     croute = aux.H_gamma(cf, delta, start, tmpCS, depot)
     return croute
 
 def routeConstruction(solomonProblem, costFunction):
-    #start from depot
-    # find the best 10 next notes
-    # run the auxalgorithm on these 10 and choose the best of them
-
     print("Begin route construction")
+    
+    
     w = 10
 
-    cf = costFunction
-       
     depot = solomonProblem.customers[0]
     cs    = list(solomonProblem.customers[1:])
     delta = [1]*7
 
     # should the route get the matrices?
     route = Route()
-    route.append(Node(depot, depot,0))
+
+    lastNode = Node(depot, depot, 0)
+    route.append(lastNode)
    
-    # does not account for the depot node in the route construction cost!
+    # adds all the nodes 
     for i in range(len(cs)):
-        bestCs = cf.w(delta, route[-1].end, cs, depot, w)
-         
-        potentialRoutes = [(c.end, findRoutes(cf, delta, c.end, cs, depot)) for c in bestCs]
-        best = min(potentialRoutes, key = lambda r: r[1].cost())
-        print("Best: {}".format(best))
-        print(type(best[0]))
-        route.append(Node(route[-1].end, best[0], 0))
-        cs.remove(best[0])
+        #print("Last Node: {} -> {}".format(type(lastNode), lastNode))
+        bestCs = costFunction.w(delta, lastNode.end, cs, depot, w)
+        potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
+                                for c in bestCs]
+        lastCust = min(potentialRoutes, key = lambda r: r[1].cost())[0]
+        lastNode = Node(route[-1].end, lastCust, 0)
+        route.append(lastNode)
+        cs.remove(lastCust)
 
-    route.append(Node(route[-1].end, depot, cf.g(delta, route[-1].end, depot)))
+    route.append(Node(route[-1].end, depot, costFunction.g(delta, route[-1].end, depot)))
 
-    naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
+    
+    naive = aux.H_gamma(costFunction, delta, depot, solomonProblem.customers[1:], depot)
     return route
 
 

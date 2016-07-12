@@ -10,7 +10,7 @@ import networkx as nx
 
 import src.prototype.routeConstructionAlgorithm as rt
 import src.model.Matrices as mat
-
+import src.model.CostFunction as cfs
 
 
 
@@ -24,12 +24,13 @@ def visualizeProblem(sp):
     plt.scatter(depot.xcoord, depot.ycoord, 250)
     plt.show()
 
-def visualizeRoute(sp, m):
+def visualizeRoute(sp):
     print("Begin Visualize Route")
-    route = rt.routeConstruction(sp, m) 
+    cf = cfs.CostFunction(sp.customers) 
+    route = rt.routeConstruction(sp, cf) 
     
     print("Enter Naive route")
-    naive = rt.naiveRoute(sp, m)
+    naive = rt.naiveRoute(sp, cf)
 
     xs = [c.xcoord for c in sp.customers]
     ys = [c.ycoord for c in sp.customers]
@@ -65,8 +66,7 @@ def main(input_filepath):
 
     with open(input_filepath, 'rb') as pickle_file:
         sp = pickle.load(pickle_file)
-    m = mat.Matrices(sp.customers)
-    visualizeRoute(sp, m)
+    visualizeRoute(sp)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

@@ -14,7 +14,37 @@ import src.model.Matrices as mat
 from src.model.Route import Route, Edge
 
 
-     
+    
+
+'''
+
+I'm starting to think of a complete refactor.
+
+putting emphasis on the route object
+
+how can we model it more like a graph, rather than a set of edges.
+
+i want static type checking at compile time - everything would be so much easier...
+
+
+objects:
+Routes - an object of routes
+ - this will keep our stack of routes
+ - it will return a set of potentially free nodes
+ - assume that when the next best addition is to not continue, we will
+   attempt to continue on with this path in the future.
+
+Routes::freeNodes() -> [Customers] 
+    - all 
+
+operations: 
+buildGreedyRoute(start, customers, end) -> route
+'''
+
+
+
+
+
 
  
 def greedyRoute(cf:        g.CostFunction, 
@@ -43,11 +73,14 @@ def H_c(costFunction, depot, customers, width: int, Delta: [[float]]):
     for i in range(iters):
         print("From node {}".format(nextEdge.end.custNo))    
         # find top best next routes - returns a set of edges
+
+        # use Routes::freeNodes() instead of nextEdge.end
         bestCs = costFunction.w(delta, nextEdge.end, cs, depot, width)
         print("Best next nodes are: {}".format(bestCs))
         #
         
-        ''' This'''
+        ''' These next few lines are the only things that are different in the main
+            loops of Hc and Hg.'''
         potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
                                 for c in bestCs]
 

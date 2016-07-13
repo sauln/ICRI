@@ -47,7 +47,7 @@ class CostFunction():
         if(custStart == custEnd):
             return 0
 
-        return delta[0] * (custStart.custNo == 0) +\
+        return delta[0] * 5 * (custStart.custNo == 0) +\
                delta[1] * self.distMatrix[custStart.custNo, custEnd.custNo] +\
                delta[2] * self.timeMatrix[custStart.custNo, custEnd.custNo]
 

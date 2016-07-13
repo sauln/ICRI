@@ -23,7 +23,7 @@ def greedyRoute(cf:        g.CostFunction,
                 customers: [Customer], 
                 depot:     Customer) -> Route:
     tmpCS = list(customers)
-    tmpCS.remove(start)
+    tmpCS.remove(start) # this is O(n) and shouldn't be
     croute = aux.H_gamma(cf, delta, start, tmpCS, depot)
     return croute
 
@@ -35,32 +35,35 @@ def H_c(costFunction, depot, customers, width: int, Delta: [[float]]):
     delta = Delta[0]
 
     #setup first node in chain so the loop can continue easily 
-    lastEdge = Edge(depot, depot, 0)
+    nextEdge = Edge(depot, depot, 0)
     
     route = Route()
     iters = len(cs)
-    iters = 10
+    iters = 3
     for i in range(iters):
-        print("From node {}".format(lastEdge.end.custNo))    
+        print("From node {}".format(nextEdge.end.custNo))    
         # find top best next routes - returns a set of edges
-        bestCs = costFunction.w(delta, lastEdge.end, cs, depot, width)
+        bestCs = costFunction.w(delta, nextEdge.end, cs, depot, width)
         print("Best next nodes are: {}".format(bestCs))
         #
+        
+        ''' This'''
         potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
                                 for c in bestCs]
 
-        print("Cost of potential full routes are: {}".format([p[1] for p in potentialRoutes]))
+        print("Cost of potential full routes are: {}".format([p for p in potentialRoutes]))
 
-        lastCust = min(potentialRoutes, key = lambda r: r[1].cost())[0]
-        print("Best choice is: {}".format(lastCust))
+        nextCust, nextRoute = min(potentialRoutes, key = lambda r: r[1].cost())
+        print("Best choice is: {}".format(nextCust))
 
-        lastEdge = Edge(lastEdge.end, lastCust, 0)
-        print("Adding this edge to graph: {}".format(lastEdge))
+        nextEdge = Edge(nextEdge.end, nextCust, \
+            costFunction.g(delta, nextEdge.end, nextCust) )
+        print("Adding this edge to graph: {}".format(nextEdge))
 
-        route.append(lastEdge)
+        route.append(nextEdge)
         print("Now, most complete graph so far: {}".format(route))
         print("Total current cost of that graph: {}".format(route.cost()))
-        cs.remove(lastCust)
+        cs.remove(nextCust)
         print("Remaining custoemrs to plot: {}".format(cs))
 
     route.append(Edge(route[-1].end, depot, costFunction.g(delta, route[-1].end, depot)))

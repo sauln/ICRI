@@ -25,20 +25,24 @@ def H_gamma(cf:        g.CostFunction,
     customers = list(customers)
     route = rt.Route()
 
-    # dangerous - is this start time correct 
-    # startCust.serviceTime = startCust.readyTime + startCust.serviceLen
-    nextEdge = rt.Edge(depot, startCust, 0) 
-    #route.append(nextEdge)
+    #start with a stub
+    nextEdge = rt.Edge(startCust, startCust, 0) 
+    route.append(nextEdge)
 
     for i in range(len(customers)):
-        #nextCust = cf.w(delta, route[-1][1], customers, depot, 1)[0]
         nextEdge = cf.w(delta, nextEdge.end, customers, depot, 1)[0]
-        customers.remove(nextEdge.end)
+        
         route.append(nextEdge)
+        customers.remove(nextEdge.end)
    
 
+    # Add the final trip back to the depot.
     lastCost = cf.g(delta, nextEdge.end, depot)
     route.append(rt.Edge(nextEdge.end, depot, lastCost))
+    #route.route.insert(0, rt.Edge(startCust, route[0].start, \
+    #    cf.g(delta, startCust, route[0].start)))
+
+    print("New first 3 of route: {} => {} => {}".format(route[0], route[1], route[2]))
 
     return route
 

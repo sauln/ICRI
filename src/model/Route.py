@@ -30,7 +30,7 @@ class Route():
         return "Distance: {0:.4g} {1}".format(s, a)
 
     def __repr__(self):
-        return "{}:({}, {})".format(self.cost(), self.route[0].start.custNo, self.route[-1].end.custNo) 
+        return "{:.4g}:({}, {})".format(self.cost(), self.route[0].start.custNo, self.route[-1].end.custNo) 
 
     def __getitem__(self, index):
         return self.route[index]

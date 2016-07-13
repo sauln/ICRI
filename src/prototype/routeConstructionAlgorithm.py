@@ -38,18 +38,30 @@ def H_c(costFunction, depot, customers, width: int, Delta: [[float]]):
     lastEdge = Edge(depot, depot, 0)
     
     route = Route()
-    for i in range(len(cs)):
-    
+    iters = len(cs)
+    iters = 10
+    for i in range(iters):
+        print("From node {}".format(lastEdge.end.custNo))    
         # find top best next routes - returns a set of edges
         bestCs = costFunction.w(delta, lastEdge.end, cs, depot, width)
-       
+        print("Best next nodes are: {}".format(bestCs))
         #
         potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
                                 for c in bestCs]
+
+        print("Cost of potential full routes are: {}".format([p[1] for p in potentialRoutes]))
+
         lastCust = min(potentialRoutes, key = lambda r: r[1].cost())[0]
+        print("Best choice is: {}".format(lastCust))
+
         lastEdge = Edge(lastEdge.end, lastCust, 0)
+        print("Adding this edge to graph: {}".format(lastEdge))
+
         route.append(lastEdge)
+        print("Now, most complete graph so far: {}".format(route))
+        print("Total current cost of that graph: {}".format(route.cost()))
         cs.remove(lastCust)
+        print("Remaining custoemrs to plot: {}".format(cs))
 
     route.append(Edge(route[-1].end, depot, costFunction.g(delta, route[-1].end, depot)))
 

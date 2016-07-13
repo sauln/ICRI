@@ -28,7 +28,7 @@ def H_gamma(cf:        g.CostFunction,
     # dangerous - is this start time correct 
     # startCust.serviceTime = startCust.readyTime + startCust.serviceLen
     nextEdge = rt.Edge(depot, startCust, 0) 
-    route.append(nextEdge)
+    #route.append(nextEdge)
 
     for i in range(len(customers)):
         #nextCust = cf.w(delta, route[-1][1], customers, depot, 1)[0]

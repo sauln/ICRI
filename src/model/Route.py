@@ -6,8 +6,10 @@ class Edge():
         self.cost  = cost
 
     def __str__(self):
-        return "Node: ({}, {})+{}".format(self.start, self.end, self.cost)
+        return "({}, {}+{:.3g})".format(self.start.custNo, self.end.custNo, self.cost)
 
+    def __repr__(self):
+        return self.__str__()
 
 
 class Route():
@@ -22,12 +24,13 @@ class Route():
         return sum(i.cost for i in self.route)
 
     def __str__(self):
-        s = self.cost() 
-        a = '-'.join(str(i.start.custNo) for i in self.route)
+        s = self.cost()
+        a = ' => '.join(str(i) for i in self.route)
+        #a = '-'.join(str(i.start.custNo) for i in self.route)
         return "Distance: {0:.4g} {1}".format(s, a)
 
     def __repr__(self):
-        return self.__str__() 
+        return "{}:({}, {})".format(self.cost(), self.route[0].start.custNo, self.route[-1].end.custNo) 
 
     def __getitem__(self, index):
         return self.route[index]

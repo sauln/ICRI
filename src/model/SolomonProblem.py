@@ -42,7 +42,7 @@ class Customer():
             format(self.custNo, self.xcoord, self.ycoord, self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):
-        return self.__str__()
+        return "{}".format(self.custNo)
 
     def __eq__(self, other):
         return self.custNo == other.custNo and \

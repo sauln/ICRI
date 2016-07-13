@@ -11,55 +11,61 @@ from src.model.SolomonProblem import Customer, SolomonProblem
 import src.prototype.auxiliaryAlgorithm as aux
 import src.model.CostFunction as g
 import src.model.Matrices as mat
-from src.model.Route import Route, Node
+from src.model.Route import Route, Edge
 
-def naiveRoute(solomonProblem, cf):
-    depot = solomonProblem.customers[0]
-    delta = [1]*7
-    naive = aux.H_gamma(cf, delta, depot, solomonProblem.customers[1:], depot)
-    return naive
 
-#def H_c(H_gamma, w, start, customers, W, delta):
      
 
-
-def greedyRoute(cf, delta, start, customers, depot):
+ 
+def greedyRoute(cf:        g.CostFunction, 
+                delta:     [int], 
+                start:     Customer, 
+                customers: [Customer], 
+                depot:     Customer) -> Route:
     tmpCS = list(customers)
     tmpCS.remove(start)
     croute = aux.H_gamma(cf, delta, start, tmpCS, depot)
     return croute
 
-def routeConstruction(solomonProblem, costFunction):
+
+
+def H_c(costFunction, depot, customers, width: int, Delta: [[float]]):
+    cs = list(customers)
+    
+    delta = Delta[0]
+
+    #setup first node in chain so the loop can continue easily 
+    lastEdge = Edge(depot, depot, 0)
+    
+    route = Route()
+    for i in range(len(cs)):
+    
+        # find top best next routes - returns a set of edges
+        bestCs = costFunction.w(delta, lastEdge.end, cs, depot, width)
+       
+        #
+        potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
+                                for c in bestCs]
+        lastCust = min(potentialRoutes, key = lambda r: r[1].cost())[0]
+        lastEdge = Edge(lastEdge.end, lastCust, 0)
+        route.append(lastEdge)
+        cs.remove(lastCust)
+
+    route.append(Edge(route[-1].end, depot, costFunction.g(delta, route[-1].end, depot)))
+
+    return route
+        
+def routeConstruction(solomonProblem: SolomonProblem, 
+                      costFunction: g.CostFunction) -> Route:
     print("Begin route construction")
-    
-    
     w = 10
 
     depot = solomonProblem.customers[0]
     cs    = list(solomonProblem.customers[1:])
     delta = [1]*7
 
-    # should the route get the matrices?
-    route = Route()
-
-    lastNode = Node(depot, depot, 0)
-    route.append(lastNode)
-   
-    # adds all the nodes 
-    for i in range(len(cs)):
-        #print("Last Node: {} -> {}".format(type(lastNode), lastNode))
-        bestCs = costFunction.w(delta, lastNode.end, cs, depot, w)
-        potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
-                                for c in bestCs]
-        lastCust = min(potentialRoutes, key = lambda r: r[1].cost())[0]
-        lastNode = Node(route[-1].end, lastCust, 0)
-        route.append(lastNode)
-        cs.remove(lastCust)
-
-    route.append(Node(route[-1].end, depot, costFunction.g(delta, route[-1].end, depot)))
-
-    
-    naive = aux.H_gamma(costFunction, delta, depot, solomonProblem.customers[1:], depot)
+    route = H_c(costFunction, depot, cs, w, [delta]) 
+    #naive = aux.H_gamma(costFunction, delta, depot, solomonProblem.customers[1:], depot)
     return route
 
 
@@ -93,4 +99,5 @@ if __name__ == '__main__':
     load_dotenv(find_dotenv())
 
     main()
+
 

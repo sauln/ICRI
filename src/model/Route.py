@@ -1,4 +1,5 @@
-class Node():
+#this is actual an edge... wtf
+class Edge():
     def __init__(self, start, end, cost):
         self.start = start
         self.end   = end
@@ -14,7 +15,7 @@ class Route():
         self.route = []
 
     def append(self, item):
-        assert isinstance(item, Node), "item is type {}:\n{}".format(type(item), item)
+        assert isinstance(item, Edge), "item is type {}:\n{}".format(type(item), item)
         self.route.append(item)
 
     def cost(self):

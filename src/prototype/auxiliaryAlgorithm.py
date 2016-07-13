@@ -13,7 +13,11 @@ import src.model.Matrices as mat
 import src.model.Route as rt
 
 
-def H_gamma(cf, delta, startCust, customers, depot):
+def H_gamma(cf:        g.CostFunction, 
+            delta:     [int], 
+            startCust: Customer, 
+            customers: [Customer], 
+            depot:     Customer) -> [rt.Edge]:
     #H_gamma is supposed to return a set of routes
     #  - if a customer is infeasible, the cost of starting a new route is used
 
@@ -23,7 +27,7 @@ def H_gamma(cf, delta, startCust, customers, depot):
 
     # dangerous - is this start time correct 
     # startCust.serviceTime = startCust.readyTime + startCust.serviceLen
-    nextEdge = rt.Node(depot, startCust, 0) 
+    nextEdge = rt.Edge(depot, startCust, 0) 
     route.append(nextEdge)
 
     for i in range(len(customers)):
@@ -34,7 +38,7 @@ def H_gamma(cf, delta, startCust, customers, depot):
    
 
     lastCost = cf.g(delta, nextEdge.end, depot)
-    route.append(rt.Node(nextEdge.end, depot, lastCost))
+    route.append(rt.Edge(nextEdge.end, depot, lastCost))
 
     return route
 

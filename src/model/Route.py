@@ -1,3 +1,7 @@
+
+
+
+
 #this is actual an edge... wtf
 class Edge():
     def __init__(self, start, end, cost):
@@ -12,7 +16,6 @@ class Edge():
         return self.__str__()
 
 
-
 '''
 objects:
 Routes - an object of routes
@@ -23,31 +26,39 @@ Routes - an object of routes
 
 Routes::freeNodes() -> [Customers] 
     - all 
-
 '''
 
 
 class Routes():
     def __init__(self):
-        pass
+        self.rlist = []
 
     def freeNodes(self):#could be called `looseEnds` because they are still viable
         pass # return set of viable nodes
 
 
-
-
-
 class Route():
     def __init__(self):
         self.route = []
+        self.edges = []
 
-    def append(self, item):
-        assert isinstance(item, Edge), "item is type {}:\n{}".format(type(item), item)
+
+    def append(self, item, cost):
+        self.edges.append( ((self.route if len(self.route) > 0 else None, item), cost) )
         self.route.append(item)
 
+
+
+    #def append(self, item):
+    #    assert isinstance(item, Edge), "item is type {}:\n{}".format(type(item), item)
+    #    self.route.append(item)
+
     def cost(self):
-        return sum(i.cost for i in self.route)
+        return sum( cost for edge, cost in self.edges )
+        #return sum(self.matrices.distMatrix(i,j) \
+        #    for i, j in zip(self.route[:-1], self.route[1:]))
+            
+        #return sum( for i in self.route)
 
     def __str__(self):
         s = self.cost()
@@ -56,7 +67,7 @@ class Route():
         return "Distance: {0:.4g} {1}".format(s, a)
 
     def __repr__(self):
-        return "{:.4g}:({}, {})".format(self.cost(), self.route[0].start.custNo, self.route[-1].end.custNo) 
+        return "{:.4g}:({}, {})".format(self.cost(), self.route[0].custNo, self.route[-1].custNo) 
 
     def __getitem__(self, index):
         return self.route[index]

@@ -11,7 +11,9 @@ from src.model.SolomonProblem import Customer, SolomonProblem
 import src.prototype.auxiliaryAlgorithm as aux
 import src.model.CostFunction as g
 import src.model.Matrices as mat
-from src.model.Route import Route, Edge
+from src.model.Route import Route, Routes
+
+#Edge
 
 
     
@@ -65,35 +67,52 @@ def H_c(costFunction, depot, customers, width: int, Delta: [[float]]):
     delta = Delta[0]
 
     #setup first node in chain so the loop can continue easily 
-    nextEdge = Edge(depot, depot, 0)
+    #nextEdge = Edge(depot, depot, 0)
     
+    nextNode = depot
+
+    routes = Routes()
     route = Route()
+
+    #route.append(nextEdge)
+    route.append(nextNode, 0)
+    routes.rlist.append(route)
+
     iters = len(cs)
     iters = 3
     for i in range(iters):
-        print("From node {}".format(nextEdge.end.custNo))    
         # find top best next routes - returns a set of edges
-
         # use Routes::freeNodes() instead of nextEdge.end
-        bestCs = costFunction.w(delta, nextEdge.end, cs, depot, width)
-        print("Best next nodes are: {}".format(bestCs))
+        # need to know which route each end is associated with
+        #for ne in routes.rlist:
+        #    bestCs.append(costFunction.w(delta, ne.end, cs, depot, width) )
         #
-        
+        #potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
+        #                        for c in bestCs]
         ''' These next few lines are the only things that are different in the main
             loops of Hc and Hg.'''
-        potentialRoutes = [(c.end, greedyRoute(costFunction, delta, c.end, cs, depot)) \
-                                for c in bestCs]
+       
+
+       
+        print("From node {}".format(nextNode.custNo))    
+        print(cs)    
+
+        bestCs = costFunction.bestNodes(delta, routes.rlist, cs, depot, width)
+        print("Best next nodes are: {}".format(bestCs))
+
+        potentialRoutes = [(route, node, greedyRoute(costFunction, delta, node, cs, depot)) \
+            for route, node, cost in bestCs]
 
         print("Cost of potential full routes are: {}".format([p for p in potentialRoutes]))
 
-        nextCust, nextRoute = min(potentialRoutes, key = lambda r: r[1].cost())
+
+        nextCust, nextRoute = min(potentialRoutes, key = lambda r,n,c: r.cost())
         print("Best choice is: {}".format(nextCust))
 
-        nextEdge = Edge(nextEdge.end, nextCust, \
-            costFunction.g(delta, nextEdge.end, nextCust) )
+        nextNode = (nextCust, costFunction.g(delta, nextCust, nextCust))
         print("Adding this edge to graph: {}".format(nextEdge))
 
-        route.append(nextEdge)
+        route.append(*nextEdge)
         print("Now, most complete graph so far: {}".format(route))
         print("Total current cost of that graph: {}".format(route.cost()))
         cs.remove(nextCust)

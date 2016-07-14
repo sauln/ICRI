@@ -25,6 +25,23 @@ class CostFunction():
         infeasible, feasible = fs[0], fs[1]
         
         return (feasible, infeasible)
+    
+    # need to take a list of routes and return [(route, next)]
+    def bestNodes(self, delta, routes, customers, depot, width):
+        cs = []
+        
+        print(routes)
+
+        for r in routes:
+            print("Last node: {}".format(r[-1]))
+            print("number of custs: {}".format(len(customers)))
+            feasible, _ = self.partitionFeasible(r[-1], customers)
+            print(len(feasible))
+            for c in feasible:
+                cs.append((r, c, self.g(delta, r[-1], c)))
+
+        return cs[:width]
+
 
     def w(self, delta, custStart, customers, depot, lim) -> [Edge]:
         feasible, infeasible = self.partitionFeasible(custStart, customers)
@@ -33,9 +50,9 @@ class CostFunction():
         cs = sortedcontainers.SortedListWithKey(key=lambda x: x.cost)
 
         for c in feasible:
-            cs.add( Edge(custStart, c, self.g(delta, custStart, c)) )
+            cs.add( (custStart, c, self.g(delta, custStart, c)) )
         for c in infeasible:
-            cs.add( Edge(depot, c, self.g(delta, depot, c)) )
+            cs.add( (custStart, depot, c, self.g(delta, depot, c)) )
 
         #ns = [(self.g(delta, custStart, c), c) for c in customers] 
         #return sorted(ns, key=lambda c: c[0])[:lim] 

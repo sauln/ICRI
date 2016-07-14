@@ -26,18 +26,19 @@ def H_gamma(cf:        g.CostFunction,
     route = rt.Route()
 
     #start with a stub
-    nextEdge = rt.Edge(startCust, startCust, 0) 
-    route.append(nextEdge)
+    #nextEdge = rt.Edge(startCust, startCust, 0) 
+    nextNode = depot
+    route.append(nextNode, 0)
 
     for i in range(len(customers)):
-        nextEdge = cf.w(delta, nextEdge.end, customers, depot, 1)[0]
+        nextNode, cost = cf.w(delta, nextNode, customers, depot, 1)[0]
         
-        route.append(nextEdge)
-        customers.remove(nextEdge.end)
+        route.append(nextNode, cost)
+        customers.remove(nextNode)
    
 
     # Add the final trip back to the depot.
-    lastCost = cf.g(delta, nextEdge.end, depot)
+    lastCost = cf.g(delta, nextNode, depot)
     route.append(rt.Edge(nextEdge.end, depot, lastCost))
     #route.route.insert(0, rt.Edge(startCust, route[0].start, \
     #    cf.g(delta, startCust, route[0].start)))

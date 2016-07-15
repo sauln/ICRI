@@ -23,14 +23,14 @@ python3 src/data/make_dataset.py data/raw/$PROBLEM.txt data/interim/$PROBLEM.p
 python3 src/model/TestMatrices.py
 python3 src/model/TestSolomonProblem.py
 python3 src/model/TestCostFunction.py
-python3 src/prototype/TestRouteConstructionAlgorithm.py
-python3 src/prototype/TestAuxiliaryAlgorithm.py
+#python3 src/prototype/TestRouteConstructionAlgorithm.py
+#python3 src/prototype/TestAuxiliaryAlgorithm.py
 
 
 python3 src/prototype/basicOps.py data/interim/$PROBLEM.p
 
 
-python3 src/prototype/routeConstructionAlgorithm.py data/interim/$PROBLEM.p
+#python3 src/prototype/routeConstructionAlgorithm.py data/interim/$PROBLEM.p
 #python3 src/prototype/auxiliaryAlgorithm.py data/interim/$PROBLEM.p
 #mypy src/prototype/routeConstructionAlgorithm.py data/interim/$PROBLEM.p
 

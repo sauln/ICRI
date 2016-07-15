@@ -19,7 +19,6 @@ class SolomonProblem():
                (self.capacity == other.capacity) and \
                (self.customers == other.customers)
 
-
 class Customer():
     #todo: change these to camel case
     def __init__(self, custNo, xcoord, ycoord, demand, readyTime, dueDate, serviceLen):
@@ -39,7 +38,8 @@ class Customer():
 
     def __str__(self):
         return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})+{}".\
-            format(self.custNo, self.xcoord, self.ycoord, self.readyTime, self.dueDate, self.serviceLen)
+            format(self.custNo, self.xcoord, self.ycoord, \
+                   self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):
         return "{}".format(self.custNo)
@@ -52,3 +52,4 @@ class Customer():
                self.readyTime == other.readyTime and \
                self.dueDate == other.dueDate and \
                self.serviceLen == other.serviceLen
+

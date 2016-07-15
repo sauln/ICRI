@@ -25,20 +25,6 @@ class TestCostFunction(unittest.TestCase):
             self.problem = pickle.load(f)
         self.cf = cf.CostFunction(self.problem.customers)
 
-    def test_costGTzero(self):
-        cs = list(self.problem.customers)
-        for i in range(100):
-            delta = [int(random.random()*10) for i in range(7)]
-            c = self.cf.g(delta, random.choice(cs), random.choice(cs))
-            self.assertGreaterEqual(c, 0)
-
-    def test_costSelfZero(self):
-        cs = list(self.problem.customers)
-        for c in cs:
-            delta = [int(random.random()*10) for i in range(7)]
-            cost = self.cf.g(delta, c, c)
-            self.assertEqual(cost, 0)
-
     def test_feasiblePartition(self):
         for i in range(100):
             c = self.problem.customers[i]
@@ -56,7 +42,6 @@ class TestCostFunction(unittest.TestCase):
            
             for f in feasible:
                 c.dueDate <= f.readyTime
-
 
 if __name__ == "__main__":
     unittest.main()

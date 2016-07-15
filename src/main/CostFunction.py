@@ -8,9 +8,9 @@ class CostFunction():
         self.distMatrix = m.distMatrix
         self.timeMatrix = m.timeMatrix
 
-    def feasible(self, start: Customer, end: Customer) -> bool:
-        return start.serviceTime() + self.timeMatrix[start.custNo, end.custNo] <= \
-               end.dueDate + end.serviceLen
+    #def feasible(self, start: Customer, end: Customer) -> bool:
+    #    return start.serviceTime() + self.timeMatrix[start.custNo, end.custNo] <= \
+    #           end.dueDate + end.serviceLen
     
     def partitionFeasible(self, start, customers) -> ([Customer], [Customer]):
         # a feasible customer is one whose last time is greater than start.time + travel_time

@@ -1,3 +1,5 @@
+from src.main.Matrices import Matrices
+
 
 class SolomonProblem():
     def __init__(self, name, numVeh, capacity, customers):
@@ -5,6 +7,11 @@ class SolomonProblem():
         self.numVehicles     = numVeh
         self.capacity        = capacity
         self.customers       = customers
+
+    def prepare(self):
+        matrices = Matrices(self.customers)
+        self.timeMatrix = matrices.timeMatrix
+        self.distMatrix = matrices.distMatrix
 
     def __str__(self):
         return "{} Num Vehicles: {}  Capacity: {}  Num Customers: {}".\
@@ -33,12 +40,13 @@ class Customer():
         self._serviceTime = 0 # will the be actual time this customer was serviced
     
     def serviceTime(self):
+        #print("Readytime: {}, servicelen: {}, serviceTime: {}".format(self.readyTime, self.serviceLen, self._serviceTime))
         return max(self.readyTime + self.serviceLen, self._serviceTime)
 
 
     def __str__(self):
-        return "ID: {:3}  x.({:3},{:3}) t.({:3},{:3})+{}".\
-            format(self.custNo, self.xcoord, self.ycoord, \
+        return "ID: {:3}({})  x.({:3},{:3}) t.({:3},{:3})+{}".\
+            format(self.custNo, self.demand, self.xcoord, self.ycoord, \
                    self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):

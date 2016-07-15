@@ -6,47 +6,69 @@ from dotenv import find_dotenv, load_dotenv
 
 import pickle
 import sortedcontainers
+import numpy as np
 
 #from src.model.CostFunction import CostFunction
 from src.visualization.visualize import PlotRoutes 
 from src.main.Matrices import Matrices
-from src.main.Routes import Routes
+from src.main.Routes import Route, Routes
 
-def isFeasible(matrix, start, end):
-    return start.serviceTime() + matrix.timeMatrix[start.custNo, end.custNo] <= \
-           end.dueDate + end.serviceLen
+def isFeasible(sp, route, end):
+    start = route[-1]
+    curCapacity = route.capacity
 
-def heuristic(matrix, delta: [float], custStart, custEnd, depot):
+    #print("Start: {}\nEnd: {}".format(start,end))
+    earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
+    latest = end.dueDate + end.serviceLen
+
+    validTime = earliest <= latest
+    
+    #print("{} <= {} : {}\n".format(earliest, latest, validTime))
+    #print("{} + {} <= {}".format(end.demand, curCapacity, sp.capacity))
+    capacity = sp.capacity >= end.demand + curCapacity
+
+    return (validTime and capacity)
+
+def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
     # Infeasible nodes would be filtered before here - 
-    start = custStart
+    prevDeparture = s.serviceTime() + s.serviceLen
+    nextArrivalTime = prevDeparture + sp.timeMatrix[s.custNo, e.custNo]
+    earliestService = max(nextArrivalTime, e.readyTime)
 
-    cost = delta[0] * (start.custNo == 0) +\
-           delta[1] * matrix.distMatrix[start.custNo, custEnd.custNo] +\
-           delta[2] * matrix.timeMatrix[start.custNo, custEnd.custNo]
+    c = np.zeros(len(delta))
+    c[0] = (s.custNo == 0)
+    c[1] = sp.distMatrix[s.custNo, e.custNo]
+    c[2] = earliestService - prevDeparture
+    c[3] = e.dueDate - (prevDeparture + sp.timeMatrix[s.custNo,e.custNo])
+    c[4] = capacity - e.demand
+    #d[5] = max(0, c_from.service_window[0] - earliest_possible_service)
+    #d[6] = max(0, c_from_service_time - c_from.service_window[1])
 
-    return (start, custEnd, cost) 
+    cost = np.dot(delta, c)    
+    return (s, e, cost) 
 
-def getBestNode(matrix, delta, routes, customers, depot):
+def getBestNode(sp, delta, routes, customers, depot):
     cs = sortedcontainers.SortedListWithKey(key=lambda x: x[3])
     # with lots of routes, this could become unreasonable
     # is there any faster way than to look at all of them?
     for r in routes:
         for c in customers:
-            res = (r,) + heuristic(matrix, delta, r[-1], c, depot) 
-            cs.add(res)
+            if(isFeasible(sp, r, c)):
+                res = (r,) + heuristic(sp, delta, r[-1], c, depot, r.capacity) 
+                cs.add(res)
 
     return cs[0]
 
-def buildRoute(matrix, delta, start, customers, depot):
+def buildRoute(sp, delta, start, customers, depot):
     routes = Routes(start)
 
     nextNode = start        
     for i in range(len(customers)):
         route, start, bestNext, cost = \
-            getBestNode(matrix, delta, routes.rList, customers, depot)
+            getBestNode(sp, delta, routes, customers, depot)
 
         if(start.custNo == 0): #the depot
-            routes.rList.append([start, bestNext])
+            routes.rList.append(Route(start, bestNext))
         else:
             route.append(bestNext)
         customers.remove(bestNext)
@@ -66,12 +88,14 @@ def main(input_filepath):
     logger.info('Generating matrices for problem')
     
     m = Matrices(sp.customers)
+    
+    sp.prepare()
     depot = sp.customers[0]
     cs    = sp.customers[1:]
     delta = [1]*7
    
-    routes = buildRoute(m, delta, depot, cs, depot)    
-    print(routes)
+    routes = buildRoute(sp, delta, depot, cs, depot)    
+    print("Look here, the routes: \n{}".format(routes))
     PlotRoutes(routes)
 
 if __name__ == '__main__':

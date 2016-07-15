@@ -3,7 +3,6 @@ import os
 import pickle
 import numpy as np
 
-from src.main.SolomonProblem import Customer, SolomonProblem
 
 class Matrices():
     def __init__(self, customers):

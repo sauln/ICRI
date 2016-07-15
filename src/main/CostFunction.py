@@ -1,11 +1,10 @@
 import sortedcontainers
-import src.model.Matrices as mat
-from src.model.SolomonProblem import Customer
-
+from src.main.Matrices import Matrices
+from src.main.SolomonProblem import Customer
 
 class CostFunction():
     def __init__(self, customers):
-        m = mat.Matrices(customers)
+        m = Matrices(customers)
         self.distMatrix = m.distMatrix
         self.timeMatrix = m.timeMatrix
 

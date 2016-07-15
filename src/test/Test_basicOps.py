@@ -1,14 +1,14 @@
-
 import unittest
 
-import src.prototype.auxiliaryAlgorithm as aux
 
+from src.prototype.basicOps import isFeasible, heuristic, getBestNode, buildRoute
 
 # test H_gamma
 # assert that it works exactly how it should
 # it should start a new route - when the best next is infeasible
 # it should use all of the customers and no more
 # 
+
 
 
 

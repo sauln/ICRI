@@ -4,8 +4,8 @@ import pickle
 import random
 
 
-import src.model.CostFunction as cf 
-import src.model.Matrices as mat
+from src.main.CostFunction import CostFunction 
+from src.main.Matrices import Matrices
 
 class stub():
     def __init__(self, x, y):
@@ -23,7 +23,7 @@ class TestCostFunction(unittest.TestCase):
     def setUp(self):
         with open("data/interim/r101.p", "rb") as f: 
             self.problem = pickle.load(f)
-        self.cf = cf.CostFunction(self.problem.customers)
+        self.cf = CostFunction(self.problem.customers)
 
     def test_feasiblePartition(self):
         for i in range(100):

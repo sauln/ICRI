@@ -9,8 +9,8 @@ import sortedcontainers
 
 #from src.model.CostFunction import CostFunction
 from src.visualization.visualize import PlotRoutes 
-from src.model.Matrices import Matrices
-from src.model.Routes import Routes
+from src.main.Matrices import Matrices
+from src.main.Routes import Routes
 
 def isFeasible(matrix, start, end):
     return start.serviceTime() + matrix.timeMatrix[start.custNo, end.custNo] <= \
@@ -28,7 +28,6 @@ def heuristic(matrix, delta: [float], custStart, custEnd, depot):
 
 def getBestNode(matrix, delta, routes, customers, depot):
     cs = sortedcontainers.SortedListWithKey(key=lambda x: x[3])
-
     # with lots of routes, this could become unreasonable
     # is there any faster way than to look at all of them?
     for r in routes:
@@ -39,11 +38,9 @@ def getBestNode(matrix, delta, routes, customers, depot):
     return cs[0]
 
 def buildRoute(matrix, delta, start, customers, depot):
-    routes = Routes()
+    routes = Routes(start)
 
-    routes.setFirstNode(start)
     nextNode = start        
-    
     for i in range(len(customers)):
         route, start, bestNext, cost = \
             getBestNode(matrix, delta, routes.rList, customers, depot)
@@ -53,7 +50,6 @@ def buildRoute(matrix, delta, start, customers, depot):
         else:
             route.append(bestNext)
         customers.remove(bestNext)
-        #print(routes)
     
     return routes
 

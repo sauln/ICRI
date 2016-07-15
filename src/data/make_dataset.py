@@ -5,7 +5,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from src.model.SolomonProblem import Customer, SolomonProblem
+from src.main.SolomonProblem import Customer, SolomonProblem
 
 
 @click.command()

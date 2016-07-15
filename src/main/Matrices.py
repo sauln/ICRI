@@ -3,7 +3,7 @@ import os
 import pickle
 import numpy as np
 
-from src.model.SolomonProblem import Customer, SolomonProblem
+from src.main.SolomonProblem import Customer, SolomonProblem
 
 class Matrices():
     def __init__(self, customers):
@@ -35,7 +35,6 @@ class Matrices():
 
     def __repr__(self):
         return self.__str__()
-
 
 def buildMatricesFromCustomerFile(input_filepath):
     with open(input_filepath, "rb") as f:

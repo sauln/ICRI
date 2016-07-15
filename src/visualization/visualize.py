@@ -8,11 +8,25 @@ import matplotlib.pyplot as plt
 import pickle
 import networkx as nx
 
-import src.prototype.routeConstructionAlgorithm as rt
+#import src.prototype.routeConstructionAlgorithm as rt
 import src.model.Matrices as mat
 import src.model.CostFunction as cfs
 
 
+def PlotRoutes(routes):
+    print("Viz each route on a plot") 
+
+    print(routes)
+    for r in routes.rList:
+        print(r)
+        xs = [c.xcoord for c in r]
+        ys = [c.ycoord for c in r]#fix this
+        plt.plot(xs, ys)
+    depot = routes.rList[0][0]
+
+    plt.scatter(depot.xcoord, depot.ycoord, 250)
+    
+    plt.show()
 
 
 def visualizeProblem(sp):

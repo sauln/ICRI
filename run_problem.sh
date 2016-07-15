@@ -27,6 +27,9 @@ python3 src/prototype/TestRouteConstructionAlgorithm.py
 python3 src/prototype/TestAuxiliaryAlgorithm.py
 
 
+python3 src/prototype/basicOps.py data/interim/$PROBLEM.p
+
+
 python3 src/prototype/routeConstructionAlgorithm.py data/interim/$PROBLEM.p
 #python3 src/prototype/auxiliaryAlgorithm.py data/interim/$PROBLEM.p
 #mypy src/prototype/routeConstructionAlgorithm.py data/interim/$PROBLEM.p

@@ -17,14 +17,9 @@ def isFeasible(sp, route, end):
     start = route[-1]
     curCapacity = route.capacity
 
-    #print("Start: {}\nEnd: {}".format(start,end))
     earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
     latest = end.dueDate + end.serviceLen
-
     validTime = earliest <= latest
-    
-    #print("{} <= {} : {}\n".format(earliest, latest, validTime))
-    #print("{} + {} <= {}".format(end.demand, curCapacity, sp.capacity))
     capacity = sp.capacity >= end.demand + curCapacity
 
     return (validTime and capacity)
@@ -47,33 +42,83 @@ def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
     cost = np.dot(delta, c)    
     return (s, e, cost) 
 
-def getBestNode(sp, delta, routes, customers, depot):
+def getBestNNodes(sp, delta, routes, customers, depot, size):
     cs = sortedcontainers.SortedListWithKey(key=lambda x: x[3])
     # with lots of routes, this could become unreasonable
     # is there any faster way than to look at all of them?
+
     for r in routes:
         for c in customers:
             if(isFeasible(sp, r, c)):
                 res = (r,) + heuristic(sp, delta, r[-1], c, depot, r.capacity) 
                 cs.add(res)
 
-    return cs[0]
+    return cs[:size]
+
+def getBestNode(sp, delta, routes, customers, depot):
+    return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
+
+def addNext(routes, route, end, start):
+    if(start.custNo == 0): #the depot
+        routes.rList.append(Route(start, end))
+    else:
+        route.append(end)
+
+    return routes
 
 def buildRoute(sp, delta, start, customers, depot):
     routes = Routes(start)
 
-    nextNode = start        
     for i in range(len(customers)):
-        route, start, bestNext, cost = \
-            getBestNode(sp, delta, routes, customers, depot)
+        route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
 
-        if(start.custNo == 0): #the depot
-            routes.rList.append(Route(start, bestNext))
-        else:
-            route.append(bestNext)
+        routes = addNext(routes, route, start, bestNext)
         customers.remove(bestNext)
     
     return routes
+
+def c(routes):
+    return 1
+
+
+def constructRoute(sp):
+    # find top n nodes,
+    # compute route for each of them
+    # choose next node and add to route
+   
+
+    # setup
+    sp.prepare()
+    depot = sp.customers[0]
+    customers = sp.customers[1:]
+    delta = [1]*7
+
+    routes = Routes(depot)
+    ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+
+    
+    # find next best n
+    
+    #[route, start, bestNext, cost] = 
+    bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
+  
+    print(bestNexts)
+    for route, start, n, cost in bestNexts:
+        best = buildRoute(sp, delta, start, customers, depot)
+        ranked.append((best, c(best) + cost))
+
+    routes.add(ranked[0])  
+    
+
+
+    return routes
+    
+
+
+
+
+
+
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -87,16 +132,17 @@ def main(input_filepath):
 
     logger.info('Generating matrices for problem')
     
-    m = Matrices(sp.customers)
-    
     sp.prepare()
     depot = sp.customers[0]
     cs    = sp.customers[1:]
     delta = [1]*7
    
-    routes = buildRoute(sp, delta, depot, cs, depot)    
-    print("Look here, the routes: \n{}".format(routes))
-    PlotRoutes(routes)
+    constructRoute(sp)
+
+
+    #routes = buildRoute(sp, delta, depot, cs, depot)    
+    #print("Look here, the routes: \n{}".format(routes))
+    #PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

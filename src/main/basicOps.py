@@ -22,6 +22,8 @@ def isFeasible(sp, route, end):
     validTime = earliest <= latest
     capacity = sp.capacity >= end.demand + curCapacity
 
+    #print("Feasible:{} =>  {}&&{}".format(end, validTime, capacity))
+
     return (validTime and capacity)
 
 def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
@@ -58,7 +60,9 @@ def getBestNNodes(sp, delta, routes, customers, depot, size):
 def getBestNode(sp, delta, routes, customers, depot):
     return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
 
-def addNext(routes, route, end, start):
+def addNext(routes, route, start, end):
+    #print("To {}, adding {} => {}".format(routes, end, start))
+
     if(start.custNo == 0): #the depot
         routes.rList.append(Route(start, end))
     else:
@@ -67,26 +71,31 @@ def addNext(routes, route, end, start):
     return routes
 
 def buildRoute(sp, delta, start, customers, depot):
+    #print("Begin build route")    
     routes = Routes(start)
+    #print(routes)
 
     for i in range(len(customers)):
+    #for i in range(3):
         route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
-
         routes = addNext(routes, route, start, bestNext)
+        #print("Customers: {}".format(customers) )
         customers.remove(bestNext)
     
     return routes
 
+
+
+
+'''
 def c(routes):
     return 1
-
 
 def constructRoute(sp):
     # find top n nodes,
     # compute route for each of them
     # choose next node and add to route
    
-
     # setup
     sp.prepare()
     depot = sp.customers[0]
@@ -96,9 +105,7 @@ def constructRoute(sp):
     routes = Routes(depot)
     ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
 
-    
     # find next best n
-    
     #[route, start, bestNext, cost] = 
     bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
   
@@ -108,14 +115,8 @@ def constructRoute(sp):
         ranked.append((best, c(best) + cost))
 
     routes.add(ranked[0])  
-    
-
-
     return routes
-    
-
-
-
+'''    
 
 
 
@@ -134,15 +135,16 @@ def main(input_filepath):
     
     sp.prepare()
     depot = sp.customers[0]
-    cs    = sp.customers[1:]
+    customers = sp.customers[1:]
     delta = [1]*7
    
-    constructRoute(sp)
+    #constructRoute(sp)
+    routes = buildRoute(sp, delta, depot, customers, depot)
 
-
+    print(routes)
     #routes = buildRoute(sp, delta, depot, cs, depot)    
     #print("Look here, the routes: \n{}".format(routes))
-    #PlotRoutes(routes)
+    PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

@@ -37,12 +37,16 @@ class Customer():
         self.dueDate      = dueDate
         self.serviceLen   = serviceLen
 
-        self._serviceTime = 0 # will the be actual time this customer was serviced
-    
+        self._serviceTime = 0 # time this customer was serviced
+        self._arrivalTime = 0 # time route arrived at this customer
+
     def serviceTime(self):
         #print("Readytime: {}, servicelen: {}, serviceTime: {}".format(self.readyTime, self.serviceLen, self._serviceTime))
-        return max(self.readyTime + self.serviceLen, self._serviceTime)
+        return max(self._arrivalTime, self.readyTime)
 
+    def setArrivalTime(self, prev):
+        dist = distanceBetweenSelfAndPrev = 1
+        self._arrivalTime = max(prev.serviceTime() + prev.serviceLen + dist, self.readyTime)
 
     def __str__(self):
         return "ID: {:3}({})  x.({:3},{:3}) t.({:3},{:3})+{}".\

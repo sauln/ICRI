@@ -13,17 +13,26 @@ from src.visualization.visualize import PlotRoutes
 from src.main.Matrices import Matrices
 from src.main.Routes import Route, Routes
 
-def isFeasible(sp, route, end):
-    start = route[-1]
-    curCapacity = route.capacity
 
+def isNotFull(sp, route, end):
+    curCapacity = route.capacity
+    capacity = sp.capacity >= end.demand + curCapacity
+    return capacity
+
+def isValidTime(sp, route, end):
+    start = route[-1]
     earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
     latest = end.dueDate + end.serviceLen
+
+    print("Earliest: {}\t\t Latest: {}".format(earliest, latest))
     validTime = earliest <= latest
-    capacity = sp.capacity >= end.demand + curCapacity
+    return validTime
 
-    #print("Feasible:{} =>  {}&&{}".format(end, validTime, capacity))
 
+def isFeasible(sp, route, end):
+    print(route, end)
+    capacity  = isNotFull(sp, route, end)
+    validTime = isValidTime(sp, route, end)
     return (validTime and capacity)
 
 def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers

@@ -18,14 +18,20 @@ class Route():
 
     def append(self, item):
         #print(item)
+        # needs to add the serviceTime to the customer
+        if(len(self.r)>1):
+            item.setArrivalTime(self.r[-1])
         self.capacity += item.demand
+
         self.r.append(item)
 
     def __repr__(self):
         return self.__str__()
-    
+
     def __str__(self):
         return "Cap:{} => {}".format(self.capacity, self.r)
+
+
 
 class Routes():
     def __init__(self, start):

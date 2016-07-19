@@ -14,12 +14,14 @@ from src.main.Matrices import Matrices
 from src.main.Routes import Route, Routes
 
 
+""" Feasibility functions """
 def isNotFull(sp, route, end):
     curCapacity = route.capacity
     capacity = sp.capacity >= end.demand + curCapacity
     return capacity
 
 def isValidTime(sp, route, end):
+    """ For soft time windows, add looser constraints here """ 
     start = route[-1]
     earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
     latest = end.dueDate + end.serviceLen
@@ -32,7 +34,9 @@ def isFeasible(sp, route, end):
     validTime = isValidTime(sp, route, end)
     return (validTime and notFull)
 
-def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
+def heuristic(sp, delta, r, e, depot): #s:start, e:end customers
+    s = r[-1]
+
     # Infeasible nodes would be filtered before here - 
     prevDeparture = s.serviceTime() + s.serviceLen
     nextArrivalTime = prevDeparture + sp.timeMatrix[s.custNo, e.custNo]
@@ -43,22 +47,23 @@ def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
     c[1] = sp.distMatrix[s.custNo, e.custNo]
     c[2] = earliestService - prevDeparture
     c[3] = e.dueDate - (prevDeparture + sp.timeMatrix[s.custNo,e.custNo])
-    c[4] = capacity - e.demand
+    c[4] = r.capacity - e.demand
     #d[5] = max(0, c_from.service_window[0] - earliest_possible_service)
     #d[6] = max(0, c_from_service_time - c_from.service_window[1])
 
     cost = np.dot(delta, c)    
     return (s, e, cost) 
 
+""" Ranking algorithms """
 def getBestNNodes(sp, delta, routes, customers, depot, size):
     cs = sortedcontainers.SortedListWithKey(key=lambda x: x[3])
+    
     # with lots of routes, this could become unreasonable
     # is there any faster way than to look at all of them?
-
     for r in routes:
         for c in customers:
             if(isFeasible(sp, r, c)):
-                res = (r,) + heuristic(sp, delta, r[-1], c, depot, r.capacity) 
+                res = (r,) + heuristic(sp, delta, r, c, depot) 
                 cs.add(res)
 
     return cs[:size]
@@ -66,9 +71,8 @@ def getBestNNodes(sp, delta, routes, customers, depot, size):
 def getBestNode(sp, delta, routes, customers, depot):
     return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
 
+""" Route building """
 def addNext(sp, routes, route, start, end):
-    #print("To {}, adding {} => {}".format(routes, end, start))
-
     if(start.custNo == 0): #the depot
         routes.rList.append(Route(sp, start, end))
     else:
@@ -77,19 +81,14 @@ def addNext(sp, routes, route, start, end):
     return routes
 
 def buildRoute(sp, delta, start, customers, depot):
-    #print("Begin build route")    
     routes = Routes(sp, start)
-    #print(routes)
 
     for i in range(len(customers)):
-    #for i in range(3):
         route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
         routes = addNext(sp, routes, route, start, bestNext)
-        #print("Customers: {}".format(customers) )
         customers.remove(bestNext)
     
     return routes
-
 
 
 

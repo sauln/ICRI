@@ -14,8 +14,13 @@ echo Begin setup for problem $PROBLEM
 python3 src/data/make_dataset.py data/raw/$PROBLEM.txt data/interim/$PROBLEM.p
 
 # Run all tests
+echo TestMatrices.py
 python3 src/test/TestMatrices.py
+
+echo TestSolomonProblem.py
 python3 src/test/TestSolomonProblem.py
+
+echo TestBasicOps.py
 python3 src/test/TestBasicOps.py
 #python3 src/test/TestCostFunction.py
 

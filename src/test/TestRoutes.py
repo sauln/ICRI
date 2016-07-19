@@ -28,6 +28,23 @@ class TestRoute(unittest.TestCase):
         '''
 
 
+    def testAppendOnlyIfAble(self):
+        print("Only append the next node if route is not at maximum capacity")
+
+
+    def testAppendIncreasesCapacity(self):
+        print("When you append to the route, it increments the capacity")
+
+    def testRemoveDecrementsCapacity(self):
+        print("I don't think I ever remove, but if so, it should decrement the capacity count")
+
+    def testConstructorAddsAllElements(self):
+        print("The constructor is atypical. It should behave as intended")
+
+    def testSetItem(self):
+        print("I think the logic in __setitem__ has been supplanted by the append method")
+
+
 class TestRoutes(unittest.TestCase):
     def setUp(self):
         pass

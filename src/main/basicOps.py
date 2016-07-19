@@ -24,7 +24,7 @@ def isValidTime(sp, route, end):
     earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
     latest = end.dueDate + end.serviceLen
 
-    print("Earliest: {}\t\t Latest: {}".format(earliest, latest))
+    #print("Earliest: {}\t\t Latest: {}".format(earliest, latest))
     validTime = earliest <= latest
     return validTime
 

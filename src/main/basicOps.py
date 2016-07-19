@@ -69,11 +69,11 @@ def getBestNNodes(sp, delta, routes, customers, depot, size):
 def getBestNode(sp, delta, routes, customers, depot):
     return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
 
-def addNext(routes, route, start, end):
+def addNext(sp, routes, route, start, end):
     #print("To {}, adding {} => {}".format(routes, end, start))
 
     if(start.custNo == 0): #the depot
-        routes.rList.append(Route(start, end))
+        routes.rList.append(Route(sp, start, end))
     else:
         route.append(end)
 
@@ -81,13 +81,13 @@ def addNext(routes, route, start, end):
 
 def buildRoute(sp, delta, start, customers, depot):
     #print("Begin build route")    
-    routes = Routes(start)
+    routes = Routes(sp, start)
     #print(routes)
 
     for i in range(len(customers)):
     #for i in range(3):
         route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
-        routes = addNext(routes, route, start, bestNext)
+        routes = addNext(sp, routes, route, start, bestNext)
         #print("Customers: {}".format(customers) )
         customers.remove(bestNext)
     

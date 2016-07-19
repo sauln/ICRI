@@ -29,10 +29,10 @@ class TestIsFeasible(unittest.TestCase):
         
         self.sp.customers = [earlyC, lateC, middleC]
         self.sp.prepare()
-        r = Route(earlyC, lateC)
+        r = Route(self.sp, earlyC, lateC)
 
     def testNotFull(self):
-        r = Route(self.middleC)
+        r = Route(self.sp, self.middleC)
         
         t = isNotFull(self.sp, r, self.lateC)
         self.assertTrue(t, "There is plenty of room left")
@@ -43,11 +43,11 @@ class TestIsFeasible(unittest.TestCase):
 
     def testTimeAfter(self):
         #isFeasible(sp, route, end)
-        r = Route(self.middleC)
+        r = Route(self.sp, self.middleC)
         f = isValidTime(self.sp, r, self.lateC)
         self.assertTrue(f, "Later time is valid after an early time")
         
-        r = Route(self.lateC)
+        r = Route(self.sp, self.lateC)
         f = isValidTime(self.sp, r, self.earlyC)
         self.assertFalse(f, "Early time is not valid after a late time")
 

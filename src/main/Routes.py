@@ -5,7 +5,6 @@ class Route():
         assert type(parent) == SolomonProblem, "Need to supply SolomonProblem to Route init"
         self.maxCapacity = parent.capacity
        
-        
         self.capacity = 0
         self.r = []
         for s in seed:
@@ -15,17 +14,20 @@ class Route():
         return self.r[index]
 
     def __setitem__(self, index, value):
-        #print("adding {} at {}.  capacity {} -> {}".format(value, index, self.capacity, self.capacity+value.demand))
-        
         assert type(value) == Customer, "Cannot add type {} to route".format(type(value))
+       
+        # if we are replacing, then fix the capacity
         a = self.r[index]
-        #if(a):
-        #    self.capacity -= a.demand
+        if(a):
+            self.capacity -= a.demand
+        
         self.r[index] = value
-        #self.capacity += value.demand
+        self.capacity += value.demand
+    
+    def __len__(self):
+        return len(self.r)
 
     def append(self, item):
-        #print(item)
         # needs to add the serviceTime to the customer
         assert self.capacity + item.demand <= self.maxCapacity, \
             "Not enough room for this node"
@@ -42,11 +44,9 @@ class Route():
     def __str__(self):
         return "Cap:{} => {}".format(self.capacity, self.r)
 
-
-
 class Routes():
-    def __init__(self, start):
-        r = Route(start)
+    def __init__(self, sp, start):
+        r = Route(sp, start)
         self.rList = [r] 
 
     def cost(self):

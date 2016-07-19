@@ -6,27 +6,11 @@ from src.main.Routes import Route, Routes
 
 class TestRoute(unittest.TestCase):
     def setUp(self):
-        
-        # all of this logic needs to be encoded in tests 
-        '''
-        preface = "Number of stops: {}\nCapcity: {}".format(len(self.r), self.capacity)
-
-        route = ""
-        total = 0
-        for c in self.r:
-            route += "\n custNo {}=>arrival time:{}\n\t service len:{}\n\t demand: {}"\
-                .format(c.custNo, c._arrivalTime, c.serviceLen, c.demand)
-            total += c.demand
-            route += "\t\tCurrent capcity: {}".format(total)
-
-
-        return "Detailed description of route:" + preface + route
-        '''
         self.sp = SolomonProblem("test", 5, 100, None)
         
-        earlyC = Customer(0, 0, 0, 20, 0, 10, 3)
-        lateC = Customer(1, 5, 5, 20, 99, 200, 4)
-        middleC = Customer(2, 10,10, 20, 45,55, 9)
+        earlyC  = Customer(0, 0,  0,  5, 0, 10, 3)
+        lateC   = Customer(1, 5,  5, 35, 99, 200, 4)
+        middleC = Customer(2, 10,10, 60, 45,55, 9)
 
         self.earlyC, self.lateC, self.middleC = earlyC, lateC, middleC 
         
@@ -53,15 +37,19 @@ class TestRoute(unittest.TestCase):
         self.assertRaises(AssertionError, r.append, self.lateC)
         self.assertRaises(AssertionError, Route, self.sp, self.lateC, self.middleC) 
 
-    def testRemoveDecrementsCapacity(self):
-        print("I don't think I ever remove, but if so, it should decrement the capacity count")
-
     def testConstructorAddsAllElements(self):
-        print("The constructor is atypical. It should behave as intended")
+        r = Route(self.sp, self.earlyC, self.middleC, self.lateC)
+        self.assertEqual(len(r), 3)
+        r = Route(self.sp, self.earlyC, self.earlyC)
+        self.assertEqual(len(r), 2)
 
-    def testSetItem(self):
-        print("I think the logic in __setitem__ has been supplanted by the append method")
-
+    def testFixCapacityOnReplace(self):
+        r = Route(self.sp, self.earlyC, self.middleC)
+        self.assertEqual(r.capacity, self.earlyC.demand + self.middleC.demand)
+        r[0] = self.lateC
+        self.assertEqual(r.capacity, self.lateC.demand + self.middleC.demand)
+        r[1] = self.earlyC
+        self.assertEqual(r.capacity, self.lateC.demand + self.earlyC.demand)
 
 class TestRoutes(unittest.TestCase):
     def setUp(self):

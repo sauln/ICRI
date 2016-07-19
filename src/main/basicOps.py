@@ -24,16 +24,13 @@ def isValidTime(sp, route, end):
     earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
     latest = end.dueDate + end.serviceLen
 
-    #print("Earliest: {}\t\t Latest: {}".format(earliest, latest))
     validTime = earliest <= latest
     return validTime
 
-
 def isFeasible(sp, route, end):
-    print(route, end)
-    capacity  = isNotFull(sp, route, end)
+    notFull  = isNotFull(sp, route, end)
     validTime = isValidTime(sp, route, end)
-    return (validTime and capacity)
+    return (validTime and notFull)
 
 def heuristic(sp, delta, s, e, depot, capacity): #s:start, e:end customers
     # Infeasible nodes would be filtered before here - 

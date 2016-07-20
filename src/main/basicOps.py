@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import click
+import time
 import logging
 from dotenv import find_dotenv, load_dotenv
 
@@ -121,6 +122,18 @@ def confirmSolution(sp, routes):
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
 
+def rollOut(sp, delta, routes, customers, depot):
+    bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
+
+    # these need to be objects
+    ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+    for route, start, end, cost in bestNexts:
+        best = buildSolution(sp, delta, start, customers, depot)
+        solution = (best, best.cost() + cost, route, start, end)
+        ranked.add(solution)
+
+    b, c, r, s, e = ranked[0]
+    return r, s, e
 
 def constructRoute(sp):
     # find top n nodes,
@@ -138,28 +151,12 @@ def constructRoute(sp):
     # find next best n
     #[route, start, bestNext, cost] =
 
-    for i in range(2):
-        
+    startTime = time.clock()
 
-
-        bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
-        #print("\nBest next nodes: {}".format(bestNexts))
-      
-        ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
-        for route, start, end, cost in bestNexts:
-            #print("Customers after:(len{}) {}".format(len(customers), customers))
-            #print("Start: {}, Depot: {}".format(start, depot))
-            
-            best = buildSolution(sp, delta, start, customers, depot)
-            ranked.append((best, best.cost() + cost, route, start, end))
-
-        
-
-
-
-        #print("Best solution: {}".format(ranked[0]))
-        b, c, r, s, e = ranked[0]
-        #print("Best routes available: {}".format(b))
+    for i in range(len(customers)-1):
+        print("begin {} at time {}".format(i, time.clock()-startTime))
+        startTime = time.clock()
+        r, s, e = rollOut(sp, delta, routes, customers, depot) 
         routes = addNext(sp, routes, r, s, e)
         customers.remove(e)
 
@@ -189,8 +186,8 @@ def main(input_filepath):
     
     routes = constructRoute(sp)
     #routes = buildSolution(sp, delta, depot, customers, depot)
-    confirmSolution(sp, routes)
-    #PlotRoutes(routes)
+    #confirmSolution(sp, routes)
+    PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

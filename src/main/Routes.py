@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.main.SolomonProblem import Customer, SolomonProblem
 
 class Route():
@@ -9,6 +11,13 @@ class Route():
         self.r = []
         for s in seed:
             self.append(s)
+
+    def travelDistance(self):
+        total = 0
+        for i in range(len(self.r)-1):
+            s, e = self.r[i], self.r[i+1]
+            total += np.sqrt( (s.xcoord - e.xcoord)**2 + (s.ycoord - e.ycoord)**2)
+        return total
 
     def __getitem__(self, index):
         return self.r[index]
@@ -52,13 +61,16 @@ class Route():
         return "len:{} => {}".format(len(self.r), self.r)
 
 class Routes():
-    def __init__(self, sp, start):
-        r = Route(sp, start)
+    def __init__(self, sp, depot, start = None):
+        r = Route(sp, depot)
         self.rList = [r] 
+        
+        if start:
+            self.rList.append(Route(sp, depot, start))
 
     def cost(self):
-        # cost function of route set
-        return 1
+        total = sum(r.travelDistance() for r in self.rList)
+        return total
 
     def pop(self, index = -1):
         return self.rList.pop(index) 

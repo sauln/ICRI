@@ -29,12 +29,21 @@ class Route():
 
     def append(self, item):
         # needs to add the serviceTime to the customer
-        assert self.capacity + item.demand <= self.maxCapacity, \
-            "Not enough room for this node"
+        #print("\nThis time window: ({}, {})".format(item.readyTime, item.dueDate))
+        #print("\tprevious service time: {}".format(self.r[-1].serviceTime()))
+        #print("\tnew service time {}".format(item.serviceTime()))
         
-        if(len(self.r)>1):
+        if(len(self.r)>=1):
             item.setArrivalTime(self.r[-1])
         
+        assert self.capacity + item.demand <= self.maxCapacity, \
+            "Not enough room for this node"
+        assert item.readyTime <= item.serviceTime() <= item.dueDate + item.serviceLen, \
+            "{} <= {} <= {}"\
+            .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
+
+
+
         self.capacity += item.demand
         self.r.append(item)
 

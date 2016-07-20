@@ -21,10 +21,14 @@ def isNotFull(sp, route, end):
     return capacity
 
 def isValidTime(sp, route, end):
-    """ For soft time windows, add looser constraints here """ 
+    """ For soft time windows, add losen constraints here """ 
     start = route[-1]
-    earliest = start.serviceTime() + sp.distMatrix[start.custNo, end.custNo]  
-    latest = end.dueDate + end.serviceLen
+
+    # does the entire operation need to be done before the due date?
+    travelTime = sp.timeMatrix[start.custNo, end.custNo]
+
+    earliest = start.serviceTime() + travelTime #+ end.serviceLen 
+    latest = end.dueDate
 
     validTime = earliest <= latest
     return validTime
@@ -91,6 +95,57 @@ def buildRoute(sp, delta, start, customers, depot):
     return routes
 
 
+class Validator():
+    def __init__(self, sp, routes):
+        self.sp = sp
+        self.routes = routes
+
+    print("Build a timeline, recalculate the arrival times")
+
+    def timelineRespected(self):
+        print("Begin confirming timeline works")
+        r = self.routes[1]
+
+        for i in r:
+            assert i.readyTime <= i.serviceTime() <= i.dueDate + i.serviceLen, \
+                "{} <= {} <= {}"\
+                .format(i.readyTime, i.serviceTime(), i.dueDate + i.serviceLen)
+        
+
+        #for i in range(len(r) - 1):
+        #    assert r[i].readyTime <= r[i+1].readyTime
+            
+
+    
+
+
+
+    def capacityRespected(self):
+        success = 1
+        for route in self.routes:
+            s = sum(c.demand for c in route)
+            if(s >= self.sp.capacity):
+                success = 0
+                #assert s <= sp.capacity
+
+        return success
+
+
+    def validate(self):
+        return self.capacityRespected() and self.timelineRespected() 
+
+
+
+
+
+def confirmSolution(sp, routes):
+
+    v = Validator(sp, routes).validate()
+
+   
+
+
+
 
 '''
 def c(routes):
@@ -145,11 +200,8 @@ def main(input_filepath):
    
     #constructRoute(sp)
     routes = buildRoute(sp, delta, depot, customers, depot)
-
-    print(routes)
-    #routes = buildRoute(sp, delta, depot, cs, depot)    
-    #print("Look here, the routes: \n{}".format(routes))
-    PlotRoutes(routes)
+    confirmSolution(sp, routes)
+    #PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

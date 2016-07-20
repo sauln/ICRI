@@ -1,5 +1,5 @@
 from src.main.Matrices import Matrices
-
+import numpy as np
 
 class SolomonProblem():
     def __init__(self, name, numVeh, capacity, customers):
@@ -41,16 +41,24 @@ class Customer():
         self._arrivalTime = 0 # time route arrived at this customer
 
     def serviceTime(self):
-        #print("Readytime: {}, servicelen: {}, serviceTime: {}".format(self.readyTime, self.serviceLen, self._serviceTime))
+        #the actual time a customer was serviced
         return max(self._arrivalTime, self.readyTime)
 
     def setArrivalTime(self, prev):
-        dist = distanceBetweenSelfAndPrev = 1
-        self._arrivalTime = max(prev.serviceTime() + prev.serviceLen + dist, self.readyTime)
+        # use the actual timeTravel matrix 
+        travelTime = np.sqrt(\
+            (prev.xcoord - self.xcoord)**2 + (prev.ycoord - self.ycoord)**2)
+
+        self._arrivalTime = prev.serviceTime() + prev.serviceLen + travelTime
+        
+        #print("In setArrivalTime:\np.serviceT:{}, len:{}, travel{}, ready:{}".format(prev.serviceTime(), prev.serviceLen, travelTime, self.readyTime))
+        
+        #print("Arrival time: {:3g} = {:3g}+{:3g}+{:3g}".format(self._arrivalTime, prev.serviceTime(), prev.serviceLen, travelTime))
+
 
     def __str__(self):
-        return "ID: {:3}({})  x.({:3},{:3}) t.({:3},{:3})+{}".\
-            format(self.custNo, self.demand, self.xcoord, self.ycoord, \
+        return "ID: {:3}({}) t.({:3},{:3})+{}".\
+            format(self.custNo, self.demand, \
                    self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):

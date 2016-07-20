@@ -28,21 +28,18 @@ class Route():
         return len(self.r)
 
     def append(self, item):
-        # needs to add the serviceTime to the customer
-        #print("\nThis time window: ({}, {})".format(item.readyTime, item.dueDate))
-        #print("\tprevious service time: {}".format(self.r[-1].serviceTime()))
-        #print("\tnew service time {}".format(item.serviceTime()))
+        prev =  self.r[-1] if len(self.r) >= 1 else item
+        item.setArrivalTime(prev)
         
-        if(len(self.r)>=1):
-            item.setArrivalTime(self.r[-1])
-        
+        # ensure we're not adding a bad node
         assert self.capacity + item.demand <= self.maxCapacity, \
             "Not enough room for this node"
-        
-        if(item.custNo != 0):
-            assert item.readyTime <= item.serviceTime() <= item.dueDate + item.serviceLen, \
-                "{} <= {} <= {}"\
-                .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
+       
+        # ensure serviceTime is within the correct window, except for depot
+        #if(item.custNo != 0):
+        assert item.readyTime <= item.serviceTime() <= item.dueDate + item.serviceLen,\
+            "{} <= {} <= {}"\
+            .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
 
 
         self.capacity += item.demand
@@ -52,7 +49,7 @@ class Route():
         return self.__str__()
 
     def __str__(self):
-        return "Cap:{} => {}".format(self.capacity, self.r)
+        return "len:{} => {}".format(len(self.r), self.r)
 
 class Routes():
     def __init__(self, sp, start):
@@ -75,6 +72,10 @@ class Routes():
 
     def __str__(self):
         return "Number of routes: {}\n{}".format(len(self.rList), self.rList)
+    
+    def __repr__(self):
+        return self.__str__()
+
 
     def __len__(self):
         return len(self.rList)

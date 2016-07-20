@@ -95,18 +95,18 @@ class TestGetNodes(unittest.TestCase):
     def testNNodesIsRightSize(self):
         nextNodes = getBestNNodes(self.sp, self.delta, self.routes, \
             self.sp.customers, self.middleC, 5)
-
         self.assertEqual(len(nextNodes), 5)
 
         nextNodes = getBestNNodes(self.sp, self.delta, self.routes, \
             self.sp.customers, self.middleC, 1)
-
         self.assertEqual(len(nextNodes), 1)
-
+        
         nextNodes = getBestNNodes(self.sp, self.delta, self.routes, \
             self.sp.customers, self.middleC, 99)
-
-        self.assertEqual(len(nextNodes), len(self.sp.customers))
+        feasibleNodes = [1 for c in self.sp.customers if \
+            isFeasible(self.sp, self.routes[0], c)]
+        self.assertEqual(len(nextNodes), len(feasibleNodes), \
+            "nextNoodes: {}\ncustomers:{}".format(nextNodes, self.sp.customers))
 
 
 class TestIsFeasible(unittest.TestCase):

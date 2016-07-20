@@ -26,7 +26,6 @@ def isValidTime(sp, route, end):
 
     # does the entire operation need to be done before the due date?
     travelTime = sp.timeMatrix[start.custNo, end.custNo]
-
     earliest = start.serviceTime() + travelTime #+ end.serviceLen 
     latest = end.dueDate
 
@@ -37,6 +36,8 @@ def isFeasible(sp, route, end):
     notFull  = isNotFull(sp, route, end)
     validTime = isValidTime(sp, route, end)
     return (validTime and notFull)
+
+""" Base for H_g  """
 
 def heuristic(sp, delta, r, e, depot): #s:start, e:end customers
     s = r[-1]
@@ -59,6 +60,9 @@ def heuristic(sp, delta, r, e, depot): #s:start, e:end customers
     return (s, e, cost) 
 
 """ Ranking algorithms """
+def getBestNode(sp, delta, routes, customers, depot):
+    return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
+
 def getBestNNodes(sp, delta, routes, customers, depot, size):
     cs = sortedcontainers.SortedListWithKey(key=lambda x: x[3])
     
@@ -69,11 +73,14 @@ def getBestNNodes(sp, delta, routes, customers, depot, size):
             if(isFeasible(sp, r, c)):
                 res = (r,) + heuristic(sp, delta, r, c, depot) 
                 cs.add(res)
+   
+    if(len(cs) == 0):
+        print("In the case of zero: \n\tcustomers: {}\n\troutes: {}\n\tdepot: {}"\
+            .format(customers, routes, depot))
+
+    #print("In getBestNNodes: {}".format(len(cs)))
 
     return cs[:size]
-
-def getBestNode(sp, delta, routes, customers, depot):
-    return getBestNNodes(sp, delta, routes, customers, depot, 1)[0]
 
 """ Route building """
 def addNext(sp, routes, route, start, end):
@@ -84,16 +91,7 @@ def addNext(sp, routes, route, start, end):
 
     return routes
 
-def buildRoute(sp, delta, start, customers, depot):
-    routes = Routes(sp, start)
-
-    for i in range(len(customers)):
-        route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
-        routes = addNext(sp, routes, route, start, bestNext)
-        customers.remove(bestNext)
-   
-    # add depot to the end of each route
-    
+def finishRoutes(routes, depot):
     if(len(routes[0]) == 1): # remove our place holder depot route
         routes.pop(0)
 
@@ -102,17 +100,27 @@ def buildRoute(sp, delta, start, customers, depot):
 
     return routes
 
-def confirmSolution(sp, routes):
+def buildSolution(sp, delta, start, customers, depot):
+    customers = list(customers)
+    routes = Routes(sp, depot)
+    if start != depot: routes.rList.append(Route(sp, depot, start))
+    if start in customers: customers.remove(start)
 
+
+    for i in range(len(customers)):
+        route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
+        routes = addNext(sp, routes, route, start, bestNext)
+        customers.remove(bestNext)
+   
+    return finishRoutes(routes, depot)
+
+
+
+def confirmSolution(sp, routes):
     v = Validator(sp, routes).validate()
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
-   
 
-
-'''
-def c(routes):
-    return 1
 
 def constructRoute(sp):
     # find top n nodes,
@@ -125,21 +133,39 @@ def constructRoute(sp):
     customers = sp.customers[1:]
     delta = [1]*7
 
-    routes = Routes(depot)
-    ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+    routes = Routes(sp, depot)
 
     # find next best n
-    #[route, start, bestNext, cost] = 
-    bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
-  
-    print(bestNexts)
-    for route, start, n, cost in bestNexts:
-        best = buildRoute(sp, delta, start, customers, depot)
-        ranked.append((best, c(best) + cost))
+    #[route, start, bestNext, cost] =
 
-    routes.add(ranked[0])  
+    for i in range(2):
+        
+
+
+        bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
+        #print("\nBest next nodes: {}".format(bestNexts))
+      
+        ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+        for route, start, end, cost in bestNexts:
+            #print("Customers after:(len{}) {}".format(len(customers), customers))
+            #print("Start: {}, Depot: {}".format(start, depot))
+            
+            best = buildSolution(sp, delta, start, customers, depot)
+            ranked.append((best, best.cost() + cost, route, start, end))
+
+        
+
+
+
+        #print("Best solution: {}".format(ranked[0]))
+        b, c, r, s, e = ranked[0]
+        #print("Best routes available: {}".format(b))
+        routes = addNext(sp, routes, r, s, e)
+        customers.remove(e)
+
+
+        #print("Routes at end of {}th iteration: {}".format(i, routes))
     return routes
-'''    
 
 
 
@@ -160,9 +186,9 @@ def main(input_filepath):
     depot = sp.customers[0]
     customers = sp.customers[1:]
     delta = [1]*7
-    delta[0] = 1 
-    #constructRoute(sp)
-    routes = buildRoute(sp, delta, depot, customers, depot)
+    
+    routes = constructRoute(sp)
+    #routes = buildSolution(sp, delta, depot, customers, depot)
     confirmSolution(sp, routes)
     #PlotRoutes(routes)
 

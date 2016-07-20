@@ -10,7 +10,7 @@ class TestRoute(unittest.TestCase):
         
         earlyC  = Customer(0, 0,  0,  5, 0, 10, 3)
         lateC   = Customer(1, 5,  5, 35, 99, 200, 4)
-        middleC = Customer(2, 10,10, 60, 45,55, 9)
+        middleC = Customer(2, 10,10, 60, 45,120, 9)
 
         self.earlyC, self.lateC, self.middleC = earlyC, lateC, middleC 
         

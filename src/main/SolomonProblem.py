@@ -41,11 +41,13 @@ class Customer():
         self._arrivalTime = 0 # time route arrived at this customer
 
     def serviceTime(self):
-        #the actual time a customer was serviced
-        return max(self._arrivalTime, self.readyTime)
+        #the actual time a customer was serviced if not depot
+        return (max(self._arrivalTime, self.readyTime), 0)[self.custNo == 0]
 
     def setArrivalTime(self, prev):
-        # use the actual timeTravel matrix 
+        
+        
+        # use the actual timeTravel matrix
         travelTime = np.sqrt(\
             (prev.xcoord - self.xcoord)**2 + (prev.ycoord - self.ycoord)**2)
 
@@ -57,7 +59,7 @@ class Customer():
                    self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):
-        return "{}".format(self.custNo)
+        return "c{}".format(self.custNo)
 
     def __eq__(self, other):
         return self.custNo == other.custNo and \

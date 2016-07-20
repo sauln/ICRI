@@ -50,11 +50,6 @@ class Customer():
             (prev.xcoord - self.xcoord)**2 + (prev.ycoord - self.ycoord)**2)
 
         self._arrivalTime = prev.serviceTime() + prev.serviceLen + travelTime
-        
-        #print("In setArrivalTime:\np.serviceT:{}, len:{}, travel{}, ready:{}".format(prev.serviceTime(), prev.serviceLen, travelTime, self.readyTime))
-        
-        #print("Arrival time: {:3g} = {:3g}+{:3g}+{:3g}".format(self._arrivalTime, prev.serviceTime(), prev.serviceLen, travelTime))
-
 
     def __str__(self):
         return "ID: {:3}({}) t.({:3},{:3})+{}".\

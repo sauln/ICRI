@@ -12,7 +12,7 @@ import numpy as np
 from src.visualization.visualize import PlotRoutes 
 from src.main.Matrices import Matrices
 from src.main.Routes import Route, Routes
-
+from src.main.Validator import Validator
 
 """ Feasibility functions """
 def isNotFull(sp, route, end):
@@ -91,60 +91,23 @@ def buildRoute(sp, delta, start, customers, depot):
         route, start, bestNext, cost = getBestNode(sp, delta, routes, customers, depot)
         routes = addNext(sp, routes, route, start, bestNext)
         customers.remove(bestNext)
+   
+    # add depot to the end of each route
     
+    if(len(routes[0]) == 1): # remove our place holder depot route
+        routes.pop(0)
+
+    for r in routes: # add depot to end of each route 
+        r.append(depot)
+
     return routes
-
-
-class Validator():
-    def __init__(self, sp, routes):
-        self.sp = sp
-        self.routes = routes
-
-    print("Build a timeline, recalculate the arrival times")
-
-    def timelineRespected(self):
-        print("Begin confirming timeline works")
-        r = self.routes[1]
-
-        for i in r:
-            assert i.readyTime <= i.serviceTime() <= i.dueDate + i.serviceLen, \
-                "{} <= {} <= {}"\
-                .format(i.readyTime, i.serviceTime(), i.dueDate + i.serviceLen)
-        
-
-        #for i in range(len(r) - 1):
-        #    assert r[i].readyTime <= r[i+1].readyTime
-            
-
-    
-
-
-
-    def capacityRespected(self):
-        success = 1
-        for route in self.routes:
-            s = sum(c.demand for c in route)
-            if(s >= self.sp.capacity):
-                success = 0
-                #assert s <= sp.capacity
-
-        return success
-
-
-    def validate(self):
-        return self.capacityRespected() and self.timelineRespected() 
-
-
-
-
 
 def confirmSolution(sp, routes):
 
     v = Validator(sp, routes).validate()
-
+    print("There are {} vehicles with {} allowed"\
+        .format(len(routes), sp.numVehicles))
    
-
-
 
 
 '''
@@ -197,7 +160,7 @@ def main(input_filepath):
     depot = sp.customers[0]
     customers = sp.customers[1:]
     delta = [1]*7
-   
+    delta[0] = 1 
     #constructRoute(sp)
     routes = buildRoute(sp, delta, depot, customers, depot)
     confirmSolution(sp, routes)

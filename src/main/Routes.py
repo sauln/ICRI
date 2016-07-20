@@ -38,10 +38,11 @@ class Route():
         
         assert self.capacity + item.demand <= self.maxCapacity, \
             "Not enough room for this node"
-        assert item.readyTime <= item.serviceTime() <= item.dueDate + item.serviceLen, \
-            "{} <= {} <= {}"\
-            .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
-
+        
+        if(item.custNo != 0):
+            assert item.readyTime <= item.serviceTime() <= item.dueDate + item.serviceLen, \
+                "{} <= {} <= {}"\
+                .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
 
 
         self.capacity += item.demand
@@ -62,6 +63,9 @@ class Routes():
         # cost function of route set
         return 1
 
+    def pop(self, index = -1):
+        return self.rList.pop(index) 
+
     def __getitem__(self, index):
         return self.rList[index]
 
@@ -71,4 +75,6 @@ class Routes():
 
     def __str__(self):
         return "Number of routes: {}\n{}".format(len(self.rList), self.rList)
-    
+
+    def __len__(self):
+        return len(self.rList)

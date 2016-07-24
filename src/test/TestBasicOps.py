@@ -1,9 +1,12 @@
 import unittest
 import pickle
 
+from src.main.SolomonProblem import SolomonProblem
+from src.main.Customer import Customer
+from src.main.Routes import Routes
+from src.main.Vehicle import Vehicle
+
 from src.main.basicOps import *
-from src.main.Routes import Routes, Route
-from src.main.SolomonProblem import SolomonProblem, Customer
 
 class TestCostFunctions(unittest.TestCase):
     def setUp(self):

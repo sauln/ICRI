@@ -3,7 +3,8 @@ import pickle
 import copy
 
 from src.main.Matrices import Matrices
-from src.main.SolomonProblem import SolomonProblem, Customer
+from src.main.SolomonProblem import SolomonProblem
+from src.main.Customer import Customer
 
 class TestSolomonProblem(unittest.TestCase):
     def setUp(self):

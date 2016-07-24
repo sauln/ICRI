@@ -1,8 +1,10 @@
 import unittest
 import pickle
 
-from src.main.SolomonProblem import SolomonProblem, Customer
-from src.main.Routes import Route, Routes
+from src.main.SolomonProblem import SolomonProblem
+from src.main.Customer import Customer
+from src.main.Routes import Routes
+from src.main.Vehicle import Vehicle
 
 class TestRoute(unittest.TestCase):
     def setUp(self):

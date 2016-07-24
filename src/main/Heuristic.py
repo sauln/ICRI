@@ -27,14 +27,18 @@ class Heuristic():
 
         #for i in range(len(customers)):
         for i in range(3):
+            print("Iteration {}".format(i))
             vehicle, bestNext, cost = self.getBestNode()
-            print(vehicle, bestNext)
+            print("Best v/c: {}:{} |".format(vehicle, bestNext))
             self.routes.addNext(vehicle, bestNext)
             #routes = addNext(veh, start, bestNext)
-            print(self.routes)
+            print("State of routes at end of iteration: {}\n\n".format(self.routes))
             self.customers.remove(bestNext)
-       
-        return self.routes.finish() 
+        
+        self.routes.finish()
+
+
+        return self.routes 
 
     def getBestNode(self):
         return self.getBestNNodes(1)[0]
@@ -46,17 +50,15 @@ class Heuristic():
         # with lots of routes, this could become unreasonable
         # is there any faster way than to look at all of them?
 
-
-        print(self.routes)
         for vehicle in self.routes:
             for c in self.customers:
                 if(vehicle.isFeasible(c)):
                     res = (vehicle, c, self.heuristic(vehicle, c))  
                     cs.add(res)
        
-        if(len(cs) == 0):
-            print("In the case of zero: \n\tcustomers: {}\n\troutes: {}\n\tdepot: {}"\
-                .format(customers, routes, depot))
+        #if(len(cs) == 0):
+        #    print("In the case of zero: \n\tcustomers: {}\n\troutes: {}\n\tdepot: {}"\
+        #        .format(customers, routes, depot))
 
         #print("In getBestNNodes: {}".format(len(cs)))
 
@@ -64,11 +66,12 @@ class Heuristic():
 
 
     def heuristic(self, vehicle, end): #s:start, e:end customers
-        s = vehicle[-1]
+        s = vehicle.lastCustomer()
         e = end
 
-        # Infeasible nodes would be filtered before here - 
-        prevDeparture = s.serviceTime() + s.serviceLen
+        # Infeasible nodes would be filtered before here -
+
+        prevDeparture = vehicle.departureTime()
         nextArrivalTime = prevDeparture + self.sp.timeMatrix[s.custNo, e.custNo]
         earliestService = max(nextArrivalTime, e.readyTime)
 

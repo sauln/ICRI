@@ -3,21 +3,20 @@ class Vehicle():
     curCapacity = 0
     distTravel = 0
     customers = []
+    _lastServiceTime = 0
+    _lastArrivalTime = 0
+
 
     def __init__(self, sp, *seed):
 
         print("Init vehicle: seed: {}".format(seed))
         for s in seed:
+            print(self, s)
             self.customers.append(s)
         self.depot = seed[0]
         self.maxCapacity = sp.capacity
         self.timeMatrix = sp.timeMatrix
 
-    def lastCustomer(self):
-        return self.customers[-1] 
-
-    def lastServiceTime(self):
-        return self.customers[-1].serviceTime()
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
@@ -39,9 +38,7 @@ class Vehicle():
         assert type(value) == Customer, "Cannot add type {} to route".format(type(value))
        
         # if we are replacing, then fix the capacity
-        a = self.customers[index]
-        if(a):
-            self.curCapacity -= a.demand
+        assert self.customers[index] == None
         
         self.customers[index] = value
         self.curCapacity += value.demand
@@ -54,18 +51,26 @@ class Vehicle():
     #    #the actual time a customer was serviced if not depot
     #    return (max(self._arrivalTime, self.readyTime), 0)[self.custNo == 0]
 
+    def lastCustomer(self):
+        return self.customers[-1] 
 
-    def nextServiceTime(self, customer)
-        return 
+    def lastServiceTime(self):
+        return self._lastServiceTime 
+
+    def departureTime(self):
+        return self._lastServiceTime + self.lastCustomer().serviceLen
+
+    def nextServiceTime(self, customer):
+        return 0 
 
     def setLastServiceTime(self, customer):
         self._lastServiceTime = max(self._lastArrivalTime, customer.readyTime)
 
-    def setArrivalTime(self, customer):
+    def setLastArrivalTime(self, customer):
         # use the actual timeTravel matrix
         last = self.customers[-1]
 
-        travelTime = self.timeMatrix(last.custNo, customer.custNo)
+        travelTime = self.timeMatrix[last.custNo, customer.custNo]
         
         self._lastArrivalTime = self._lastServiceTime + last.serviceLen + travelTime
 
@@ -79,7 +84,7 @@ class Vehicle():
         #    item._arrivalTime = 0
         
         # ensure we're not adding a bad node
-        assert self.capacity + item.demand <= self.maxCapacity, \
+        assert self.curCapacity + item.demand <= self.maxCapacity, \
             "Not enough room for this node"
        
         # ensure serviceTime is within the correct window, except for depot
@@ -98,27 +103,11 @@ class Vehicle():
         self.curCapacity += item.demand
         self.customers.append(item)
 
-
-class Route():
-    def __init__(self, parent, *seed):
-        assert type(parent) == SolomonProblem, "Need to supply SolomonProblem to Route init"
-        self.maxCapacity = parent.capacity
-       
-        self.capacity = 0
-        self.r = []
-        for s in seed:
-            self.append(s)
-
-    def travelDistance(self):
-        total = 0
-        for i in range(len(self.r)-1):
-            s, e = self.r[i], self.r[i+1]
-            total += np.sqrt( (s.xcoord - e.xcoord)**2 + (s.ycoord - e.ycoord)**2)
-        return total
-
+        print("In append: {}".format(self.customers))
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return "len:{} => {}".format(len(self.r), self.r)
+        return "Serviced:{} => {}".format(len(self.customers), self.customers)
+

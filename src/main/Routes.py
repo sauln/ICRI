@@ -6,10 +6,14 @@ from src.main.Vehicle import Vehicle
 
 
 class Routes():
-    def __init__(self, sp, start, depot):
+    def __init__(self, sp, start, depot = None):
         self.sp = sp
+
+        if(not depot):
+            self.depot = start
+        else:
+            self.depot = depot
         v = Vehicle(sp, start)
-        self.depot = depot
         #r = Route(sp, depot)
         self.vList = [v]
         

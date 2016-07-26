@@ -1,3 +1,5 @@
+from src.main.Customer import Customer
+
 class Vehicle():
     def __init__(self, sp, *seed):
         self.depot = seed[0]
@@ -18,9 +20,7 @@ class Vehicle():
     def isValidTime(self, end):
         # does the entire operation need to be done before the due date?
         travelTime = self.timeMatrix[self.lastCustomer().custNo, end.custNo]
-        earliest = self.lastServiceTime() + travelTime #+ end.serviceLen 
-        latest = end.dueDate
-        return earliest <= latest
+        return self.lastServiceTime() + travelTime <= end.dueDate
 
     def isFeasible(self, end):
         return (self.isValidTime(end) and self.isNotFull(end))
@@ -32,7 +32,7 @@ class Vehicle():
         assert type(value) == Customer, "Cannot add type {} to route".format(type(value))
        
         # if we are replacing, then fix the capacity
-        assert self.customers[index] == None
+        assert self.customers[index] == None, "the customer at {} is {}".format(index, self.customers[index])
 
         self.customers[index] = value
         self.curCapacity += value.demand
@@ -71,7 +71,6 @@ class Vehicle():
         travelTime = self.timeMatrix[last.custNo, customer.custNo]
         
         self._lastArrivalTime = self._lastServiceTime + last.serviceLen + travelTime
-
 
     # want to move away from having the customers keep track of their service time
     # imagine the vehicle keeps a ledger

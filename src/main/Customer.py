@@ -13,7 +13,7 @@ class Customer():
         self._arrivalTime = 0 # time route arrived at this customer
 
     def __str__(self):
-        return "ID: {:3}({}) t.({:3},{:3})+{}".\
+        return "ID: {}({}) t.({:3},{:3})+{}".\
             format(self.custNo, self.demand, \
                    self.readyTime, self.dueDate, self.serviceLen)
 
@@ -21,11 +21,12 @@ class Customer():
         return "c{}".format(self.custNo)
 
     def __eq__(self, other):
-        return self.custNo == other.custNo and \
-               self.xcoord  == other.xcoord  and \
-               self.ycoord  == other.ycoord  and \
-               self.demand  == other.demand  and \
-               self.readyTime == other.readyTime and \
-               self.dueDate == other.dueDate and \
-               self.serviceLen == other.serviceLen
+
+        return other is not None and self.custNo == other.custNo and \
+                       self.xcoord  == other.xcoord  and \
+                       self.ycoord  == other.ycoord  and \
+                       self.demand  == other.demand  and \
+                       self.readyTime == other.readyTime and \
+                       self.dueDate == other.dueDate and \
+                       self.serviceLen == other.serviceLen
 

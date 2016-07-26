@@ -19,10 +19,16 @@ python3 src/test/TestMatrices.py
 echo TestSolomonProblem.py
 python3 src/test/TestSolomonProblem.py
 
-echo TestBasicOps.py
-python3 src/test/TestBasicOps.py
+#echo TestBasicOps.py
+#python3 src/test/TestBasicOps.py
 
 echo TestRoutes.py
 python3 src/test/TestRoutes.py
 
-python3 src/main/basicOps.py data/interim/$PROBLEM.p
+echo TestVehicle.py
+python3 src/test/TestVehicle.py
+
+echo TestHeuristic.py
+python3 src/test/TestHeuristic.py
+
+#python3 src/main/basicOps.py data/interim/$PROBLEM.p

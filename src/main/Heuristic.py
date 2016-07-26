@@ -17,7 +17,6 @@ class Heuristic():
         self.customers = list(customers) # shallow copy
         self.depot     = depot
         self.routes    = Routes(self.sp, start, self.depot)
-        
         if start in customers: self.customers.remove(start)
 
         return self.run()
@@ -27,12 +26,8 @@ class Heuristic():
 
         #for i in range(len(customers)):
         for i in range(3):
-            print("Iteration {}".format(i))
             vehicle, bestNext, cost = self.getBestNode()
-            print("Best v/c: {}:{} |".format(vehicle, bestNext))
             self.routes.addNext(vehicle, bestNext)
-            #routes = addNext(veh, start, bestNext)
-            print("State of routes at end of iteration: {}\n\n".format(self.routes))
             self.customers.remove(bestNext)
         
         self.routes.finish()

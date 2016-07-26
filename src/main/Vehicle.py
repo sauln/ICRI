@@ -1,22 +1,16 @@
 class Vehicle():
-    maxCapacity = 0
-    curCapacity = 0
-    distTravel = 0
-    customers = []
-    _lastServiceTime = 0
-    _lastArrivalTime = 0
-
-
     def __init__(self, sp, *seed):
-
-        print("Init vehicle: seed: {}".format(seed))
-        for s in seed:
-            print(self, s)
-            self.customers.append(s)
         self.depot = seed[0]
         self.maxCapacity = sp.capacity
         self.timeMatrix = sp.timeMatrix
-
+        self.curCapacity = 0
+        self.distTravel = 0
+        self.customers = []
+        self._lastServiceTime = 0
+        self._lastArrivalTime = 0
+        
+        for s in seed:
+            self.append(s)
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
@@ -39,7 +33,7 @@ class Vehicle():
        
         # if we are replacing, then fix the capacity
         assert self.customers[index] == None
-        
+
         self.customers[index] = value
         self.curCapacity += value.demand
     
@@ -68,7 +62,11 @@ class Vehicle():
 
     def setLastArrivalTime(self, customer):
         # use the actual timeTravel matrix
-        last = self.customers[-1]
+        
+        if(len(self.customers) > 0):
+            last = self.customers[-1]
+        else:
+            last = self.depot
 
         travelTime = self.timeMatrix[last.custNo, customer.custNo]
         
@@ -92,7 +90,7 @@ class Vehicle():
         #  correct time window is 
         #       nextServiceTime in [item.readyTime, item.dueDate] AND
         #       
-        
+       
         #assert item.readyTime <= self.nextServiceTime() <= item.dueDate + item.serviceLen,\
         #    "{} <= {} <= {}"\
         #    .format(item.readyTime, item.serviceTime(), item.dueDate + item.serviceLen)
@@ -102,8 +100,6 @@ class Vehicle():
 
         self.curCapacity += item.demand
         self.customers.append(item)
-
-        print("In append: {}".format(self.customers))
 
     def __repr__(self):
         return self.__str__()

@@ -49,6 +49,7 @@ class Vehicle(ListBase):
     def lastCustomer(self):
         # should this be a better method of try/catch?
         if(len(self.customers) > 0):
+            #print(self.customers)
             return self.customers[-1] 
 
     def update(self, item):
@@ -65,7 +66,8 @@ class Vehicle(ListBase):
         #print("  Total time: {}".format(self.totalTime))
 
     def append(self, item):
-        if(item.custNo is not 0):
+        if(item.custNo is not 0 and self.__len__() != 0): #not depot and not first item
+            print("Adding elem {}".format(item))
             assert self.isFeasible(item), "Item {} is not feasible".format(item)
             self.update(item)
         self.customers.append(item)

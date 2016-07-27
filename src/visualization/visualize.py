@@ -8,11 +8,11 @@ import pickle
 
 def PlotRoutes(routes):
     print("Generate plot for routes solution") 
-    for r in routes.rList:
+    for r in routes.vList:
         xs = [c.xcoord for c in r]
         ys = [c.ycoord for c in r]#fix this
         plt.plot(xs, ys)
-    depot = routes.rList[0][0]
+    depot = routes.vList[0][0]
 
     plt.scatter(depot.xcoord, depot.ycoord, 250)
     plt.show()

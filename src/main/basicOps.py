@@ -42,7 +42,8 @@ def main(input_filepath):
 
     #routes = constructRoute(sp)
     #confirmSolution(sp, routes)
-    #v = Validator(sp, routes).validate()
+    v = Validator(sp, routes).validate()
+    #print(routes)
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
     #PlotRoutes(routes)

@@ -26,8 +26,8 @@ class Heuristic():
         return self.run()
 
     def run(self):
-        #for i in range(len(customers)):
-        for i in range(3):
+        for i in range(len(self.customers)):
+        #for i in range(3):
             vehicle, bestNext, cost = self.getBestNode()
             self.routes.addNext(vehicle, bestNext)
             self.customers.remove(bestNext)

@@ -16,8 +16,7 @@ class CostFunction():
         e = end
 
         # Infeasible nodes would be filtered before here -
-
-        prevDeparture = vehicle.departureTime()
+        prevDeparture = vehicle.totalTime
         nextArrivalTime = prevDeparture + self.timeMatrix[s.custNo, e.custNo]
         earliestService = max(nextArrivalTime, e.readyTime)
 

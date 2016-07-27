@@ -1,10 +1,8 @@
-
 """ Base for H_g  """
 from src.main.Routes import Routes
 import sortedcontainers
 
 from src.main.CostFunction import CostFunction
-
 
 class Heuristic():
     def __init__(self, sp):

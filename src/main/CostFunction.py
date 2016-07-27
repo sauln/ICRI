@@ -3,13 +3,16 @@ import numpy as np
 
 class CostFunction():
     def __init__(self, heuristicType, timeMatrix, distMatrix):
-        self.switch = {"gnnh":self.gnnh}
+        self.switch = {"gnnh":self.gnnh, "distanceOnly":self.distanceOnly}
         self.heuristicType = heuristicType
         self.timeMatrix = timeMatrix
         self.distMatrix = distMatrix
 
     def run(self, *args):
         return self.switch[self.heuristicType](*args)
+
+    def distanceOnly(self, delta, vehicle, end):
+        return self.timeMatrix[vehicle.lastCustomer().custNo, end.custNo]
 
     def gnnh(self, delta, vehicle, end): #s:start, e:end customers
         s = vehicle.lastCustomer()

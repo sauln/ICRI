@@ -10,7 +10,7 @@ class TestSolomonProblem(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_Eq(self):
+    def testEq(self):
         s = SolomonProblem("test1", 4,4,4)
         r = SolomonProblem("test1", 4,4,4)
         self.assertEqual(s, r)

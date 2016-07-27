@@ -38,15 +38,16 @@ class TestMatrices(unittest.TestCase):
     def testTimeAndDistMatricesSameSize(self):
         self.assertEqual(self.m.distMatrix.shape, self.m.timeMatrix.shape)
 
-    #def test_buildmatricesfromfile(self):
-    #    filename="tmp.p"
-    #    with open(filename, "wb") as f:
-    #        pickle.dump(self.problem, f)
+    @unittest.skip("Put this test elsewhere")
+    def testBuildMatricesFromFile(self):
+        filename="tmp.p"
+        with open(filename, "wb") as f:
+            pickle.dump(self.problem, f)
         
-    #    m = buildMatricesFromCustomerFile(filename)
+        m = buildMatricesFromCustomerFile(filename)
 
-    #    print("Dont forget to remove the file")
-    #    self.assertEqual(m, self.m)
+        print("Dont forget to remove the file")
+        self.assertEqual(m, self.m)
 
     def testEq(self):
         m2 = Matrices(self.customers)

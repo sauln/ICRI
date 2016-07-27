@@ -1,12 +1,22 @@
+import time
+import sortedcontainers
+from src.main.Vehicle import Vehicle
+from src.main.Heuristic import Heuristic
+from src.main.Routes import Routes
 
-def rollOut(sp, delta, routes, customers, depot):
-    bestNexts = getBestNNodes(sp, delta, routes, customers, depot, 5)
+
+def rollOut(heuristic):
+    
+    #def setup(self, delta, start, customers, depot):
+    bestNexts = heuristic.getBestNNodes(5)
+    #bestNexts = routes.getBestNNodes(sp, delta, routes, customers, depot, 5)
 
     # these need to be objects
     ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
-    for route, start, end, cost in bestNexts:
-        best = buildSolution(sp, delta, start, customers, depot)
-        solution = (best, best.cost() + cost, route, start, end)
+    for vehicle, bestNext, cost in bestNexts:
+        heuristic.reset(bestNext)
+        best = heuristic.run()
+        solution = (best, best.cost() + cost, vehicle, bestNext)
         ranked.add(solution)
 
     b, c, r, s, e = ranked[0]
@@ -25,17 +35,45 @@ def constructRoute(sp):
 
     routes = Routes(sp, depot)
 
-    # find next best n
-    #[route, start, bestNext, cost] =
+    # take routes - find top 5 from routes
+    # compute complete path using these 5 as start
+    # choose best and add that node to route 
+
+
+
+
+    heuristic = Heuristic(sp)
 
     startTime = time.clock()
+    #print("begin {} at time {}".format(i, time.clock()-startTime))
+    startTime = time.clock()
 
-    for i in range(len(customers)):
-        print("begin {} at time {}".format(i, time.clock()-startTime))
-        startTime = time.clock()
-        r, s, e = rollOut(sp, delta, routes, customers, depot) 
-        routes = addNext(sp, routes, r, s, e)
-        customers.remove(e)
+
+
+    #for i in range(len(customers)):
+    for i in range(91):
+
+        print("customers left: {}".format(len(customers)))
+        #heuristic.setup(delta, depot, customers, depot)
+        #heuristic.routes = routes
+        bests = routes.getBestNNodes(heuristic.costFunction, delta, customers, 5)
+        #print("Bests: {}".format(bests))
+
+        ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+        for vehicle, bestNext, cost in bests:
+            _t_routes = heuristic.setup(delta, bestNext, customers, depot).run(3)
+            solution = (_t_routes, _t_routes.cost() + cost, vehicle, bestNext)
+            ranked.add(solution)
+
+        topRollOut = ranked[0]
+        customers.remove(topRollOut[3])
+        routes.addNext(topRollOut[2], topRollOut[3])
+
+    print("Final Routes: {}".format(routes))
+
+
+        #routes = addNext(sp, routes, r, s, e)
+            #customers.remove(e)
 
 
         #print("Routes at end of {}th iteration: {}".format(i, routes))

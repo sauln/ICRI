@@ -16,6 +16,8 @@ from src.main.Validator import Validator
 from src.main.Vehicle   import Vehicle
 from src.main.Customer  import Customer
 from src.main.Heuristic import Heuristic
+from src.main.RollOut   import *
+
 
 
 @click.command()
@@ -29,7 +31,6 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Generating matrices for problem')
-    
     sp.prepare()
     depot = sp.customers[0]
     customers = sp.customers[1:]
@@ -37,11 +38,9 @@ def main(input_filepath):
    
 
     gnnh = Heuristic(sp)
-    routes = gnnh.buildSolution(delta, depot, customers, depot)
+    #routes = gnnh.buildSolution(delta, depot, customers, depot)
 
-
-    #routes = constructRoute(sp)
-    #confirmSolution(sp, routes)
+    routes = constructRoute(sp)
     v = Validator(sp, routes).validate()
     #print(routes)
     print("There are {} vehicles with {} allowed"\

@@ -1,8 +1,12 @@
 import numpy as np
 
+import sortedcontainers
 from src.main.SolomonProblem import SolomonProblem
 from src.main.Customer import Customer
 from src.main.Vehicle import Vehicle
+
+
+# i think this shoul get the getBestNNodes function
 
 
 class Routes():
@@ -18,6 +22,7 @@ class Routes():
         self.vList = [v]
         
     def cost(self):
+        # keep track of this while building
         total = sum(r.travelDistance() for r in self.vList)
         return total
 
@@ -55,5 +60,30 @@ class Routes():
         for v in self.vList: # add depot to end of each route 
             v.append(self.depot)
 
+
+    def getBestNode(self, cf, delta, customers):
+        return self.getBestNNodes(cf, delta, customers, 1)[0]
+
+    def getBestNNodes(self, cf, delta, customers, size):
+        cs = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
+        
+        # with lots of routes, this could become unreasonable
+        # is there any faster way than to look at all of them?
+        print("In vlist: {}".format(self.vList))
+        print(" have {} customers".format(len(customers)))       
+        
+        for vehicle in self.vList:
+            feasible = [c for c in customers if vehicle.isFeasible(c)]
+            print("There are {} efasible customers {}".format(len(feasible), feasible))
+            for c in customers:
+                if(vehicle.isFeasible(c)):
+                    res = (vehicle, c, cf.run(delta, vehicle, c))  
+                    cs.add(res)
+
+
+
+
+        #print("Ranked options: {}".format(cs))
+        return cs[:size]
 
 

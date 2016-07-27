@@ -23,7 +23,7 @@ class ListBase():
         return self.__str__()
 
     def __str__(self):
-        return "Serviced:{}, cap:{} => {}".format(len(self.customers), self.curCapacity, self.customers)
+        return "Len:{}:{}".format(len(self.customers), self.customers)
 
 class Vehicle(ListBase):
     def __init__(self, sp, *seed):
@@ -34,6 +34,13 @@ class Vehicle(ListBase):
         self.timeMatrix = sp.timeMatrix
         for s in seed:
             self.append(s)
+
+    def travelDistance(self):
+        tot = 0
+        for i in range(len(self.customers)-1):
+            tot += self.timeMatrix[self.customers[i].custNo, self.customers[i+1].custNo]
+        return tot
+
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity

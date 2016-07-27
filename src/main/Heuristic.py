@@ -10,8 +10,6 @@ class Heuristic():
     def __init__(self, sp):
         self.sp = sp
         self.costFunction = CostFunction("gnnh", self.sp.timeMatrix, self.sp.distMatrix)
-        #self.timeMatrix = sp.timeMatrix
-        #self.distMatrix = sp.distMatrix
 
     def setup(self, delta, start, customers, depot):
         self.delta     = delta
@@ -33,31 +31,24 @@ class Heuristic():
             self.customers.remove(bestNext)
         
         self.routes.finish()
-
-
         return self.routes 
+
+    def cost(self, delta, vehicle, c):
+        return self.costFunction.run(delta, vehicle, c)
 
     def getBestNode(self):
         return self.getBestNNodes(1)[0]
-    """ Ranking algorithms """
 
     def getBestNNodes(self, size):
         cs = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
         
         # with lots of routes, this could become unreasonable
         # is there any faster way than to look at all of them?
-
         for vehicle in self.routes:
             for c in self.customers:
                 if(vehicle.isFeasible(c)):
                     res = (vehicle, c, self.costFunction.run(self.delta, vehicle, c))  
                     cs.add(res)
-       
-        #if(len(cs) == 0):
-        #    print("In the case of zero: \n\tcustomers: {}\n\troutes: {}\n\tdepot: {}"\
-        #        .format(customers, routes, depot))
-
-        #print("In getBestNNodes: {}".format(len(cs)))
 
         return cs[:size]
 

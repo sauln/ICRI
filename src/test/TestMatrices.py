@@ -22,20 +22,20 @@ class TestMatrices(unittest.TestCase):
         self.problem = SolomonProblem("test", 5,5, self.customers) 
         self.m = Matrices(self.customers)
 
-    def test_DistEuclid(self):
+    def testDistEuclid(self):
         a = stub(0,0)
         b = stub(0,1)
         d = Matrices(self.customers).distEuclid(a,b)
         self.assertEqual(0,0) 
         
-    def test_matrixiscorrectsize(self):
+    def testMatrixIsCorrectSize(self):
         self.assertEqual(self.m.distMatrix.shape, (5,5))
 
-    def test_diagonal_is_zeros(self):
+    def testDiagonalIsZeros(self):
         for i in range(5):
             self.assertEqual(self.m.distMatrix[i,i], 0)
 
-    def test_timeanddistMatricesSameSize(self):
+    def testTimeAndDistMatricesSameSize(self):
         self.assertEqual(self.m.distMatrix.shape, self.m.timeMatrix.shape)
 
     #def test_buildmatricesfromfile(self):
@@ -48,7 +48,7 @@ class TestMatrices(unittest.TestCase):
     #    print("Dont forget to remove the file")
     #    self.assertEqual(m, self.m)
 
-    def test_Eq(self):
+    def testEq(self):
         m2 = Matrices(self.customers)
         self.assertEqual(self.m, m2)
 

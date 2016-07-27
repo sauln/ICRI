@@ -6,7 +6,7 @@ class TestCustomer(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_Eq(self):
+    def testEq(self):
         nargs = 7
         args = [1]*7
         c = Customer(*args)

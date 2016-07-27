@@ -1,4 +1,3 @@
-
 import unittest
 import pickle
 
@@ -8,20 +7,19 @@ from src.main.Routes import Routes
 from src.main.Vehicle import Vehicle
 from src.main.Customer import Customer
 
-
 class TestVehicle(unittest.TestCase):
     def setUp(self):
-        self.sp = SolomonProblem("test", 5, 100, None)
+        self.sp = SolomonProblem("test", 5, 1000, None)
         
         earlyC  = Customer(0, 0,  0,  5, 0, 10, 3)
         lateC   = Customer(1, 5,  5, 35, 99, 200, 4)
-        middleC = Customer(2, 10,10, 60, 45,120, 9)
+        middleC = Customer(2, 10,10, 60, 45,75, 9)
 
         self.earlyC, self.lateC, self.middleC = earlyC, lateC, middleC 
         
         self.sp.customers = [earlyC, lateC, middleC]
         self.sp.prepare()
-        #self.r = Vehicle(self.sp, earlyC, lateC)
+        self.r = Vehicle(self.sp, earlyC, lateC)
     
     def testNotFull(self):
         vehicle = Vehicle(self.sp, self.middleC)
@@ -37,38 +35,30 @@ class TestVehicle(unittest.TestCase):
         t = r.isValidTime(self.lateC)
         self.assertTrue(t, "Later time is valid after an early time")
         
-        r = Vehicle(self.sp, self.lateC)
-        f = r.isValidTime(self.earlyC)
+        self.r.append(self.lateC)
+        f = self.r.isValidTime(self.middleC)
         self.assertFalse(f, "Early time is not valid after a late time")
 
     def testIsFeasible(self):
-        #print(self.r)        
         r = Vehicle(self.sp, self.middleC) 
-        #t = r.isFeasible(self.lateC)
-        #self.assertTrue(t)
-        #f = r.isFeasible(self.earlyC)
-        #self.assertFalse(f)
+        t = r.isFeasible(self.lateC)
+        self.assertTrue(t)
+        f = r.isFeasible(self.earlyC)
+        self.assertFalse(f)
 
     def testAppendIncreasesCapacity(self):
         r = Vehicle(self.sp, self.earlyC)
         r.append(self.middleC)
-        print(r)
         self.assertEqual(r.curCapacity, self.middleC.demand)
 
         r.append(self.lateC)
-        d = self.earlyC.demand + self.lateC.demand
-        self.assertEqual(r.curCapacity, self.earlyC.demand + self.lateC.demand)
-
-        r.append(self.middleC)
-        d = self.earlyC.demand + self.lateC.demand + self.middleC.demand
-        self.assertEqual(r.curCapacity, d)
+        self.assertEqual(r.curCapacity, self.middleC.demand + self.lateC.demand)
   
-    #@unittest.skip("Does not inforce constraints now")
     def testAppendOnlyIfRoom(self):
-        self.sp.maxCapacity = 25
+        self.sp.capacity = 25
         r = Vehicle(self.sp, self.earlyC)
         self.assertRaises(AssertionError, r.append, self.lateC)
-        self.assertRaises(AssertionError, Route, self.sp, self.lateC, self.middleC) 
+        self.assertRaises(AssertionError, Vehicle, self.sp, self.lateC, self.middleC) 
 
     def testConstructorAddsAllElements(self):
         r = Vehicle(self.sp, self.earlyC, self.middleC, self.lateC)
@@ -84,7 +74,6 @@ class TestVehicle(unittest.TestCase):
         self.assertEqual(r.curCapacity, self.lateC.demand + self.middleC.demand)
         r[1] = self.earlyC
         self.assertEqual(r.curCapacity, self.lateC.demand + self.earlyC.demand)
-
 
 if __name__ == "__main__":
     unittest.main()

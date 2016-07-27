@@ -23,7 +23,7 @@ class ListBase():
         return self.__str__()
 
     def __str__(self):
-        return "Serviced:{} => {}".format(len(self.customers), self.customers)
+        return "Serviced:{}, cap:{} => {}".format(len(self.customers), self.curCapacity, self.customers)
 
 class Vehicle(ListBase):
     def __init__(self, sp, *seed):
@@ -59,16 +59,17 @@ class Vehicle(ListBase):
         slackTime = srv - arrivalTime
         self.totalSlack += slackTime
         self.totalTime = srv + item.serviceLen
-
+        self.curCapacity += item.demand
         #print("\nAppending {}({},{}) onto {}".format(\
         #    item.custNo, item.readyTime, item.dueDate, self.customers))
         #print("  Arrive {}, serviced: {}, slack: {}".format(arrivalTime, srv, slackTime))
         #print("  Total time: {}".format(self.totalTime))
 
     def append(self, item):
+        assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
         if(item.custNo is not 0 and self.__len__() != 0): #not depot and not first item
-            print("Adding elem {}".format(item))
             assert self.isFeasible(item), "Item {} is not feasible".format(item)
             self.update(item)
         self.customers.append(item)
+
 

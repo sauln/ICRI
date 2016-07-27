@@ -25,7 +25,7 @@ class CostFunction():
         c[1] = self.distMatrix[s.custNo, e.custNo]
         c[2] = earliestService - prevDeparture
         c[3] = e.dueDate - (prevDeparture + self.timeMatrix[s.custNo,e.custNo])
-        c[4] = vehicle.curCapacity - e.demand
+        c[4] = (vehicle.maxCapacity - vehicle.curCapacity) - e.demand # slack
         #d[5] = max(0, c_from.service_window[0] - earliest_possible_service)
         #d[6] = max(0, c_from_service_time - c_from.service_window[1])
 

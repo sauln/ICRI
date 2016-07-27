@@ -14,7 +14,6 @@ class TestHeuristic(unittest.TestCase):
         self.sp = SolomonProblem("test", 7, 100, None)       
         #routes = gnnh.buildSolution(delta, depot, customers, depot)
 
-
         self.earlyC  = Customer(0, 0, 0, 20, 0, 10, 3)
         self.lateC   = Customer(1, 5, 5, 20, 99, 200, 4)
         self.middleC = Customer(2, 10,10, 20, 45,55, 9)
@@ -41,13 +40,15 @@ class TestHeuristic(unittest.TestCase):
 
         self.routes = Routes(self.sp, self.earlyC)
 
-    def testHeuristicIsPositive(self):
+    def testCostFunctionIsPositive(self):
         vehicle = Vehicle(self.sp, self.earlyC)
     
         cf = CostFunction("gnnh", self.sp.timeMatrix, self.sp.distMatrix)
         for cust in self.sp.customers:
-            cost = cf.run(self.delta, vehicle, cust)
-            self.assertGreaterEqual(cost, 0) 
+            if(vehicle.isFeasible(cust)):
+                cost = cf.run(self.delta, vehicle, cust)
+                self.assertGreaterEqual(cost, 0, \
+                    "\n{}  ->  {} costs {}".format(vehicle[-1], cust, cost)) 
     
     def testNextNodesAreFeasible(self):
         nextNodes = self.gnnh.getBestNNodes(5)
@@ -85,7 +86,6 @@ class TestHeuristic(unittest.TestCase):
         
         self.assertEqual(len(nextNodes), len(feasibleNodes), \
             "\nnextNoodes: {}\ncustomers:{}".format(nextNodes, feasibleNodes))
-
 
 if __name__ == "__main__":
     unittest.main()

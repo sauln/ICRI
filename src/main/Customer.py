@@ -13,8 +13,9 @@ class Customer():
         self._arrivalTime = 0 # time route arrived at this customer
 
     def __str__(self):
-        return "ID: {}({}) t.({:3},{:3})+{}".\
+        return "ID: {}({}) d.({:3},{:3}) t.({:3},{:3})+{}".\
             format(self.custNo, self.demand, \
+                   self.xcoord, self.ycoord, \
                    self.readyTime, self.dueDate, self.serviceLen)
 
     def __repr__(self):

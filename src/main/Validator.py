@@ -4,35 +4,28 @@ class Validator():
         self.sp = sp
         self.routes = routes
 
+    def allCustomersAreUsed(self):
+        usedCustomers = set([c.custNo for route in self.routes for c in route])
+        for c in self.sp.customers:
+            assert c.custNo in usedCustomers, "{} not in {}".format(c, usedCustomers)
+        return 1
+
+    def allCustomersAreUsedOnlyOnce(self):
+        usedCustomers = [c.custNo for route in self.routes for c in route]
+        usedCustomers = list(filter((0).__ne__, usedCustomers))
+        assert len(usedCustomers) == len(set(usedCustomers))
+        return 1
+
     def serviceTimesWithinWindow(self):
-        print("\nService times are within customer time window")
         success = 1
         for r in self.routes:
-            #print("Start route {}".format(r))
             total = 0
             for i in range(0,len(r)-1):
                 td = self.routes.sp.timeMatrix[r[i].custNo,r[i+1].custNo]
-                #print("Travel between {}({},{}) and {}({},{}) is {}".format(\
-                #    r[i].custNo, r[i].readyTime, r[i].dueDate, \
-                #    r[i+1].custNo, r[i+1].readyTime, r[i+1].dueDate, td)) 
-                #total += td
                 srv = max(total + td, r[i+1].readyTime)
-                #print("  arrive {}".format(total + td))
-                #print("  service {} -> {}".format(srv, srv + r[i+1].serviceLen))
                 total = srv + r[i+1].serviceLen
-                 
-                
-                #assert i.readyTime <= i.serviceTime() <= i.dueDate + i.serviceLen, \
-                #    "{} <= {} <= {}"\
-                #    .format(i.readyTime, i.serviceTime(), i.dueDate + i.serviceLen)
-            #print("End route")
-
-        #print(self.routes.sp.timeMatrix[0,:])
+                assert 1, "Unsure what to assert here"
         return success
-
-    def timelineRespected(self):
-        print("Confirm timeline constraints held")
-        return self.serviceTimesWithinWindow() 
 
     def capacityRespected(self):
         success = 1
@@ -42,5 +35,7 @@ class Validator():
         return success
 
     def validate(self):
-        return self.capacityRespected() and self.timelineRespected() 
-
+        assert self.capacityRespected()
+        assert self.serviceTimesWithinWindow()
+        assert self.allCustomersAreUsed()
+        assert self.allCustomersAreUsedOnlyOnce()

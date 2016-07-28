@@ -36,16 +36,12 @@ def main(input_filepath):
     customers = sp.customers[1:]
     delta = [1]*7
    
-
-    gnnh = Heuristic(sp)
-    #routes = gnnh.buildSolution(delta, depot, customers, depot)
-
     routes = constructRoute(sp)
-    v = Validator(sp, routes).validate()
-    #print(routes)
+    Validator(sp, routes).validate()
+    print(routes)
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
-    #PlotRoutes(routes)
+    PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

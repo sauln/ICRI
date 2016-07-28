@@ -28,38 +28,33 @@ def constructRoute(sp):
     # choose next node and add to route
    
     # setup
+
+    topNodes = 5
+    searchDepth = 10
+    
+
     sp.prepare()
     depot = sp.customers[0]
     customers = sp.customers[1:]
     delta = [1]*7
 
     routes = Routes(sp, depot)
-
-    # take routes - find top 5 from routes
-    # compute complete path using these 5 as start
-    # choose best and add that node to route 
     heuristic = Heuristic(sp)
 
     startTime = time.clock()
-    startTime = time.clock()
-
-    #for i in range(len(customers)):
-    for i in range(91):
-
-        #print("customers left: {}".format(len(customers)))
-        #heuristic.setup(delta, depot, customers, depot)
-        #heuristic.routes = routes
-        bests = routes.getBestNNodes(heuristic.costFunction, delta, customers, 5)
-        #print("Bests: {}".format(bests))
+    for i in range(len(customers)):
+        bests = routes.getBestNNodes(heuristic.costFunction, delta, customers, topNodes)
 
         ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
         for vehicle, bestNext, cost in bests:
-            _t_routes = heuristic.setup(delta, bestNext, customers, depot).run(3)
+            _t_routes = heuristic.setup(delta, bestNext, customers, depot).run(searchDepth)
             solution = (_t_routes, _t_routes.cost() + cost, vehicle, bestNext)
             ranked.add(solution)
 
         topRollOut = ranked[0]
         customers.remove(topRollOut[3])
         routes.addNext(topRollOut[2], topRollOut[3])
+
+    routes.finish()
 
     return routes

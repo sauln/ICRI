@@ -18,7 +18,7 @@ class Routes():
         self.vList.append(Vehicle(sp, start))
 
     def cost(self):
-        # keep track of this while building
+        # keep track of this while building please
         total = sum(r.travelDistance() for r in self.vList)
         return total
 

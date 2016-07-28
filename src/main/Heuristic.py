@@ -20,9 +20,7 @@ class Heuristic():
         return self
 
     def buildSolution(self, delta, start, customers, depot):
-        print("Begin building solution")
         self.setup(delta, start, customers, depot)
-
         return self.run()
     
     def reset(self, start):
@@ -30,14 +28,10 @@ class Heuristic():
 
     def run(self, depth = None):
         depth = min(len(self.customers), depth)
-        print(depth)
-        #if not depth:
-        #    depth = len(self.customers)
         
         for i in range(depth):
             vehicle, bestNext, cost = \
                 self.routes.getBestNode(self.costFunction, self.delta, self.customers)
-            #print("Best node: {}, {}, {}".format(vehicle, bestNext, cost))
             self.routes.addNext(vehicle, bestNext)
             self.customers.remove(bestNext)
        
@@ -47,20 +41,3 @@ class Heuristic():
     def cost(self, delta, vehicle, c):
         return self.costFunction.run(delta, vehicle, c)
 
-    '''
-    def getBestNode(self):
-        return self.getBestNNodes(1)[0]
-
-    def getBestNNodes(self, size):
-        cs = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
-        
-        # with lots of routes, this could become unreasonable
-        # is there any faster way than to look at all of them?
-        for vehicle in self.routes:
-            for c in self.customers:
-                if(vehicle.isFeasible(c)):
-                    res = (vehicle, c, self.costFunction.run(self.delta, vehicle, c))  
-                    cs.add(res)
-
-        return cs[:size]
-    '''

@@ -6,8 +6,8 @@ from src.main.Customer import Customer
 from src.main.Routes import Routes
 from src.main.Vehicle import Vehicle
 from src.main.CostFunction import CostFunction
+from src.main.Heuristic import Heuristic
 
-from src.main.basicOps import *
 
 class TestHeuristic(unittest.TestCase):
     def setUp(self):
@@ -50,42 +50,6 @@ class TestHeuristic(unittest.TestCase):
                 self.assertGreaterEqual(cost, 0, \
                     "\n{}  ->  {} costs {}".format(vehicle[-1], cust, cost)) 
     
-    def testNextNodesAreFeasible(self):
-        nextNodes = self.gnnh.getBestNNodes(5)
-        for v, c, cost in nextNodes:
-            self.assertTrue(v.isFeasible(c))
-
-    def testNextNodesAreAscendingOrder(self):
-        nextNodes = self.gnnh.getBestNNodes(5)
-
-        for i in range(len(nextNodes) - 1):
-            vehiclel, custl, costl = nextNodes[i]
-            vehicler, custr, costr = nextNodes[i+1]
-            self.assertLessEqual(costl, costr)
-    
-    def testTopNodeIsMaxOfNNodes(self):
-        nextNodes = self.gnnh.getBestNNodes(5)
-
-        nt = min(nextNodes, key = lambda x: x[2])
-        top = self.gnnh.getBestNode()
-
-        self.assertEqual(top, nt)
-
-    def testNNodesIsRightSize(self):
-        nextNodes = self.gnnh.getBestNNodes(5)
-        self.assertEqual(len(nextNodes), 5)
-
-        nextNodes = self.gnnh.getBestNNodes(1)
-        self.assertEqual(len(nextNodes), 1)
-        
-        tmp_customers = list(self.sp.customers)
-        tmp_customers.remove(self.depot)
-        
-        feasibleNodes = [c for c in self.gnnh.customers if self.routes[0].isFeasible(c)]
-        nextNodes = self.gnnh.getBestNNodes(99)
-        
-        self.assertEqual(len(nextNodes), len(feasibleNodes), \
-            "\nnextNoodes: {}\ncustomers:{}".format(nextNodes, feasibleNodes))
 
 if __name__ == "__main__":
     unittest.main()

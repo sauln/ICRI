@@ -5,22 +5,18 @@ from src.main.SolomonProblem import SolomonProblem
 from src.main.Customer import Customer
 from src.main.Vehicle import Vehicle
 
-
-# i think this shoul get the getBestNNodes function
-
-
 class Routes():
     def __init__(self, sp, start, depot = None):
         self.sp = sp
+        self.vList = []
 
-        if(not depot):
-            self.depot = start
-        else:
+        if(depot):
+            self.vList.append(Vehicle(sp, depot))
             self.depot = depot
-        v = Vehicle(sp, start)
-        #r = Route(sp, depot)
-        self.vList = [v]
-        
+        else:
+            self.depot = start
+        self.vList.append(Vehicle(sp, start))
+
     def cost(self):
         # keep track of this while building
         total = sum(r.travelDistance() for r in self.vList)
@@ -31,10 +27,6 @@ class Routes():
 
     def __getitem__(self, index):
         return self.vList[index]
-
-    #def __setitem__(self, index, value):
-    #    assert isinstance(value, Route), "Adding route to Routes that isnt Route"
-    #    self.route[index] = value
 
     def __str__(self):
         return "Number of routes: {}\n{}".format(len(self.vList), self.vList)
@@ -60,7 +52,6 @@ class Routes():
         for v in self.vList: # add depot to end of each route 
             v.append(self.depot)
 
-
     def getBestNode(self, cf, delta, customers):
         return self.getBestNNodes(cf, delta, customers, 1)[0]
 
@@ -69,19 +60,12 @@ class Routes():
         
         # with lots of routes, this could become unreasonable
         # is there any faster way than to look at all of them?
-        print("In vlist: {}".format(self.vList))
-        print(" have {} customers".format(len(customers)))       
-        
         for vehicle in self.vList:
             feasible = [c for c in customers if vehicle.isFeasible(c)]
-            print("There are {} efasible customers {}".format(len(feasible), feasible))
             for c in customers:
                 if(vehicle.isFeasible(c)):
                     res = (vehicle, c, cf.run(delta, vehicle, c))  
                     cs.add(res)
-
-
-
 
         #print("Ranked options: {}".format(cs))
         return cs[:size]

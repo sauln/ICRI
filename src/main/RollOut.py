@@ -38,22 +38,15 @@ def constructRoute(sp):
     # take routes - find top 5 from routes
     # compute complete path using these 5 as start
     # choose best and add that node to route 
-
-
-
-
     heuristic = Heuristic(sp)
 
     startTime = time.clock()
-    #print("begin {} at time {}".format(i, time.clock()-startTime))
     startTime = time.clock()
-
-
 
     #for i in range(len(customers)):
     for i in range(91):
 
-        print("customers left: {}".format(len(customers)))
+        #print("customers left: {}".format(len(customers)))
         #heuristic.setup(delta, depot, customers, depot)
         #heuristic.routes = routes
         bests = routes.getBestNNodes(heuristic.costFunction, delta, customers, 5)
@@ -69,12 +62,4 @@ def constructRoute(sp):
         customers.remove(topRollOut[3])
         routes.addNext(topRollOut[2], topRollOut[3])
 
-    print("Final Routes: {}".format(routes))
-
-
-        #routes = addNext(sp, routes, r, s, e)
-            #customers.remove(e)
-
-
-        #print("Routes at end of {}th iteration: {}".format(i, routes))
     return routes

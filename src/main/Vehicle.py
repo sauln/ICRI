@@ -41,7 +41,6 @@ class Vehicle(ListBase):
             tot += self.timeMatrix[self.customers[i].custNo, self.customers[i+1].custNo]
         return tot
 
-
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
 
@@ -56,7 +55,6 @@ class Vehicle(ListBase):
     def lastCustomer(self):
         # should this be a better method of try/catch?
         if(len(self.customers) > 0):
-            #print(self.customers)
             return self.customers[-1] 
 
     def update(self, item):
@@ -67,10 +65,6 @@ class Vehicle(ListBase):
         self.totalSlack += slackTime
         self.totalTime = srv + item.serviceLen
         self.curCapacity += item.demand
-        #print("\nAppending {}({},{}) onto {}".format(\
-        #    item.custNo, item.readyTime, item.dueDate, self.customers))
-        #print("  Arrive {}, serviced: {}, slack: {}".format(arrivalTime, srv, slackTime))
-        #print("  Total time: {}".format(self.totalTime))
 
     def append(self, item):
         assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
@@ -78,5 +72,4 @@ class Vehicle(ListBase):
             assert self.isFeasible(item), "Item {} is not feasible".format(item)
             self.update(item)
         self.customers.append(item)
-
 

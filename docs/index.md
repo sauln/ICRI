@@ -15,6 +15,29 @@ This repository will both serve as a
 
 
 
+
+## TODO
+* Quantify robustness of the solution
+* Write lots of documentation
+* Develop sophisticated methods for modifying hyperparameters (delta)
+
+
+
+
+## Features
+
+Currently implements the algorithm using...
+
+
+## Installation
+
+`$git clone etc`
+
+`$pip install requirements.txt`
+
+
+
+
 ## Commands
 
 * `python run_program.py` - Run current bleeding edge; tests, routing for r101, and visualization

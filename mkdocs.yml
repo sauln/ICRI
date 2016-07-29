@@ -2,4 +2,3 @@ site_name: blinevrp
 pages:
 - Home: index.md
 - About: about.md
-theme: readthedocs

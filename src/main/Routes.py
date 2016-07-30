@@ -4,32 +4,29 @@ import sortedcontainers
 from src.main.SolomonProblem import SolomonProblem
 from src.main.Customer import Customer
 from src.main.Vehicle import Vehicle
+from src.main.ListBase import ListBase
 
-class Routes():
+
+
+class Routes(ListBase):
     def __init__(self, sp, start, depot = None):
+        super(Routes, self).__init__()
         self.sp = sp
-        self.vList = []
-
+        
         if(depot):
-            self.vList.append(Vehicle(sp, depot))
+            self.objList.append(Vehicle(sp, depot))
             self.depot = depot
         else:
             self.depot = start
-        self.vList.append(Vehicle(sp, start))
+        self.objList.append(Vehicle(sp, start))
 
     def cost(self):
         # keep track of this while building please
-        total = sum(r.travelDistance() for r in self.vList)
+        total = sum(r.travelDistance() for r in self.objList)
         return total
 
-    def pop(self, index = -1):
-        return self.vList.pop(index) 
-
-    def __getitem__(self, index):
-        return self.vList[index]
-
     def __str__(self):
-        return "Number of routes: {}\n{}".format(len(self.vList), self.vList)
+        return "Routes: " + super().__str__() 
     
     def __repr__(self):
         return self.__str__()
@@ -38,18 +35,17 @@ class Routes():
     def addNext(self, vehicle, end):
         if(vehicle[-1].custNo == 0): #the depot
             nv = Vehicle(self.sp, self.depot, end)
-            self.vList.append(nv)
+            self.objList.append(nv)
         else:
             vehicle.append(end)
 
-    def __len__(self):
-        return len(self.vList)
-
+    # every route ends at the depot, and the vehicle on deck is removed
     def finish(self):
-        if(len(self.vList[0]) == 1): # remove our place holder depot route
-            self.vList.pop(0)
 
-        for v in self.vList: # add depot to end of each route 
+        if(len(self.objList[0]) == 1): # remove our place holder depot route
+            self.objList.pop(0)
+
+        for v in self.objList: # add depot to end of each route 
             v.append(self.depot)
 
     def getBestNode(self, cf, delta, customers):
@@ -60,7 +56,7 @@ class Routes():
         
         # with lots of routes, this could become unreasonable
         # is there any faster way than to look at all of them?
-        for vehicle in self.vList:
+        for vehicle in self.objList:
             feasible = [c for c in customers if vehicle.isFeasible(c)]
             for c in customers:
                 if(vehicle.isFeasible(c)):

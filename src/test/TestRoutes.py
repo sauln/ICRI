@@ -5,6 +5,8 @@ from src.main.Customer import Customer
 from src.main.Routes import Routes
 from src.main.CostFunction import CostFunction
 from src.main.Heuristic import Heuristic
+from src.main.Matrices import Matrices
+
 
 class TestRoutes(unittest.TestCase):
     def setUp(self):
@@ -31,7 +33,9 @@ class TestRoutes(unittest.TestCase):
         self.depot = self.earlyC
 
         self.delta = [1]*7
-        self.sp.prepare()
+        m = Matrices()
+        m.build(self.sp.customers)
+
         self.routes = Routes(self.sp, self.earlyC)
         self.gnnh = Heuristic(self.sp)
         self.gnnh.setup(self.delta, self.depot, self.sp.customers, self.depot) 

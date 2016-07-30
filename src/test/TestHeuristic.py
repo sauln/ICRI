@@ -7,6 +7,7 @@ from src.main.Routes import Routes
 from src.main.Vehicle import Vehicle
 from src.main.CostFunction import CostFunction
 from src.main.Heuristic import Heuristic
+from src.main.Matrices import Matrices
 
 
 class TestHeuristic(unittest.TestCase):
@@ -34,7 +35,9 @@ class TestHeuristic(unittest.TestCase):
         self.depot = self.earlyC
 
         self.delta = [1]*7
-        self.sp.prepare()
+        self.m = Matrices()
+        self.m.build(self.sp.customers)
+
         self.gnnh = Heuristic(self.sp)
         self.gnnh.setup(self.delta, self.depot, self.sp.customers, self.depot) 
 
@@ -43,7 +46,7 @@ class TestHeuristic(unittest.TestCase):
     def testCostFunctionIsPositive(self):
         vehicle = Vehicle(self.sp, self.earlyC)
     
-        cf = CostFunction("gnnh", self.sp.timeMatrix, self.sp.distMatrix)
+        cf = CostFunction("gnnh")
         for cust in self.sp.customers:
             if(vehicle.isFeasible(cust)):
                 cost = cf.run(self.delta, vehicle, cust)

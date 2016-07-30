@@ -15,17 +15,19 @@ class stub():
     def __repr__(self):
         return self.__str__()
 
-
 class TestMatrices(unittest.TestCase):
     def setUp(self):
         self.customers = [stub(a,b) for a,b in zip(range(5), range(5))] 
         self.problem = SolomonProblem("test", 5,5, self.customers) 
-        self.m = Matrices(self.customers)
+        self.m = Matrices()
+        self.m.build(self.customers)
 
     def testDistEuclid(self):
         a = stub(0,0)
         b = stub(0,1)
-        d = Matrices(self.customers).distEuclid(a,b)
+        m = Matrices()
+        m.build(self.customers)
+        d = m.distEuclid(a,b)
         self.assertEqual(0,0) 
         
     def testMatrixIsCorrectSize(self):
@@ -50,17 +52,14 @@ class TestMatrices(unittest.TestCase):
         self.assertEqual(m, self.m)
 
     def testEq(self):
-        m2 = Matrices(self.customers)
+        m2 = Matrices()
+        m2.build(self.customers)
         self.assertEqual(self.m, m2)
 
         c2 = list( self.customers )
         c2.append(stub(99,99))
         self.assertEqual(len(c2), len(self.customers)+1)
         
-        m_diff = Matrices(c2)
-        self.assertNotEqual(self.m, m_diff)
-
-
 if __name__ == "__main__":
     unittest.main()
 

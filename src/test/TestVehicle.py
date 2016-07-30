@@ -6,6 +6,8 @@ from src.main.Customer import Customer
 from src.main.Routes import Routes
 from src.main.Vehicle import Vehicle
 from src.main.Customer import Customer
+from src.main.Matrices import Matrices
+
 
 class TestVehicle(unittest.TestCase):
     def setUp(self):
@@ -18,7 +20,9 @@ class TestVehicle(unittest.TestCase):
         self.earlyC, self.lateC, self.middleC = earlyC, lateC, middleC 
         
         self.sp.customers = [earlyC, lateC, middleC]
-        self.sp.prepare()
+        
+        m = Matrices()
+        m.build(self.sp.customers)
         self.r = Vehicle(self.sp, earlyC, lateC)
     
     def testNotFull(self):

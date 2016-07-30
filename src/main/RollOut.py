@@ -6,7 +6,6 @@ from src.main.Routes import Routes
 
 
 def rollOut(heuristic):
-    
     #def setup(self, delta, start, customers, depot):
     bestNexts = heuristic.getBestNNodes(5)
     #bestNexts = routes.getBestNNodes(sp, delta, routes, customers, depot, 5)
@@ -32,8 +31,7 @@ def constructRoute(sp):
     topNodes = 5
     searchDepth = 10
     
-
-    sp.prepare()
+    #sp.prepare()
     depot = sp.customers[0]
     customers = sp.customers[1:]
     delta = [1]*7

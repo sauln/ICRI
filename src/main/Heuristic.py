@@ -7,7 +7,7 @@ from src.main.CostFunction import CostFunction
 class Heuristic():
     def __init__(self, sp):
         self.sp = sp
-        self.costFunction = CostFunction("gnnh", self.sp.timeMatrix, self.sp.distMatrix)
+        self.costFunction = CostFunction("gnnh")
 
     def setup(self, delta, start, customers, depot):
         self.delta      = delta

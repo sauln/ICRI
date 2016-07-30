@@ -1,3 +1,5 @@
+from src.main.Matrices import Matrices
+
 
 class Validator():
     def __init__(self, sp, routes):
@@ -21,7 +23,7 @@ class Validator():
         for r in self.routes:
             total = 0
             for i in range(0,len(r)-1):
-                td = self.routes.sp.timeMatrix[r[i].custNo,r[i+1].custNo]
+                td = Matrices().timeMatrix[r[i].custNo,r[i+1].custNo]
                 srv = max(total + td, r[i+1].readyTime)
                 total = srv + r[i+1].serviceLen
                 assert 1, "Unsure what to assert here"

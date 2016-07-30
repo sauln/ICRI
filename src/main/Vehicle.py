@@ -1,4 +1,5 @@
 from src.main.Customer import Customer
+from src.main.Matrices import Matrices
 
 class ListBase():
     ''' I just wanted to get these functions out of the way  '''
@@ -31,14 +32,14 @@ class Vehicle(ListBase):
         self.curCapacity, self.distTravel, self.totalSlack, self.totalTime = 0,0,0,0
         self.depot = seed[0]
         self.maxCapacity = sp.capacity
-        self.timeMatrix = sp.timeMatrix
         for s in seed:
             self.append(s)
 
     def travelDistance(self):
         tot = 0
         for i in range(len(self.customers)-1):
-            tot += self.timeMatrix[self.customers[i].custNo, self.customers[i+1].custNo]
+            tot += Matrices().timeMatrix[self.customers[i].custNo, \
+                                         self.customers[i+1].custNo]
         return tot
 
     def isNotFull(self, end):
@@ -46,7 +47,7 @@ class Vehicle(ListBase):
 
     def isValidTime(self, end):
         # does the entire operation need to be done before the due date?
-        travelTime = self.timeMatrix[self.lastCustomer().custNo, end.custNo]
+        travelTime = Matrices().timeMatrix[self.lastCustomer().custNo, end.custNo]
         return self.totalTime + travelTime <= end.dueDate
 
     def isFeasible(self, end):
@@ -58,7 +59,7 @@ class Vehicle(ListBase):
             return self.customers[-1] 
 
     def update(self, item):
-        travelTime = self.timeMatrix[self.customers[-1].custNo, item.custNo]
+        travelTime = Matrices().timeMatrix[self.customers[-1].custNo, item.custNo]
         arrivalTime = self.totalTime + travelTime
         srv = max(arrivalTime, item.readyTime)
         slackTime = srv - arrivalTime

@@ -31,12 +31,13 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Generating matrices for problem')
-    sp.prepare()
-    depot = sp.customers[0]
-    customers = sp.customers[1:]
-    delta = [1]*7
-   
+    matrices = Matrices()
+    matrices.build(sp.customers)
+
+    logger.info('Construct routes')
     routes = constructRoute(sp)
+
+    logger.info('Validate the routes')
     Validator(sp, routes).validate()
     print(routes)
     print("There are {} vehicles with {} allowed"\

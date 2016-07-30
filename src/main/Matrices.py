@@ -3,8 +3,6 @@ import os
 import pickle
 import numpy as np
 
-# make matrices a singleton class
-
 # singleton matrices class
 class Matrices:
     class __Matrices:
@@ -32,7 +30,8 @@ class Matrices:
 
         def buildTimeMatrix(self, customers):
             return self.distMatrix
-            
+
+    # functions to handle singleton aspects
     instance = None
     def __new__(cls):
         if not Matrices.instance:

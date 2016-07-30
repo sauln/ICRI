@@ -38,7 +38,7 @@ class Vehicle(ListBase):
     def travelDistance(self):
         tot = 0
         for i in range(len(self.customers)-1):
-            tot += Matrices().timeMatrix[self.customers[i].custNo, \
+            tot += Matrices().distMatrix[self.customers[i].custNo, \
                                          self.customers[i+1].custNo]
         return tot
 

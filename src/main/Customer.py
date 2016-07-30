@@ -9,9 +9,6 @@ class Customer():
         self.dueDate      = dueDate
         self.serviceLen   = serviceLen
 
-        self._serviceTime = 0 # time this customer was serviced
-        self._arrivalTime = 0 # time route arrived at this customer
-
     def __str__(self):
         return "ID: {}({}) d.({:3},{:3}) t.({:3},{:3})+{}".\
             format(self.custNo, self.demand, \

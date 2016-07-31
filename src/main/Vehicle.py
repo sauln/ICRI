@@ -22,16 +22,24 @@ class Vehicle(ListBase):
         return self.totalTime + self.travelTime(self.last(), end) <= end.dueDate
     def isFeasible(self, end):
         return (self.isValidTime(end) and self.isNotFull(end))
-    
-    def travelTime(self, start, end):
+   
+    def travelTime(self, start, end = None):
+        if end is None:
+            end = start
+            start = self.last()
         return self.timeMatrix[start.custNo, end.custNo]
+    
+    def travelDist(self, start, end = None):
+        if end is None:
+            end = start
+            start = self.last()
+        return self.distMatrix[start.custNo, end.custNo]
 
-    def travelDistance(self):
+    def totalTravelDistance(self):
         # meant to calc on the fly
         tot = 0
         for i in range(len(self)-1):
-            tot += self.distMatrix[self[i].custNo, \
-                                         self[i+1].custNo]
+            tot += self.travelDist(self[i], self[i+1])
         return tot
 
     def geographicCenter(self):

@@ -50,7 +50,7 @@ def main(input_filepath):
 
 
     logger.info('Generate visualization of solution')
-    Plotter().plotRoutes(routes)
+    Plotter().plotRoutes(routes).show()
 
     print(routes)
     print("There are {} vehicles with {} allowed"\

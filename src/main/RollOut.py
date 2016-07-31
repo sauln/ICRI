@@ -45,8 +45,17 @@ def constructRoute():
 
         ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
         for vehicle, bestNext, cost in bests:
+            # generate a solution from this root
             _t_routes = heuristic.setup(delta, bestNext, customers, depot).run(searchDepth)
-            solution = (_t_routes, _t_routes.cost() + cost, vehicle, bestNext)
+            
+            # store solution in order of cost
+
+            # this cost function is off
+            nextCost = vehicle.travelDist(bestNext)
+
+            #print("Cost of next node: {}, dist to next: {}, cost of full route: {}"\
+            #    .format(cost, nextCost,  _t_routes.cost()))
+            solution = (_t_routes, _t_routes.cost() + nextCost , vehicle, bestNext)
             ranked.add(solution)
 
         topRollOut = ranked[0]

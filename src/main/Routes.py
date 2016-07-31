@@ -18,7 +18,7 @@ class Routes(ListBase):
 
     def cost(self):
         # keep track of this while building please
-        total = sum(r.travelDistance() for r in self.objList)
+        total = sum(r.totalTravelDistance() for r in self.objList)
         return total
 
     def __str__(self):

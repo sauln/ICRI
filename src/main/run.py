@@ -48,7 +48,6 @@ def main(input_filepath):
     with open("data/interim/tmpr101.p", "wb") as f:
         pickle.dump(routes, f)
 
-
     logger.info('Generate visualization of solution')
     Plotter().plotRoutes(routes).show()
 

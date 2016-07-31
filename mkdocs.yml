@@ -2,3 +2,6 @@ site_name: blinevrp
 pages:
 - Home: index.md
 - About: about/index.md
+- TODO: todo.md
+markdown_extensions:
+    - pymdownx.tasklist

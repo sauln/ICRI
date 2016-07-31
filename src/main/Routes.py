@@ -9,7 +9,6 @@ from src.main.Parameters import Parameters
 class Routes(ListBase):
     def __init__(self, start, depot = None):
         super(Routes, self).__init__()
-
         if(depot):
             self.objList.append(Vehicle(depot))
             self.depot = depot

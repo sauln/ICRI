@@ -13,15 +13,10 @@ This repository will both serve as a
 * to apply the solutions to real applicatoins, potentially for B-line freight bicycle routing
 
 
-
-
-
 ## TODO
 * Quantify robustness of the solution
 * Write lots of documentation
 * Develop sophisticated methods for modifying hyperparameters (delta)
-
-
 
 
 ## Features
@@ -29,14 +24,17 @@ This repository will both serve as a
 Currently implements the algorithm using...
 
 
+## Requirements
+Python3
+Numpy
+Click
+
+
 ## Installation
 
-`$git clone etc`
+`git clone http://github.com/sauln/ICRI.git`
 
-`$pip install requirements.txt`
-
-
-
+`pip install requirements.txt`
 
 ## Commands
 
@@ -47,9 +45,6 @@ Currently implements the algorithm using...
     mkdocs.yml    # The configuration file.
     docs/
         index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
-
-
 
 ## Project Organization
 
@@ -63,7 +58,6 @@ Currently implements the algorithm using...
     │
     ├── docs               <- A mkdocs documentation 
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │

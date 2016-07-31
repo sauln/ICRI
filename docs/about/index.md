@@ -7,7 +7,7 @@ Basic structure of a customer as defined by the Solomon Problem sets
 
 #### Attributes
 * custNo - unique ID for the customer. There are no guards enforcing the uniqueness
-* xcoord - 
+* xcoord - 2D location of the customer 
 * ycoord - 2D location of the customer
 * demand - units of capacity required to service this customer
 * readyTime - earliest feasible service time
@@ -17,15 +17,10 @@ Basic structure of a customer as defined by the Solomon Problem sets
 ### Vehicle
 Basic concept of the vehicle.  Tracks visited customers, current time, current capacity.
 
-Vehicle has been broken out into two classes.  The base class handles the adding of 
-customers to the list.  This allows the main vehicle class to act just like a 
-python list.  The main class sits on top of this list/container construct and adds
-functions that help us check whether we can add to the list, and to find feasible customers.
-
-The ListBase class should be reworked in a more idiomatic python way. Look at how the
-Matrices singleton object was built.  could we do something like that?
-
-
+Vehicle inherits a custom ListBase class.  This allows the main vehicle class to 
+act just like a python list.  
+Vehicle then adds functions that help us check whether we can add to the list, 
+and to find feasible customers.
 
 #### Attributes
 * customers - list of Customer objects that have been serviced by this vehicle
@@ -34,7 +29,7 @@ Matrices singleton object was built.  could we do something like that?
 * totalSlack - sum of all slack time by this vehicle
 * totalTime - total amount traveled by this vehicle
 
-** these variables should be cleaned up and the names should be uniform. they all 
+** TODO these variables should be cleaned up and the names should be uniform. they all 
 represent the current sum or state
 
 #### Methods
@@ -52,7 +47,7 @@ customers are being added
 ### SolomonProblem
 Basic problem definition of the Solomon Problem set. 
 
-This about making this a singleton also.  Since it is readonly, global would probably be find
+TODO: This about making this a singleton also.  Since it is readonly, global would probably be fine
 
 #### Attributes
 * problemName
@@ -71,31 +66,51 @@ This represents a vehicle that is ready to leave at a moments notice.  It also m
 much easier to find the best next nodes, because we can look at the cost of leaving
 from the depot just the same as from a customer.
 
-Please cut out the list aspects of this class into a generic class that is used by both
-Routes and Vehicle
-
-
-
 #### Attributes
 * sp - reference to the solomon problem that this solution was designed for
-* vList - list of vehicles
+* objList - 
 
 #### Methods
 
 
 ### CostFunction
 Defines multiple different cost functions for defining best next nodes and cost of routes.
+
+Instantiate the class with a string input as heuristicType. Implemented ones are
+the gnnh defined in the paper and a distance only.
+
 #### Attributes
+* heuristicType - 
+* switch - dictionary of possible cost functions
 
 #### Methods
+* gnnh - 
+* distanceOnly - 
 
 
 ### Heuristic
 Algorithm for building part 1 of the ICRI paper.  Use CostFunction to build solution
 using a greedy algorithm
+
 #### Attributes
 
+
+
 #### Methods
+
+
+### RollOut
+Algorithm for building part 2 of the ICRI paper. 
+
+#### Attributes
+
+
+
+
+#### Methods
+
+
+
 
 
 ### Matrices
@@ -103,14 +118,21 @@ Constructors for distance and time matrices.  This should be redefined as a sing
 
 This is a singleton class.  Summon by an instantiation:  
 
-`m = Matrices()`
+```python
+m = Matrices()
+m.build(customers)
+```
 
 To build the matrices, supply a list of customers to the build function
-
-`m.build(customers)`
 
 #### Attributes
 
 #### Methods
 
 
+### ListBase
+
+#### Attributes
+
+
+#### Methods

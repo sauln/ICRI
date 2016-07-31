@@ -5,8 +5,7 @@ import sortedcontainers
 from src.main.CostFunction import CostFunction
 
 class Heuristic():
-    def __init__(self, sp):
-        self.sp = sp
+    def __init__(self):
         self.costFunction = CostFunction("gnnh")
 
     def setup(self, delta, start, customers, depot):
@@ -14,7 +13,7 @@ class Heuristic():
         self.customers  = list(customers) # shallow copy
         self.custBackup = list(customers)
         self.depot      = depot
-        self.routes     = Routes(self.sp, start, self.depot)
+        self.routes     = Routes(start, self.depot)
         
         if start in customers: self.customers.remove(start)
         return self

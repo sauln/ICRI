@@ -1,10 +1,11 @@
 from src.main.Matrices import Matrices
+from src.main.Parameters import Parameters
 
 
 class Validator():
-    def __init__(self, sp, routes):
-        self.sp = sp
+    def __init__(self, routes):
         self.routes = routes
+        self.sp = Parameters()
 
     def allCustomersAreUsed(self):
         usedCustomers = set([c.custNo for route in self.routes for c in route])

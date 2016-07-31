@@ -3,6 +3,8 @@ import sortedcontainers
 from src.main.Vehicle import Vehicle
 from src.main.Heuristic import Heuristic
 from src.main.Routes import Routes
+from src.main.Parameters import Parameters
+
 
 
 def rollOut(heuristic):
@@ -21,23 +23,23 @@ def rollOut(heuristic):
     b, c, r, s, e = ranked[0]
     return r, s, e
 
-def constructRoute(sp):
+def constructRoute():
     # find top n nodes,
     # compute route for each of them
     # choose next node and add to route
    
     # setup
 
+    pm = Parameters()
+
     topNodes = 5
     searchDepth = 10
-    
-    #sp.prepare()
-    depot = sp.customers[0]
-    customers = sp.customers[1:]
+    depot = pm.customers[0]
+    customers = pm.customers[1:]
     delta = [1]*7
 
-    routes = Routes(sp, depot)
-    heuristic = Heuristic(sp)
+    routes = Routes(depot)
+    heuristic = Heuristic()
 
     startTime = time.clock()
     for i in range(len(customers)):

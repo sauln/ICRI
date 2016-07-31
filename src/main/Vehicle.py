@@ -1,17 +1,19 @@
 from src.main.Customer import Customer
 from src.main.Matrices import Matrices
 from src.main.ListBase import ListBase
+from src.main.Parameters import Parameters
+
 
 class Vehicle(ListBase):
-    def __init__(self, sp, *seed):
+    def __init__(self, *seed):
         super(Vehicle, self).__init__()
         self.curCapacity, self.distTravel, self.totalSlack, self.totalTime = 0,0,0,0
         self.depot = seed[0]
-        self.maxCapacity = sp.capacity
+        self.maxCapacity = Parameters().capacity
+        #self.maxCapacity = sp.capacity
         self.curCapacity = 0
         for s in seed:
             self.append(s)
-
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity

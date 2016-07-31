@@ -6,12 +6,7 @@ class SolomonProblem():
         self.numVehicles     = numVeh
         self.capacity        = capacity
         self.customers       = customers
-
-    #def prepare(self):
-    #    matrices = Matrices(self.customers)
-    #    self.timeMatrix = matrices.timeMatrix
-    #    self.distMatrix = matrices.distMatrix
-
+    
     def __str__(self):
         return "{} Num Vehicles: {}  Capacity: {}  Num Customers: {}".\
             format(self.problemName,self.numVehicles,self.capacity,len(self.customers))

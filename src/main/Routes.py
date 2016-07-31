@@ -1,24 +1,21 @@
 import numpy as np
 
 import sortedcontainers
-from src.main.SolomonProblem import SolomonProblem
-from src.main.Customer import Customer
+
 from src.main.Vehicle import Vehicle
 from src.main.ListBase import ListBase
-
-
+from src.main.Parameters import Parameters
 
 class Routes(ListBase):
-    def __init__(self, sp, start, depot = None):
+    def __init__(self, start, depot = None):
         super(Routes, self).__init__()
-        self.sp = sp
-        
+
         if(depot):
-            self.objList.append(Vehicle(sp, depot))
+            self.objList.append(Vehicle(depot))
             self.depot = depot
         else:
             self.depot = start
-        self.objList.append(Vehicle(sp, start))
+        self.objList.append(Vehicle(start))
 
     def cost(self):
         # keep track of this while building please
@@ -34,7 +31,7 @@ class Routes(ListBase):
     """ Route building """
     def addNext(self, vehicle, end):
         if(vehicle[-1].custNo == 0): #the depot
-            nv = Vehicle(self.sp, self.depot, end)
+            nv = Vehicle(self.depot, end)
             self.objList.append(nv)
         else:
             vehicle.append(end)

@@ -1,3 +1,4 @@
+# Isn't this just the same as List
 
 class ListBase():
     def __init__(self):
@@ -9,7 +10,7 @@ class ListBase():
     def __setitem__(self, index, value):
         #assert type(value) == Customer, "Cannot add type {} to route".format(type(value))
         assert self.objList[index] == None, \
-            "the customer at {} is {}".format(index, self.objList[index])
+            "the value at at {} is {}".format(index, self.objList[index])
         self.objList[index] = value
         #self.curCapacity += value.demand
 

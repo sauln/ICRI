@@ -11,14 +11,13 @@ import numpy as np
 
 from src.visualization.visualize import PlotRoutes 
 from src.main.Matrices  import Matrices
-from src.main.Routes    import Routes
 from src.main.Validator import Validator
 from src.main.Vehicle   import Vehicle
 from src.main.Customer  import Customer
 from src.main.Heuristic import Heuristic
-from src.main.RollOut   import *
+from src.main.RollOut   import constructRoute
 
-
+from src.main.Parameters import Parameters
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -30,19 +29,26 @@ def main(input_filepath):
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
 
-    logger.info('Generating matrices for problem')
+    logger.info('Setup parameters singleton')
+    parameters = Parameters()
+    parameters.problemSet = sp
+
+    logger.info('Setup matrices singleton')
     matrices = Matrices()
     matrices.build(sp.customers)
 
     logger.info('Construct routes')
-    routes = constructRoute(sp)
+    routes = constructRoute()
 
-    logger.info('Validate the routes')
-    Validator(sp, routes).validate()
+    logger.info('Validate the solution')
+    Validator(routes).validate()
+
+    logger.info('Generate visualization of solution')
+    PlotRoutes(routes)
+
     print(routes)
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
-    PlotRoutes(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

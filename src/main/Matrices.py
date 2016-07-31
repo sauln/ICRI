@@ -42,7 +42,6 @@ class Matrices:
     def __setattr__(self, name):
         return setattr(self.instance, name)
 
-
 def buildMatricesFromCustomerFile(input_filepath):
     with open(input_filepath, "rb") as f:
         problem = pickle.load(f)

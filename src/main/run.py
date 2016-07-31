@@ -9,7 +9,7 @@ import pickle
 import sortedcontainers
 import numpy as np
 
-from src.visualization.visualize import PlotRoutes 
+from src.visualization.visualize import Plotter
 from src.main.Validator import Validator
 from src.main.Vehicle   import Vehicle
 from src.main.Customer  import Customer
@@ -50,7 +50,7 @@ def main(input_filepath):
 
 
     logger.info('Generate visualization of solution')
-    PlotRoutes(routes)
+    Plotter().plotRoutes(routes)
 
     print(routes)
     print("There are {} vehicles with {} allowed"\

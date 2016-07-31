@@ -4,9 +4,10 @@ import sortedcontainers
 import numpy as np
 
 
-from src.visualization.visualize import PlotRoutes 
+from src.visualization.visualize import Plotter
 from src.main.Parameters import Parameters
 from src.main.RollOut import constructRoute
+
 # improvement algorithm
 # 
 # take a solution set 
@@ -43,19 +44,15 @@ def Improvement(routes):
     simRoutes = geographicSimilarity(routes, r1, 5)
     customers = flattenRoutes(simRoutes)
     
-    # remove depot
-    depot = Parameters().customers[0]
-
     # find solution with these routes
     Parameters().customers = customers    
     routes = constructRoute()
 
     print("Most {} similar routes {}".format(len(simRoutes), simRoutes))
     print("All the customers: {}".format(customers))
-    PlotRoutes(simRoutes)       
-    PlotRoutes(routes)
-
     
+    Plotter().beforeAndAfter(simRoutes, routes).show()
+
 if __name__ == "__main__":
     with open("data/interim/tmpr101.p", "rb") as f:
         routes = pickle.load(f)

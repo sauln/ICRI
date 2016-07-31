@@ -15,11 +15,13 @@ class Customer():
                    self.xcoord, self.ycoord, \
                    self.readyTime, self.dueDate, self.serviceLen)
 
+    def __hash__(self):
+        return self.custNo
+
     def __repr__(self):
         return "c{}".format(self.custNo)
 
     def __eq__(self, other):
-
         return other is not None and self.custNo == other.custNo and \
                        self.xcoord  == other.xcoord  and \
                        self.ycoord  == other.ycoord  and \

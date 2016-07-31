@@ -34,6 +34,14 @@ class Vehicle(ListBase):
                                          self[i+1].custNo]
         return tot
 
+    def geographicCenter(self):
+        xs = [c.xcoord for c in self]
+        ys = [c.ycoord for c in self]
+
+        x, y = sum(xs)/len(xs), sum(ys)/len(ys)
+
+        return (x, y)
+
     def lastCustomer(self):
         # should this be a better method of try/catch?
         return self.last()

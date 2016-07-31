@@ -43,6 +43,12 @@ def main(input_filepath):
     logger.info('Validate the solution')
     Validator(routes).validate()
 
+    logger.info("Pickling routes")
+    # pickle the set so we can use that for deving the 
+    with open("data/interim/tmpr101.p", "wb") as f:
+        pickle.dump(routes, f)
+
+
     logger.info('Generate visualization of solution')
     PlotRoutes(routes)
 

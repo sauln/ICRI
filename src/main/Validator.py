@@ -1,15 +1,17 @@
-from src.main.Matrices import Matrices
 from src.main.Parameters import Parameters
 
 
 class Validator():
     def __init__(self, routes):
         self.routes = routes
-        self.sp = Parameters()
+        self.timeMatrix = Parameters().timeMatrix
+        self.maxCapacity = Parameters().params.capacity
+        self.customers = Parameters().customers
+
 
     def allCustomersAreUsed(self):
         usedCustomers = set([c.custNo for route in self.routes for c in route])
-        for c in self.sp.customers:
+        for c in self.customers:
             assert c.custNo in usedCustomers, "{} not in {}".format(c, usedCustomers)
         return 1
 
@@ -24,7 +26,7 @@ class Validator():
         for r in self.routes:
             total = 0
             for i in range(0,len(r)-1):
-                td = Matrices().timeMatrix[r[i].custNo,r[i+1].custNo]
+                td = self.timeMatrix[r[i].custNo,r[i+1].custNo]
                 srv = max(total + td, r[i+1].readyTime)
                 total = srv + r[i+1].serviceLen
                 assert 1, "Unsure what to assert here"
@@ -34,7 +36,7 @@ class Validator():
         success = 1
         for route in self.routes:
             s = sum(c.demand for c in route)
-            assert s <= self.sp.capacity
+            assert s <= self.maxCapacity
         return success
 
     def validate(self):

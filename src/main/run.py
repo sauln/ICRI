@@ -10,7 +10,6 @@ import sortedcontainers
 import numpy as np
 
 from src.visualization.visualize import PlotRoutes 
-from src.main.Matrices  import Matrices
 from src.main.Validator import Validator
 from src.main.Vehicle   import Vehicle
 from src.main.Customer  import Customer
@@ -31,11 +30,12 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
     parameters = Parameters()
-    parameters.problemSet = sp
+    parameters.build(sp)
+    #parameters.problemSet = sp
 
-    logger.info('Setup matrices singleton')
-    matrices = Matrices()
-    matrices.build(sp.customers)
+    #logger.info('Setup matrices singleton')
+    #matrices = Matrices()
+    #matrices.build(sp.customers)
 
     logger.info('Construct routes')
     routes = constructRoute()

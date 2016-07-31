@@ -2,9 +2,7 @@ import unittest
 import pickle
 import copy
 
-from src.main.Matrices import Matrices
 from src.main.SolomonProblem import SolomonProblem
-from src.main.Customer import Customer
 
 class TestSolomonProblem(unittest.TestCase):
     def setUp(self):
@@ -22,8 +20,6 @@ class TestSolomonProblem(unittest.TestCase):
         self.assertNotEqual(s,q)
         self.assertEqual(s,copy.copy(s))
         self.assertEqual(r,r)
-
-
 
 if __name__ == "__main__":
     unittest.main()

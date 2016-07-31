@@ -5,8 +5,6 @@ from src.main.Heuristic import Heuristic
 from src.main.Routes import Routes
 from src.main.Parameters import Parameters
 
-
-
 def rollOut(heuristic):
     #def setup(self, delta, start, customers, depot):
     bestNexts = heuristic.getBestNNodes(5)

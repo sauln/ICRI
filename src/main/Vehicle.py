@@ -1,16 +1,17 @@
 from src.main.Customer import Customer
-from src.main.Matrices import Matrices
+
 from src.main.ListBase import ListBase
 from src.main.Parameters import Parameters
-
 
 class Vehicle(ListBase):
     def __init__(self, *seed):
         super(Vehicle, self).__init__()
         self.curCapacity, self.distTravel, self.totalSlack, self.totalTime = 0,0,0,0
         self.depot = seed[0]
-        self.maxCapacity = Parameters().capacity
-        #self.maxCapacity = sp.capacity
+        self.maxCapacity = Parameters().params.capacity
+        self.timeMatrix = Parameters().timeMatrix
+        self.distMatrix = Parameters().distMatrix
+
         self.curCapacity = 0
         for s in seed:
             self.append(s)
@@ -23,13 +24,13 @@ class Vehicle(ListBase):
         return (self.isValidTime(end) and self.isNotFull(end))
     
     def travelTime(self, start, end):
-        return Matrices().timeMatrix[start.custNo, end.custNo]
+        return self.timeMatrix[start.custNo, end.custNo]
 
     def travelDistance(self):
         # meant to calc on the fly
         tot = 0
         for i in range(len(self)-1):
-            tot += Matrices().distMatrix[self[i].custNo, \
+            tot += self.distMatrix[self[i].custNo, \
                                          self[i+1].custNo]
         return tot
 

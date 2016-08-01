@@ -9,6 +9,7 @@ def rollOut(heuristic, delta, customers, bests):
     pm = Parameters()
     ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
     for vehicle, bestNext, cost in bests:
+        #print("Roll out {} from {}.".format(bestNext, vehicle))
         _t_routes = heuristic.setup(delta, bestNext, customers, pm.depot)\
             .run(pm.searchDepth)
         nextCost = vehicle.travelDist(bestNext)
@@ -25,15 +26,18 @@ def constructRoute():
 
     routes = Routes(depot)
     heuristic = Heuristic()
-    
+
+    #print("Routes in the very beginning {}".format(routes))
     delta = [1]*7
     for i in range(len(customers)):
         bests = routes.getBestNNodes(heuristic.costFunction, delta, \
                                     customers, pm.topNodes)
 
-        topRollOut = rollOut(heuristic, delta, customers, bests)
-        customers.remove(topRollOut[3])
-        routes.addNext(topRollOut[2], topRollOut[3])
+        solution, cost, seedVehicle, seedCustomer \
+            = rollOut(heuristic, delta, customers, bests)
+        
+        customers.remove(seedCustomer)
+        routes.addNext(seedVehicle, seedCustomer)
 
     routes.finish()
 

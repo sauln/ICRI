@@ -20,7 +20,7 @@ class Heuristic():
 
     def buildSolution(self, delta, start, customers, depot):
         self.setup(delta, start, customers, depot)
-        return self.run()
+        return self
     
     def reset(self, start):
         self.setup(self.delta, start, self.custBackup, self.depot) 

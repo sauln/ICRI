@@ -35,6 +35,8 @@ def main(input_filepath):
     logger.info('Construct routes')
     routes = constructRoute()
 
+    print("Potential routes solution:\n{}".format(routes))
+
     logger.info('Validate the solution')
     Validator(routes).validate()
 

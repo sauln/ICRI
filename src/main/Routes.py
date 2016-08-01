@@ -10,7 +10,7 @@ class Routes(ListBase):
     def __init__(self, start, depot = None):
         super(Routes, self).__init__()
         if(depot):
-            self.objList.append(Vehicle(depot))
+            #self.objList.append(Vehicle(depot))
             self.depot = depot
         else:
             self.depot = start
@@ -24,15 +24,13 @@ class Routes(ListBase):
 
     """ Route building """
     def addNext(self, vehicle, end):
-        if(vehicle.last().custNo == 0): #the depot
-            nv = Vehicle(self.depot, end)
-            self.objList.append(nv)
-        else:
-            vehicle.append(end)
+        if vehicle not in self:
+            self.objList.append(vehicle)
+        vehicle.append(end)
 
     def finish(self):
         # every route ends at the depot, and the vehicle on deck is removed
-        if(len(self[0]) == 1): self.pop(0)
+        #if(len(self[0]) == 1): self.pop(0)
         for v in self.objList:
             v.update(self.depot)
             v.append(self.depot)
@@ -41,19 +39,21 @@ class Routes(ListBase):
         return self.getBestNNodes(cf, delta, customers, 1)[0]
 
     def getBestNNodes(self, cf, delta, customers, size):
-        cs = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
-        
-        # with lots of routes, this could become unreasonable
-        # is there any faster way than to look at all of them?
-        for vehicle in self.objList:
-            #feasible = [c for c in customers if vehicle.isFeasible(c)]
-            for c in customers:
-                if(vehicle.isFeasible(c)):
-                    cs.add((vehicle, c, cf.run(delta, vehicle, c)))
+        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
+        for c in customers:
+            tmpList = []
+            for vehicle in self:
+                if(vehicle.isFeasible(c)): 
+                    tmpList.append((vehicle, c, cf.run(delta,vehicle,c)))
 
-            #for c in customers:
+            if tmpList:
+                for res in tmpList:
+                    cstest.add(res)
+            else:
+                t = Vehicle(self.depot)
+                cstest.add((t, c, cf.run(delta, t, c)))
 
-        return cs[:size]
+        return cstest[:size]
 
     def cost(self):
         total = sum(r.totalDist for r in self.objList)

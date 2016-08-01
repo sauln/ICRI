@@ -10,26 +10,21 @@ class CostFunction():
         return self.switch[self.heuristicType](*args)
 
     def distanceOnly(self, delta, vehicle, end):
-        return Parameters().timeMatrix[vehicle.lastCustomer().custNo, end.custNo]
+        return vehicle.travelDist(end)
 
     def gnnh(self, delta, vehicle, end): #s:start, e:end customers
-        s = vehicle.lastCustomer()
-        e = end
-
         # Infeasible nodes would be filtered before here -
-        prevDeparture = vehicle.totalTime
-        nextArrivalTime = prevDeparture + Parameters().timeMatrix[s.custNo, e.custNo]
-        earliestService = max(nextArrivalTime, e.readyTime)
+        nextArrivalTime = vehicle.totalTime + vehicle.travelTime(end)
+        earliestService = max(nextArrivalTime, end.readyTime)
 
         c = np.zeros(len(delta))
-        c[0] = (s.custNo == 0)
-        c[1] = Parameters().distMatrix[s.custNo, e.custNo]
-        c[2] = earliestService - prevDeparture
-        c[3] = e.dueDate - (prevDeparture + Parameters().timeMatrix[s.custNo,e.custNo])
-        c[4] = (vehicle.maxCapacity - vehicle.curCapacity) - e.demand # slack
+        c[0] = (vehicle.last().custNo == 0)
+        c[1] = vehicle.travelDist(end)
+        c[2] = earliestService - vehicle.totalTime
+        c[3] = end.dueDate - (vehicle.totalTime + vehicle.travelTime(end))
+        c[4] = (vehicle.maxCapacity - vehicle.curCapacity) - end.demand # slack
         #d[5] = max(0, c_from.service_window[0] - earliest_possible_service)
         #d[6] = max(0, c_from_service_time - c_from.service_window[1])
-
         cost = np.dot(delta, c)    
         return cost 
 

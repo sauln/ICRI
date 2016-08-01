@@ -1,12 +1,14 @@
-from src.main.Customer import Customer
+import numpy as np
 
+
+from src.main.Customer import Customer
 from src.main.ListBase import ListBase
 from src.main.Parameters import Parameters
 
 class Vehicle(ListBase):
     def __init__(self, *seed):
         super(Vehicle, self).__init__()
-        self.curCapacity, self.distTravel, self.totalSlack, self.totalTime = 0,0,0,0
+        self.curCapacity, self.totalDist, self.totalSlack, self.totalTime = 0,0,0,0
         self.depot = seed[0]
         self.maxCapacity = Parameters().params.capacity
         self.timeMatrix = Parameters().timeMatrix
@@ -35,31 +37,21 @@ class Vehicle(ListBase):
             start = self.last()
         return self.distMatrix[start.custNo, end.custNo]
 
-    def totalTravelDistance(self):
-        # meant to calc on the fly
-        tot = 0
-        for i in range(len(self)-1):
-            tot += self.travelDist(self[i], self[i+1])
-        return tot
-
     def geographicCenter(self):
-        xs = [c.xcoord for c in self]
-        ys = [c.ycoord for c in self]
-
-        x, y = sum(xs)/len(xs), sum(ys)/len(ys)
-
-        return (x, y)
+        coords = [[c.xcoord, c.ycoord] for c in self]
+        center = np.mean(coords, axis=0)
+        return center
 
     def lastCustomer(self):
-        # should this be a better method of try/catch?
         return self.last()
 
     def update(self, item):
-        arrivalTime = self.totalTime + self.travelTime(self.last(), item)
+        assert self.last() != item, "Need to update values before inserting!"
+        arrivalTime = self.totalTime + self.travelTime(item)
         srv = max(arrivalTime, item.readyTime)
-        slackTime = srv - arrivalTime
-        self.totalSlack += slackTime
-        self.totalTime = srv + item.serviceLen
+        self.totalSlack  += srv - arrivalTime
+        self.totalTime   = srv + item.serviceLen
+        self.totalDist   += self.travelDist(item)
         self.curCapacity += item.demand
 
     def append(self, item):

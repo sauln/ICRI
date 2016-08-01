@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.spatial.distance import pdist, squareform
+
 
 class Parameters:
     class __Parameters:
@@ -21,15 +23,9 @@ class Parameters:
             self.timeMatrix = self.buildTimeMatrix(problemSet.customers)
 
         def buildDistMatrix(self, customers):
-            distance_matrix = np.empty([len(customers), len(customers)])
-            
-            def distEuclid(x,y):
-                return np.sqrt((x.xcoord - y.xcoord)**2 + (x.ycoord - y.ycoord)**2)
-        
-            for i in range(len(customers)):
-                for j in range(len(customers)):
-                    distance_matrix[i,j] = distEuclid(customers[i], customers[j])
-            return distance_matrix
+            coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 
+            distm = squareform(pdist(coords, 'euclidean'))
+            return distm 
 
         def buildTimeMatrix(self, customers):
             return self.distMatrix

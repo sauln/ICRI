@@ -17,8 +17,7 @@ class Routes(ListBase):
         self.objList.append(Vehicle(start))
 
     def cost(self):
-        # keep track of this while building please
-        total = sum(r.totalTravelDistance() for r in self.objList)
+        total = sum(r.totalDist for r in self.objList)
         return total
 
     def __str__(self):
@@ -41,7 +40,8 @@ class Routes(ListBase):
         if(len(self.objList[0]) == 1): # remove our place holder depot route
             self.objList.pop(0)
 
-        for v in self.objList: # add depot to end of each route 
+        for v in self.objList: # add depot to end of each route
+            v.update(self.depot)
             v.append(self.depot)
 
     def getBestNode(self, cf, delta, customers):

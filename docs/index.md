@@ -12,23 +12,15 @@ This repository will both serve as a
 * foundation for future research on stochastic generalizations of the problem and 
 * to apply the solutions to real applicatoins, potentially for B-line freight bicycle routing
 
-
-## TODO
-* Quantify robustness of the solution
-* Write lots of documentation
-* Develop sophisticated methods for modifying hyperparameters (delta)
-
-
 ## Features
 
 Currently implements the algorithm using...
 
-
 ## Requirements
-Python3
-Numpy
-Click
-
+* Python3
+* Numpy
+* Click
+* mkdocs - to build the documentation
 
 ## Installation
 

@@ -88,51 +88,68 @@ the gnnh defined in the paper and a distance only.
 * distanceOnly - 
 
 
+### Parameters
+This is parameters object takes the SolomonProblem (or potentially another
+problem configuration) and builds the distance matrices.  It then provides the object
+as a singleton that can be instantiated as a singleton.
+
+The singleton must be initialzed with the problem definition  
+
+```python
+params = Parameters()
+params.build(sp: SolomonProblem)
+```
+
+Then, it can at any time be cheaply summoned by an easy instantiation:
+`params = Parameters()`
+
+
+#### Methods
+* `build` - 
+* `buildDistMatrix` -
+* `buildTimeMatrix` - 
+
+
+
+#### Attributes
+* `customers` - list of customers - *this should never be modified* - make a copy and 
+modify that.
+* `distMatrix` - travel distance matrix from a to b
+* `timeMatrix` - expected time to travel from a to b
+* `params` - solomon probelm definition
+
+
+
+
 ### Heuristic
 Algorithm for building part 1 of the ICRI paper.  Use CostFunction to build solution
 using a greedy algorithm
 
 #### Attributes
 
-
-
 #### Methods
-
 
 ### RollOut
 Algorithm for building part 2 of the ICRI paper. 
 
 #### Attributes
 
-
-
-
 #### Methods
-
-
 
 
 
 ### Matrices
 Constructors for distance and time matrices.  This should be redefined as a singleton class
 
-This is a singleton class.  Summon by an instantiation:  
-
-```python
-m = Matrices()
-m.build(customers)
-```
-
+This is a singleton class.  
 To build the matrices, supply a list of customers to the build function
 
 #### Attributes
 
 #### Methods
 
-
 ### ListBase
 
 #### Attributes
-
 
 #### Methods

@@ -25,32 +25,32 @@ class Vehicle(ListBase):
     def isFeasible(self, end):
         return (self.isValidTime(end) and self.isNotFull(end))
    
-    def travelTime(self, start, end = None):
+    def confirmEnds(self, start, end = None):
         if end is None:
             end = start
             start = self.last()
-        return self.timeMatrix[start.custNo, end.custNo]
-    
+        return start, end 
+
     def travelDist(self, start, end = None):
-        if end is None:
-            end = start
-            start = self.last()
+        start, end = self.confirmEnds(start, end)
         return self.distMatrix[start.custNo, end.custNo]
 
+    def travelTime(self, start, end = None):
+        start, end = self.confirmEnds(start, end)
+        return self.timeMatrix[start.custNo, end.custNo]
+    
     def geographicCenter(self):
         coords = [[c.xcoord, c.ycoord] for c in self]
         center = np.mean(coords, axis=0)
         return center
 
-    def lastCustomer(self):
-        return self.last()
-
     def update(self, item):
         assert self.last() != item, "Need to update values before inserting!"
+
         arrivalTime = self.totalTime + self.travelTime(item)
         srv = max(arrivalTime, item.readyTime)
         self.totalSlack  += srv - arrivalTime
-        self.totalTime   = srv + item.serviceLen
+        self.totalTime   =  srv + item.serviceLen
         self.totalDist   += self.travelDist(item)
         self.curCapacity += item.demand
 

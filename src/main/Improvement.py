@@ -44,10 +44,11 @@ def Improvement(routes):
     simRoutes = geographicSimilarity(routes, r1, 5)
     customers = flattenRoutes(simRoutes)
     
-    # find solution with these routes
-    Parameters().customers = customers    
+    customers.remove(Parameters().depot) 
+    Parameters().customers = customers 
+    
     routes = constructRoute()
-
+   
     print("Most {} similar routes {}".format(len(simRoutes), simRoutes))
     print("All the customers: {}".format(customers))
     
@@ -60,9 +61,7 @@ if __name__ == "__main__":
         sp = pickle.load(f)
 
     parameters = Parameters()
-    parameters.build(sp)
+    parameters.build(sp, 5, 10)
     
-    #routes = constructRoute()
-
     Improvement(routes)
 

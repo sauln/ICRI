@@ -16,11 +16,15 @@ class Parameters:
         def __str__(self):
             return str(self.params) + str(self.distMatrix) + str(self.timeMatrix)
         
-        def build(self, problemSet):
+        def build(self, problemSet, topNodes, searchDepth, depot = None):
+            self.depot, self.customers = (depot, problemSet.customers)\
+                if depot is not None else (problemSet.customers[0], problemSet.customers[1:])
+
             self.params = problemSet
-            self.customers = problemSet.customers
             self.distMatrix = self.buildDistMatrix(problemSet.customers)
             self.timeMatrix = self.buildTimeMatrix(problemSet.customers)
+            self.topNodes = topNodes
+            self.searchDepth = searchDepth
 
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 

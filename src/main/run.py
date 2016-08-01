@@ -30,12 +30,7 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
     parameters = Parameters()
-    parameters.build(sp)
-    #parameters.problemSet = sp
-
-    #logger.info('Setup matrices singleton')
-    #matrices = Matrices()
-    #matrices.build(sp.customers)
+    parameters.build(sp, 5, 10)
 
     logger.info('Construct routes')
     routes = constructRoute()

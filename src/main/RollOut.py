@@ -5,60 +5,55 @@ from src.main.Heuristic import Heuristic
 from src.main.Routes import Routes
 from src.main.Parameters import Parameters
 
-def rollOut(heuristic):
-    #def setup(self, delta, start, customers, depot):
-    bestNexts = heuristic.getBestNNodes(5)
-    #bestNexts = routes.getBestNNodes(sp, delta, routes, customers, depot, 5)
+#def rollOut(heuristic):
+#    #def setup(self, delta, start, customers, depot):
+#    bestNexts = heuristic.getBestNNodes(5)
+#    #bestNexts = routes.getBestNNodes(sp, delta, routes, customers, depot, 5)
+#
+#    # these need to be objects
+#    ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
+#    for vehicle, bestNext, cost in bestNexts:
+#        heuristic.reset(bestNext)
+#        best = heuristic.run()
+#        solution = (best, best.cost() + cost, vehicle, bestNext)
+#        ranked.add(solution)
+#
+#    b, c, r, s, e = ranked[0]
+#    return r, s, e
 
-    # these need to be objects
+
+
+
+def rollOut(heuristic, delta, customers, bests):
+    pm = Parameters()
     ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
-    for vehicle, bestNext, cost in bestNexts:
-        heuristic.reset(bestNext)
-        best = heuristic.run()
-        solution = (best, best.cost() + cost, vehicle, bestNext)
+    for vehicle, bestNext, cost in bests:
+        # generate a solution from this root
+        _t_routes = heuristic.setup(delta, bestNext, customers, pm.depot)\
+            .run(pm.searchDepth)
+        # this cost function is off
+        nextCost = vehicle.travelDist(bestNext)
+        solution = (_t_routes, _t_routes.cost() + nextCost , vehicle, bestNext)
         ranked.add(solution)
 
-    b, c, r, s, e = ranked[0]
-    return r, s, e
+    return ranked[0]
+
 
 def constructRoute():
-    # find top n nodes,
-    # compute route for each of them
-    # choose next node and add to route
-   
-    # setup
-
     pm = Parameters()
 
-    topNodes = 5
-    searchDepth = 10
-    depot = pm.customers[0]
-    customers = pm.customers[1:]
-    delta = [1]*7
+    depot = pm.depot
+    customers = list(pm.customers)
 
     routes = Routes(depot)
     heuristic = Heuristic()
-
-    startTime = time.clock()
+    
+    delta = [1]*7
     for i in range(len(customers)):
-        bests = routes.getBestNNodes(heuristic.costFunction, delta, customers, topNodes)
+        bests = routes.getBestNNodes(heuristic.costFunction, delta, \
+                                    customers, pm.topNodes)
 
-        ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
-        for vehicle, bestNext, cost in bests:
-            # generate a solution from this root
-            _t_routes = heuristic.setup(delta, bestNext, customers, depot).run(searchDepth)
-            
-            # store solution in order of cost
-
-            # this cost function is off
-            nextCost = vehicle.travelDist(bestNext)
-
-            #print("Cost of next node: {}, dist to next: {}, cost of full route: {}"\
-            #    .format(cost, nextCost,  _t_routes.cost()))
-            solution = (_t_routes, _t_routes.cost() + nextCost , vehicle, bestNext)
-            ranked.add(solution)
-
-        topRollOut = ranked[0]
+        topRollOut = rollOut(heuristic, delta, customers, bests)
         customers.remove(topRollOut[3])
         routes.addNext(topRollOut[2], topRollOut[3])
 

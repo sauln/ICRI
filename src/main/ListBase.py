@@ -12,7 +12,6 @@ class ListBase():
         assert self.objList[index] == None, \
             "the value at at {} is {}".format(index, self.objList[index])
         self.objList[index] = value
-        #self.curCapacity += value.demand
 
     def pop(self, index = -1):
         return self.objList.pop(index) 

@@ -16,10 +16,6 @@ class Routes(ListBase):
             self.depot = start
         self.objList.append(Vehicle(start))
 
-    def cost(self):
-        total = sum(r.totalDist for r in self.objList)
-        return total
-
     def __str__(self):
         return "Routes: " + super().__str__() 
     
@@ -28,19 +24,16 @@ class Routes(ListBase):
 
     """ Route building """
     def addNext(self, vehicle, end):
-        if(vehicle[-1].custNo == 0): #the depot
+        if(vehicle.last().custNo == 0): #the depot
             nv = Vehicle(self.depot, end)
             self.objList.append(nv)
         else:
             vehicle.append(end)
 
-    # every route ends at the depot, and the vehicle on deck is removed
     def finish(self):
-
-        if(len(self.objList[0]) == 1): # remove our place holder depot route
-            self.objList.pop(0)
-
-        for v in self.objList: # add depot to end of each route
+        # every route ends at the depot, and the vehicle on deck is removed
+        if(len(self[0]) == 1): self.pop(0)
+        for v in self.objList:
             v.update(self.depot)
             v.append(self.depot)
 
@@ -56,10 +49,11 @@ class Routes(ListBase):
             feasible = [c for c in customers if vehicle.isFeasible(c)]
             for c in customers:
                 if(vehicle.isFeasible(c)):
-                    res = (vehicle, c, cf.run(delta, vehicle, c))  
-                    cs.add(res)
+                    cs.add((vehicle, c, cf.run(delta, vehicle, c)))
 
-        #print("Ranked options: {}".format(cs))
         return cs[:size]
 
+    def cost(self):
+        total = sum(r.totalDist for r in self.objList)
+        return total
 

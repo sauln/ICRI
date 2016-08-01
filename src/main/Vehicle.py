@@ -40,7 +40,9 @@ class Vehicle(ListBase):
         return self.timeMatrix[start.custNo, end.custNo]
     
     def geographicCenter(self):
-        coords = [[c.xcoord, c.ycoord] for c in self]
+        custs = set(self)
+        custs.remove(self.depot)
+        coords = [[c.xcoord, c.ycoord] for c in custs]
         center = np.mean(coords, axis=0)
         return center
 

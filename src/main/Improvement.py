@@ -1,5 +1,5 @@
 import pickle
-
+import copy
 import sortedcontainers
 import numpy as np
 
@@ -26,7 +26,7 @@ def shortestRoute(routes):
 def diff(st, en):
     return np.linalg.norm(np.asarray(st) - np.asarray(en))
 
-def geographicSimilarity(routes, seedRoute, closeCount):
+def geographicSimilarity(routes, seedRoute):
     base = seedRoute.geographicCenter() 
     
     distL = lambda x: diff(base, x.geographicCenter())
@@ -34,25 +34,37 @@ def geographicSimilarity(routes, seedRoute, closeCount):
     for r in routes:
         dist.add(r)
 
-    return dist[:closeCount]
+    return dist[:Parameters().topNodes]
 
 def flattenRoutes(routes):
     return list({c for route in routes for c in route})
 
+def replaceRoutes(base, oldRoutes, newRoutes):
+    for r in oldRoutes:
+        base.objList.remove(r)
+
+    for r in newRoutes:
+        base.objList.append(r)
+
 def Improvement(routes):
-    r1 = shortestRoute(routes)
-    simRoutes = geographicSimilarity(routes, r1, 5)
-    customers = flattenRoutes(simRoutes)
+    routesbk = copy.deepcopy(routes) 
     
-    customers.remove(Parameters().depot) 
-    Parameters().customers = customers 
+    for i in range(5):
+        r1 = shortestRoute(routes)
+        simRoutes = geographicSimilarity(routes, r1)
+        customers = flattenRoutes(simRoutes)
+        
+        customers.remove(Parameters().depot) 
+        Parameters().customers = customers 
+        
+        newRoutes = constructRoute()
+       
+        replaceRoutes(routes, simRoutes, newRoutes)
     
-    routes = constructRoute()
-   
+    Plotter().beforeAndAfter(routesbk, routes).show()
+
     print("Most {} similar routes {}".format(len(simRoutes), simRoutes))
     print("All the customers: {}".format(customers))
-    
-    Plotter().beforeAndAfter(simRoutes, routes).show()
 
 if __name__ == "__main__":
     with open("data/interim/tmpr101.p", "rb") as f:
@@ -61,7 +73,7 @@ if __name__ == "__main__":
         sp = pickle.load(f)
 
     parameters = Parameters()
-    parameters.build(sp, 5, 10)
+    parameters.build(sp, 10, 20)
     
     Improvement(routes)
 

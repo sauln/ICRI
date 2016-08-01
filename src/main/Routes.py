@@ -17,7 +17,7 @@ class Routes(ListBase):
         self.objList.append(Vehicle(start))
 
     def __str__(self):
-        return "Routes: " + super().__str__() 
+        return "\n".join([repr(r) for r in self.objList])
     
     def __repr__(self):
         return self.__str__()
@@ -46,10 +46,12 @@ class Routes(ListBase):
         # with lots of routes, this could become unreasonable
         # is there any faster way than to look at all of them?
         for vehicle in self.objList:
-            feasible = [c for c in customers if vehicle.isFeasible(c)]
+            #feasible = [c for c in customers if vehicle.isFeasible(c)]
             for c in customers:
                 if(vehicle.isFeasible(c)):
                     cs.add((vehicle, c, cf.run(delta, vehicle, c)))
+
+            #for c in customers:
 
         return cs[:size]
 

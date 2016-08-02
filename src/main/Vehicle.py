@@ -18,6 +18,10 @@ class Vehicle(ListBase):
         for s in seed:
             self.append(s)
 
+    def __eq__(self, other):
+        return self.objList == other.objList
+
+
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
     def isValidTime(self, end):

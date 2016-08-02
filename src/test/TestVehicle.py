@@ -17,7 +17,7 @@ class TestVehicle(unittest.TestCase):
         param =  SolomonProblem("test", 5, 1000, customers)
 
         self.sp = Parameters()
-        self.sp.build(param)
+        self.sp.build(param, 10, 10)
 
     def testNotFull(self):
         vehicle = Vehicle(self.middleC)

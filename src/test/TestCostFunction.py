@@ -31,7 +31,7 @@ class TestCostFunction(unittest.TestCase):
         self.sp = SolomonProblem("test", 7, 100, customers)       
        
         parameters = Parameters()
-        parameters.build(self.sp)
+        parameters.build(self.sp, 10,10)
 
     def testCostFunctionIsPositive(self):
         vehicle = Vehicle(self.earlyC)

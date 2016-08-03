@@ -40,7 +40,9 @@ def main(input_filepath):
 
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
-    
+   
+    print("Solution {}".format(routes))
+
     Plotter().plotRoutes(routes).draw()
     #newRoutes = Improvement(routes)
 

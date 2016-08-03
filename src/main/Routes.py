@@ -6,8 +6,17 @@ from src.main.Vehicle import Vehicle
 from src.main.ListBase import ListBase
 from src.main.Parameters import Parameters
 
+# routes object will need a big overhaul
+# need to only concern ourselves with the last vehicle added to
+
+
+
+
 class Routes(ListBase):
     def __init__(self, start, depot = None):
+
+        #this constructor should take a vehicle 
+
         super(Routes, self).__init__()
         if(depot):
             #self.objList.append(Vehicle(depot))
@@ -17,8 +26,11 @@ class Routes(ListBase):
         self.objList.append(Vehicle(start))
 
     def __str__(self):
-        return "\n".join([repr(r)+"t:{}".format(r.totalTime) for r in self.objList])
-    
+        return "Total vehicles:{}\n".format(len(self)) + "\n".join([repr(r)+"t:{}".format(r.totalTime) for r in self.objList])
+   
+    def __eq__(self, other):
+        return self.objList == other.objList
+
     def __repr__(self):
         return self.__str__()
 
@@ -37,6 +49,20 @@ class Routes(ListBase):
 
     def getBestNode(self, cf, delta, customers):
         return self.getBestNNodes(cf, delta, customers, 1)[0]
+
+    def lowestCostNext(self, cf, vehicle, delta, customers, size):
+        # replaces getBestNNodes when we have only 1 vehicle to consider 
+        # this should go in vehicle
+        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
+        for cust in customers:
+            if(vehicle.isFeasible(cust)): 
+                cstest.add((vehicle, cust, cf.run(delta,vehicle,cust)))
+            else:
+                newVeh = Vehicle(self.depot)
+                cstest.add((newVeh, cust, cf.run(delta, newVeh, cust)))
+        return cstest[:size]
+
+
 
     def getBestNNodes(self, cf, delta, customers, size):
         cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])

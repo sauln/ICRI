@@ -17,7 +17,7 @@ class Routes(ListBase):
         self.objList.append(Vehicle(start))
 
     def __str__(self):
-        return "\n".join([repr(r) for r in self.objList])
+        return "\n".join([repr(r)+"t:{}".format(r.totalTime) for r in self.objList])
     
     def __repr__(self):
         return self.__str__()

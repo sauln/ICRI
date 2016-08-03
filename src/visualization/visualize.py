@@ -34,6 +34,9 @@ class Plotter:
     def show(self):
         plt.show()
 
+    def draw(self):
+        plt.draw()
+
     def plotRoutes(self, routes):
         print("Generate plot for routes solution") 
         for r in routes:

@@ -17,6 +17,9 @@ from src.main.Heuristic import Heuristic
 from src.main.RollOut   import constructRoute
 
 from src.main.Parameters import Parameters
+from src.main.Improvement import Improvement
+
+
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -30,27 +33,27 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
     parameters = Parameters()
-    parameters.build(sp, 5, 10)
+    parameters.build(sp, 10, 20)
 
     logger.info('Construct routes')
     routes = constructRoute()
 
-    print("Potential routes solution:\n{}".format(routes))
+    print("There are {} vehicles with {} allowed"\
+        .format(len(routes), sp.numVehicles))
+    
+    Plotter().plotRoutes(routes).draw()
+    #newRoutes = Improvement(routes)
 
-    logger.info('Validate the solution')
-    Validator(routes).validate()
-
-    logger.info("Pickling routes")
+    #logger.info("Pickling routes")
     # pickle the set so we can use that for deving the 
     with open("data/interim/tmpr101.p", "wb") as f:
         pickle.dump(routes, f)
 
-    logger.info('Generate visualization of solution')
-    Plotter().plotRoutes(routes).show()
-
-    print(routes)
-    print("There are {} vehicles with {} allowed"\
-        .format(len(routes), sp.numVehicles))
+    #logger.info('Generate visualization of solution')
+    # Plotter().plotRoutes(routes).show()
+    #Plotter().beforeAndAfter(routes, newRoutes).draw()
+    #Plotter().show()
+    # print(routes)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

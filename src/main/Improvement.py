@@ -20,7 +20,7 @@ def shortestRoute(routes):
         if (len(route) < len(smallest)):
             smallest = route
 
-    print("Shortest route: {}".format(smallest))
+    #print("Shortest route: {}".format(smallest))
     return smallest
 
 def diff(st, en):
@@ -47,11 +47,12 @@ def replaceRoutes(base, oldRoutes, newRoutes):
         base.objList.append(r)
 
 def Improvement(routes):
-    routesbk = copy.deepcopy(routes) 
-    
+    routesWork = copy.deepcopy(routes) 
+
+    custBk = copy.deepcopy(Parameters().customers)
     for i in range(5):
-        r1 = shortestRoute(routes)
-        simRoutes = geographicSimilarity(routes, r1)
+        r1 = shortestRoute(routesWork)
+        simRoutes = geographicSimilarity(routesWork, r1)
         customers = flattenRoutes(simRoutes)
         
         customers.remove(Parameters().depot) 
@@ -59,12 +60,11 @@ def Improvement(routes):
         
         newRoutes = constructRoute()
        
-        replaceRoutes(routes, simRoutes, newRoutes)
-    
-    Plotter().beforeAndAfter(routesbk, routes).show()
+        replaceRoutes(routesWork, simRoutes, newRoutes)
+   
+    Parameters().customers = custBk
 
-    print("Most {} similar routes {}".format(len(simRoutes), simRoutes))
-    print("All the customers: {}".format(customers))
+    return routesWork
 
 if __name__ == "__main__":
     with open("data/interim/tmpr101.p", "rb") as f:
@@ -75,5 +75,6 @@ if __name__ == "__main__":
     parameters = Parameters()
     parameters.build(sp, 10, 20)
     
-    Improvement(routes)
+    newRoutes = Improvement(routes)
+    Plotter().beforeAndAfter(routes, newRoutes).show()
 

@@ -16,16 +16,18 @@ class Heuristic():
         self.routes     = Routes(start, self.depot)
         
         if start in customers: self.customers.remove(start)
-        return self
+        #return self
 
-    def buildSolution(self, delta, start, customers, depot):
-        self.setup(delta, start, customers, depot)
-        return self
+    #def buildSolution(self, delta, start, customers, depot):
+    #    self.setup(delta, start, customers, depot)
+    #    return self
     
-    def reset(self, start):
-        self.setup(self.delta, start, self.custBackup, self.depot) 
+    #def reset(self, start):
+    #    self.setup(self.delta, start, self.custBackup, self.depot) 
 
-    def run(self, depth = None):
+    def run(self, delta, start, customers, depot, depth = None):
+        self.setup(delta, start, customers, depot)
+
         depth = min(len(self.customers), depth)
         
         for i in range(depth):
@@ -38,6 +40,4 @@ class Heuristic():
         self.routes.finish()
         return self.routes 
 
-    def cost(self, delta, vehicle, c):
-        return self.costFunction.run(delta, vehicle, c)
 

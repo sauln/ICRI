@@ -12,39 +12,23 @@ def rollOut(heuristic, delta, customers, bests):
     pm = Parameters()
     ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
     for vehicle, bestNext, cost in bests:
-        #print("Roll out {} from {}.".format(bestNext, vehicle))
-        _t_routes = heuristic.setup(delta, bestNext, customers, pm.depot)\
-            .run(pm.searchDepth)
+        _t_routes = heuristic.run(delta, bestNext, customers, pm.depot, pm.searchDepth)
         nextCost = vehicle.travelDist(bestNext)
         solution = (_t_routes, _t_routes.cost() + nextCost , vehicle, bestNext)
         ranked.add(solution)
 
     return ranked[0]
 
+# these costs need to be better developed
 def c(routes, end=None):
     return 1
 
-
-
-
-
-
-
-
-
 def combineRoutes(frontSequence, endSequence):
     # shallow copy might not copy the routes objects?!
-    print("In combine routes:") 
-    
-    #print("Combining {} with {}".format(frontSequence, endSequence))
-    #for r in frontSequence:
-    #    print("Details of frontsequence: {}".format(r))
     routes = deepcopy(frontSequence)
     if(endSequence[0][0].custNo != 0):
         lastVehicle = routes[-1]
         restOfVehicle = endSequence.pop(0) 
-        print("joining two half complete vehicles together, \n{}++{}"\
-            .format(lastVehicle, restOfVehicle))
         for cust in restOfVehicle[1:]:
             lastVehicle.append(cust)
     
@@ -52,9 +36,8 @@ def combineRoutes(frontSequence, endSequence):
         # last or first is depot - should be separate vehicles
     for route in endSequence:
         routes.objList.append(route)
+    
     return routes
-
-
 
 def H_c():
     pm = Parameters()
@@ -79,12 +62,14 @@ def H_c():
     for d in Delta:
         while len(custCopy) > 0 and lowerLimit < numVehicles and numVehicles <= minNumVeh:
             width = min(W, len(custCopy))
+
+            # there are multiple ways we can structure this
             topCusts = heuristic.costFunction.lowestCostNext(lowestVehicle,  d, \
                                                              custCopy,  5)
 
             lowestCost = float('inf')
             for vehicle, cust, cost in topCusts:
-                projectedRoute = heuristic.setup(d, cust, custCopy, depot).run(width) 
+                projectedRoute = heuristic.run(d, cust, custCopy, depot, width) 
         
                 tCost = c(bestSequence) + c(vehicle, cust) + c(projectedRoute)
                 if tCost < lowestCost:

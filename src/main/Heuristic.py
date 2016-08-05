@@ -31,6 +31,7 @@ class Heuristic():
         for i in range(depth):
             vehicle, bestNext, cost = \
                 self.routes.getBestNode(self.costFunction, self.delta, self.customers)
+                
             self.routes.addNext(vehicle, bestNext)
             self.customers.remove(bestNext)
        

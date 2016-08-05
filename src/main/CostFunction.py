@@ -1,5 +1,8 @@
 import numpy as np
+import sortedcontainers
 from src.main.Parameters import Parameters
+from src.main.Vehicle import Vehicle
+
 
 class CostFunction():
     def __init__(self, heuristicType):
@@ -23,14 +26,25 @@ class CostFunction():
         remaining   = earliestService - vehicle.totalTime
         timeSlack   = end.dueDate - (vehicle.totalTime + vehicle.travelTime(end))
         capSlack    = (vehicle.maxCapacity - vehicle.curCapacity) - end.demand # slack
-        #d[5] = max(0, c_from.service_window[0] - earliest_possible_service)
-        #d[6] = max(0, c_from_service_time - c_from.service_window[1])
 
         c[0], c[1], c[2], c[3], c[4] = isDepot, travelDist, remaining, timeSlack, capSlack
-        #print("Depot {}, travelDist {:3g}, remaining {},\ntimeSlack {:3g}, capSlack {}\n"\
-        #    .format(isDepot, travelDist, remaining, timeSlack, capSlack))
-        
         
         cost = np.dot(delta, c)    
         return cost 
+
+    def getBestNode(self, delta, customers, start):
+        return self.lowestCostNext(start, delta, customers, 1)[0]
+        #return self.getBestNNodes(cf, delta, customers, 1)[0]
+
+    def lowestCostNext(self, vehicle, delta, customers, size):
+        # replaces getBestNNodes when we have only 1 vehicle to consider 
+        # this should go in vehicle
+        newVeh = Vehicle(Parameters().depot)
+        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
+        for cust in customers:
+            if(vehicle.isFeasible(cust)): 
+                cstest.add((vehicle, cust, self.run(delta,vehicle,cust)))
+            else:
+                cstest.add((newVeh, cust, self.run(delta, newVeh, cust)))
+        return cstest[:size]
 

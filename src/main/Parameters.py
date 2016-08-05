@@ -34,6 +34,12 @@ class Parameters:
         def buildTimeMatrix(self, customers):
             return self.distMatrix
 
+        def travelTime(self, start, end):
+            return self.timeMatrix[start.custNo, end.custNo]
+
+        def travelDist(self, start, end):
+            return self.distMatrix[start.custNo, end.custNo]
+
     instance = None
     def __new__(cls):
         if not Parameters.instance:
@@ -43,4 +49,6 @@ class Parameters:
         return getattr(self.instance, name)
     def __setattr(self, name):
         return setattr(self.instance, name)
+    
+
 

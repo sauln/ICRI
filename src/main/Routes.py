@@ -10,13 +10,9 @@ from src.main.Parameters import Parameters
 # need to only concern ourselves with the last vehicle added to
 
 
-
-
 class Routes(ListBase):
     def __init__(self, start, depot = None):
-
         #this constructor should take a vehicle 
-
         super(Routes, self).__init__()
         if(depot):
             #self.objList.append(Vehicle(depot))
@@ -26,7 +22,8 @@ class Routes(ListBase):
         self.objList.append(Vehicle(start))
 
     def __str__(self):
-        return "Total vehicles:{}\n".format(len(self)) + "\n".join([repr(r)+"t:{}".format(r.totalTime) for r in self.objList])
+        return "Total vehicles:{}\n".format(len(self)) \
+            + "\n".join([repr(r) for r in self.objList])
    
     def __eq__(self, other):
         return self.objList == other.objList
@@ -46,24 +43,13 @@ class Routes(ListBase):
         for v in self.objList:
             v.update(self.depot)
             v.append(self.depot)
-
+    
     def getBestNode(self, cf, delta, customers):
-        return self.getBestNNodes(cf, delta, customers, 1)[0]
+        return cf.getBestNode(delta, customers, self.last())
 
     def lowestCostNext(self, cf, vehicle, delta, customers, size):
-        # replaces getBestNNodes when we have only 1 vehicle to consider 
-        # this should go in vehicle
-        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
-        for cust in customers:
-            if(vehicle.isFeasible(cust)): 
-                cstest.add((vehicle, cust, cf.run(delta,vehicle,cust)))
-            else:
-                newVeh = Vehicle(self.depot)
-                cstest.add((newVeh, cust, cf.run(delta, newVeh, cust)))
-        return cstest[:size]
-
-
-
+        return cf.lowestCostNext(vehicle, delta, customers, size)
+    
     def getBestNNodes(self, cf, delta, customers, size):
         cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
         for c in customers:
@@ -80,7 +66,7 @@ class Routes(ListBase):
                 cstest.add((t, c, cf.run(delta, t, c)))
 
         return cstest[:size]
-
+    
     def cost(self):
         total = sum(r.totalDist for r in self.objList)
         return total

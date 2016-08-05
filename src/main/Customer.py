@@ -30,3 +30,10 @@ class Customer():
                        self.dueDate == other.dueDate and \
                        self.serviceLen == other.serviceLen
 
+class VisitedCustomer(Customer):
+    def __init__(self, customer):
+        pass        
+
+
+
+

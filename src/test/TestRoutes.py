@@ -73,13 +73,10 @@ class TestRoutes(unittest.TestCase):
         tmp_customers = list(self.sp.customers)
         tmp_customers.remove(self.depot)
        
-        print(self.routes)
         feasibleNodes = [c for c in self.sp.customers if self.routes[0].isFeasible(c)]
         nextNodes = self.routes.getBestNNodes(self.costFunction, \
             [1]*7, self.sp.customers,99)
        
-        
-
         self.assertEqual(len(nextNodes), len(feasibleNodes), \
             "\nnextNoodes: {}\nfeasible nodes:{}".format(nextNodes, feasibleNodes))
 

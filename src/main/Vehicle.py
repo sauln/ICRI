@@ -16,7 +16,6 @@ class Vehicle(ListBase):
         self.distMatrix = Parameters().distMatrix
         self.depot = Parameters().depot
 
-        self.curCapacity = 0
         for s in seed:
             self.append(s)
 
@@ -75,12 +74,12 @@ class Vehicle(ListBase):
         self.curCapacity = item.demand
 
     def debugStr(self, item):
-        return "Item {} is being added to {}; full? {}, validTime? {}\n\
+        return "Item {} is being added to {}; \nfull? {}, validTime? {}\n\
             totaltime: {}  travelTime:{}  duedate:{}\n\
             maxCap: {}     demand:{}      curCap: {}"\
             .format(item, self, self.isNotFull(item), self.isValidTime(item), \
-            self.totalTime, self.travelTime(self.last(), item), item.dueDate, \
-            self.maxCapacity, item.demand, self.curCapacity)
+                    self.totalTime, self.travelTime(item), item.dueDate, \
+                    self.maxCapacity, item.demand, self.curCapacity)
 
     def append(self, item):
         assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
@@ -91,4 +90,6 @@ class Vehicle(ListBase):
             assert self.isFeasible(item), self.debugStr(item)           
             self.update(item)
         self.objList.append(item)
+
+
 

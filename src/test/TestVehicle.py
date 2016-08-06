@@ -10,10 +10,11 @@ from src.main.Parameters import Parameters
 
 class TestVehicle(unittest.TestCase):
     def setUp(self):
-        self.earlyC  = Customer(0, 0,  0,  5, 0, 10, 3)
-        self.lateC   = Customer(1, 5,  5, 35, 99, 200, 4)
-        self.middleC = Customer(2, 10,10, 60, 45,75, 9)
-        customers = [self.earlyC, self.lateC, self.middleC]
+        self.depot   = Customer(0, 0,  0,  0, 0, 1000, 0)
+        self.earlyC  = Customer(1, 0,  0,  5, 0, 10, 3)
+        self.lateC   = Customer(2, 5,  5, 35, 99, 200, 4)
+        self.middleC = Customer(3, 10,10, 60, 45,75, 9)
+        customers = [self.depot, self.earlyC, self.lateC, self.middleC]
         param =  SolomonProblem("test", 5, 1000, customers)
 
         self.sp = Parameters()
@@ -39,18 +40,21 @@ class TestVehicle(unittest.TestCase):
 
     def testIsFeasible(self):
         r = Vehicle(self.middleC) 
-        t = r.isFeasible(self.lateC)
-        self.assertTrue(t)
-        f = r.isFeasible(self.earlyC)
-        self.assertFalse(f)
+        self.assertTrue(r.isFeasible(self.lateC))
+        self.assertFalse(r.isFeasible(self.earlyC))
 
     def testAppendIncreasesCapacity(self):
         r = Vehicle(self.earlyC)
+        self.assertEqual(r.curCapacity, self.earlyC.demand)
+
+        r = Vehicle(self.earlyC)
         r.append(self.middleC)
-        self.assertEqual(r.curCapacity, self.middleC.demand)
+        self.assertEqual(r.curCapacity, \
+            self.middleC.demand + self.earlyC.demand)
 
         r.append(self.lateC)
-        self.assertEqual(r.curCapacity, self.middleC.demand + self.lateC.demand)
+        self.assertEqual(r.curCapacity, \
+            self.middleC.demand + self.lateC.demand + self.earlyC.demand)
   
     def testAppendOnlyIfRoom(self):
         self.sp.params.capacity = 25
@@ -61,8 +65,8 @@ class TestVehicle(unittest.TestCase):
     def testConstructorAddsAllElements(self):
         r = Vehicle(self.earlyC, self.middleC, self.lateC)
         self.assertEqual(len(r), 3)
-        r = Vehicle(self.earlyC, self.earlyC)
-        self.assertEqual(len(r), 2)
+        r = Vehicle(self.earlyC)
+        self.assertEqual(len(r), 1)
 
     @unittest.skip("Instead asserting that __setitem__ is never called")
     def testFixCapacityOnReplace(self):

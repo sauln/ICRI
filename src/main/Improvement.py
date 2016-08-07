@@ -6,7 +6,7 @@ import numpy as np
 
 from src.visualization.visualize import Plotter
 from src.main.Parameters import Parameters
-from src.main.RollOut import constructRoute
+from src.main.RollOut import RollOut 
 
 # improvement algorithm
 # 

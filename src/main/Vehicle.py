@@ -31,10 +31,10 @@ class Vehicle(ListBase):
     def canMakeItHomeInTime(self, end):
         return end.dueDate + Parameters().travelTime(end, self.depot) <= self.depot.dueDate
     def isFeasible(self, end):
-        return (self.isValidTime(end) 
-                and self.isNotFull(end) 
-                and self.canMakeItHomeInTime(end))
-   
+        return self.isValidTime(end) and \
+               self.isNotFull(end) and \
+               self.canMakeItHomeInTime(end)
+    ''' 
     def lowestCostNext(self, delta, customers, size):
         # replaces getBestNNodes when we have only 1 vehicle to consider 
         # this should go in vehicle
@@ -46,6 +46,7 @@ class Vehicle(ListBase):
             else:
                 cstest.add((newVeh, cust, self.run(delta, newVeh, cust)))
         return cstest[:size]
+    ''' 
 
     def travelDist(self, end):
         return Parameters().travelDist(self.last(), end) 

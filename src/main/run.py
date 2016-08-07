@@ -14,12 +14,10 @@ from src.main.Validator import Validator
 from src.main.Vehicle   import Vehicle
 from src.main.Customer  import Customer
 from src.main.Heuristic import Heuristic
-from src.main.RollOut   import constructRoute
+from src.main.RollOut   import RollOut 
 
 from src.main.Parameters import Parameters
 from src.main.Improvement import Improvement
-
-
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -32,11 +30,18 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Setup parameters singleton')
+    
     parameters = Parameters()
     parameters.build(sp, 10, 20)
 
     logger.info('Construct routes')
-    routes = constructRoute()
+    
+    
+    d = [1,1,1,1,1,1,1] 
+    builder = Heuristic().run(d, parameters.depot, parameters.customers)
+    
+    
+    routes = RollOut().constructRoute()
 
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
@@ -46,27 +51,13 @@ def main(input_filepath):
     Plotter().plotRoutes(routes).draw()
     #newRoutes = Improvement(routes)
 
-    #logger.info("Pickling routes")
+    logger.info("Pickling routes")
     # pickle the set so we can use that for deving the 
     with open("data/interim/tmpr101.p", "wb") as f:
         pickle.dump(routes, f)
 
-    #logger.info('Generate visualization of solution')
-    # Plotter().plotRoutes(routes).show()
-    #Plotter().beforeAndAfter(routes, newRoutes).draw()
-    #Plotter().show()
-    # print(routes)
-
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
-    
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
     main()
 

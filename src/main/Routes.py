@@ -44,12 +44,13 @@ class Routes(ListBase):
             v.update(self.depot)
             v.append(self.depot)
     
-    def getBestNode(self, cf, delta, customers):
-        return cf.getBestNode(delta, customers, self.last())
+    #def getBestNode(self, cf, delta, customers):
+    #    return cf.getBestNode(delta, customers, self.last())
 
-    def lowestCostNext(self, cf, vehicle, delta, customers, size):
-        return cf.lowestCostNext(vehicle, delta, customers, size)
-    
+    #def lowestCostNext(self, cf, vehicle, delta, customers, size):
+    #    return cf.lowestCostNext(vehicle, delta, customers, size)
+   
+    '''
     def getBestNNodes(self, cf, delta, customers, size):
         cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
         for c in customers:
@@ -66,7 +67,8 @@ class Routes(ListBase):
                 cstest.add((t, c, cf.run(delta, t, c)))
 
         return cstest[:size]
-    
+    '''
+
     def cost(self):
         total = sum(r.totalDist for r in self.objList)
         return total

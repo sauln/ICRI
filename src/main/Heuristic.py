@@ -17,22 +17,15 @@ class Heuristic():
         self.routes     = Routes(start, self.depot)
         
         if start in customers: self.customers.remove(start)
-        #return self
 
     def run(self, delta, start, customers):
-        # this should be in routes
-
         self.setup(delta, start, customers)
         
-        for i in range(len(customers)):
-            top = self.costFunction.getBestNode(delta, self.customers, self.routes.last())
-            #self.routes.getBestNode(self.costFunction, delta, self.customers)
-            print(top)
-
+        for i in range(len(self.customers)):
+            top = self.costFunction.getBestNode(delta, self.routes.last(), self.customers)
             self.routes.addNext(top.vehicle, top.customer)
             self.customers.remove(top.customer)
        
-        self.routes.finish()
         return self.routes 
 
 

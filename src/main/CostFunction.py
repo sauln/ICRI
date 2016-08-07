@@ -3,17 +3,20 @@ import sortedcontainers
 from src.main.Parameters import Parameters
 from src.main.Vehicle import Vehicle
 
-
 class PotentialNextCustomer:
     def __init__(self, vehicle, customer, gnnhCost):
         self.vehicle = vehicle
         self.customer = customer
         self.gnnhCost = gnnhCost
     def __str__(self):
-        return "pot next: {} {} {}".format(self.vehicle, self.customer, self.gnnhCost)
+        return "\nVehicle:{}\nCustomer:{}\nCost:{}".format(self.vehicle, self.customer, self.gnnhCost)
     def __repr__(self):
         return self.__str__()
-    
+    def __eq__(self, other):
+        return self.vehicle == other.vehicle and \
+               self.customer == other.customer and \
+               self.gnnhCost == other.gnnhCost
+
 
 class CostFunction():
     def __init__(self, heuristicType):
@@ -45,38 +48,24 @@ class CostFunction():
         cost = np.dot(delta, c)    
         return cost 
 
-    # these costs need to be better developed
-    def c(self, routes, end=None):
-        return 1
+    def cCust(self, vehicle, end):
+        return vehicle.travelTime(end)
 
-    def getBestNode(self, delta, customers, start):
-        return self.lowestCostNext(start, delta, customers, 1)[0]
-        #return self.getBestNNodes(cf, delta, customers, 1)[0]
+    def cRoutes(self, routes):
+        return len(routes)*10 
 
+    def getBestNode(self, delta, vehicle, customers):
+        return self.getBestNNodes(delta, vehicle, customers, 1)[0]
+
+    def getBestNNodes(self, delta, vehicle, customers, size):
+        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x.gnnhCost)
+        for cust in customers:
+            cstest.add(self.getCostOfNext(delta, vehicle, cust))
+        return cstest[:size]
+    
     def getCostOfNext(self, delta, vehicle, customer):
         veh = vehicle if vehicle.isFeasible(customer) else Vehicle(Parameters().depot)
         cost = self.gnnh(delta, veh, customer) 
         return PotentialNextCustomer(veh, customer, cost)
 
-    def lowestCostNext(self, vehicle, delta, customers, size):
-        # replaces getBestNNodes when we have only 1 vehicle to consider 
-        # this should go in vehicle
-
-
-
-        #newVeh = Vehicle(Parameters().depot)
-        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x.gnnhCost)
-        
-        for cust in customers:
-            cstest.add(self.getCostOfNext(delta, vehicle, cust))
-        #for cust in customers:
-        #    if(vehicle.isFeasible(cust)):
-        #        cost = self.gnnh(delta, vehicle, cust) 
-        #        cstest.add(PotentialNextCustomer(vehicle, cust, cost))
-        #    else:
-        #        cost = self.gnnh(delta, newVeh, cust) 
-        #        cstest.add(PotentialNextCustomer(newVeh, cust, cost))
-        
-        
-        return cstest[:size]
 

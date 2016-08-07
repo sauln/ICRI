@@ -30,79 +30,55 @@ class RollOut:
 
         self.delta = [[10,1,1,1,1,1,1]]
         self.d = self.delta[0]
+        
+        self.goldenRoutes = None
 
     def constructRoute(self):
-        routes = self.H_c() 
-        return routes
-
-    def H_c(self):
         lowestVehicle = self.bestSequence[-1]
         self.workingCustomers = list(self.customers)
-
+        routes = self.rollOut()
+        return routes 
+   
+    def rollOut(self):
         while len(self.workingCustomers) > 0: 
-            #and lowerLimit < numVehicles and numVehicles <= minNumVeh:
-            routes = self.rollOutNextCustomer() 
-            numVehicles = len(routes)
-        bestSequence.finish()
-            
-        return bestSequence
-    
-    def updateBestSequence(self, seqObj):
-        self.workingCustomers.remove(seqObj.customer)
-        self.bestSequence.addNext(seqObj.lowestVehicle, seqObj.lowestNext)
-    
+            self.rollOutNextCustomer() 
+        self.goldenRoutes.finish()
+        return self.goldenRoutes 
+
     def rollOutNextCustomer(self): 
-        # there are multiple ways we can structure this
-        topCusts = self.costFunction.lowestCostNext(self.bestSequence[-1],  self.d, \
+        topCusts = self.costFunction.getBestNNodes(self.d, self.bestSequence[-1],  \
                                                     self.workingCustomers,  5)
 
         lowestSeqObj = self.lowestProjectedSequence(topCusts)
         self.updateBestSequence(lowestSeqObj)
-        routes = combineRoutes(self.bestSequence, lowestSeqObj.projectedRoute)
-        return routes
-
+        self.numRoutes = len(self.bestSequence) + len(lowestSeqObj.projectedRoute)
+        self.goldenRoutes = self.combineRoutes(self.bestSequence, \
+                                               lowestSeqObj.projectedRoute)
+        
+    def updateBestSequence(self, seqObj):
+        self.workingCustomers.remove(seqObj.customer)
+        self.bestSequence.addNext(seqObj.vehicle, seqObj.customer)
+    
     def lowestProjectedSequence(self, topCusts): 
-        baseCost =  self.costFunction.c(self.bestSequence) 
-
+        baseCost =  self.costFunction.cRoutes(self.bestSequence) 
         for top in topCusts:
             top.projectedRoute = self.heuristic.run(self.d, top.customer, \
                                                     self.workingCustomers) 
             top.tCost = baseCost + \
-                        self.custFunction.c(top.vehicle, top.cust) + \
-                        self.custFunction.c(projectedRoute)
-
+                        self.costFunction.cCust(top.vehicle, top.customer) + \
+                        self.costFunction.cRoutes(top.projectedRoute)
 
         return min(topCusts, key = lambda x: x.tCost) 
-
 
     def combineRoutes(self, frontSequence, endSequence):
         # shallow copy might not copy the routes objects?!
         routes = deepcopy(frontSequence)
         if(endSequence[0][0].custNo != 0):
-            lastVehicle = routes[-1]
             restOfVehicle = endSequence.pop(0) 
             for cust in restOfVehicle[1:]:
-                lastVehicle.append(cust)
-        
-            assert lastVehicle != frontSequence[-1], "Need to make deeper copy"
-            # last or first is depot - should be separate vehicles
+                routes.last().append(cust)
         for route in endSequence:
             routes.objList.append(route)
-        
+       
         return routes
 
-
-
-    '''
-    def rollOut(self, heuristic, delta, customers, bests):
-        pm = Parameters()
-        ranked = sortedcontainers.SortedListWithKey(key=lambda x: x[1])
-        for vehicle, bestNext, cost in bests:
-            _t_routes = heuristic.run(delta, bestNext, customers, pm.depot, pm.searchDepth)
-            nextCost = vehicle.travelDist(bestNext)
-            solution = (_t_routes, _t_routes.cost() + nextCost , vehicle, bestNext)
-            ranked.add(solution)
-
-        return ranked[0]
-    '''
-    

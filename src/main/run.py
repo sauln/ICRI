@@ -38,8 +38,8 @@ def main(input_filepath):
     
     
     d = [1,1,1,1,1,1,1] 
-    builder = Heuristic().run(d, parameters.depot, parameters.customers)
-    
+    # routes = Heuristic().run(d, parameters.depot, parameters.customers)
+    # print(routes) 
     
     routes = RollOut().constructRoute()
 
@@ -48,7 +48,7 @@ def main(input_filepath):
    
     print("Solution {}".format(routes))
 
-    Plotter().plotRoutes(routes).draw()
+    Plotter().plotRoutes(routes).show()
     #newRoutes = Improvement(routes)
 
     logger.info("Pickling routes")

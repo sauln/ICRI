@@ -34,19 +34,6 @@ class Vehicle(ListBase):
         return self.isValidTime(end) and \
                self.isNotFull(end) and \
                self.canMakeItHomeInTime(end)
-    ''' 
-    def lowestCostNext(self, delta, customers, size):
-        # replaces getBestNNodes when we have only 1 vehicle to consider 
-        # this should go in vehicle
-        newVeh = Vehicle(Parameters().depot)
-        cstest = sortedcontainers.SortedListWithKey(key=lambda x: x[2])
-        for cust in customers:
-            if(vehicle.isFeasible(cust)): 
-                cstest.add((vehicle, cust, self.run(delta,vehicle,cust)))
-            else:
-                cstest.add((newVeh, cust, self.run(delta, newVeh, cust)))
-        return cstest[:size]
-    ''' 
 
     def travelDist(self, end):
         return Parameters().travelDist(self.last(), end) 
@@ -81,6 +68,12 @@ class Vehicle(ListBase):
             .format(item, self, self.isNotFull(item), self.isValidTime(item), \
                     self.totalTime, self.travelTime(item), item.dueDate, \
                     self.maxCapacity, item.demand, self.curCapacity)
+            
+    def feasibilityStr(self, item):
+        return "isFeasible:{}".format(self.isFeasible(item)) +\
+               "isNotFull:{}".format(self.isNotFull(item)) +\
+               "isValidTime:{}".format(self.isValidTime(item)) +\
+               "canMakeItHome:{}".format(self.canMakeItHomeInTime(item))
 
     def append(self, item):
         assert type(item) == Customer, "Cannot add type {} to route".format(type(value))

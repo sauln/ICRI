@@ -35,50 +35,8 @@ class TestRoutes(unittest.TestCase):
 
         self.routes = Routes(self.depot)
         self.costFunction = CostFunction('gnnh')
-    
-    def testNextNodesAreFeasible(self):
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers, 5)
-        for v, c, cost in nextNodes:
-            self.assertTrue(v.isFeasible(c), "{} is infeasible on {}".format(c,v))
+   
 
-    def testNextNodesAreAscendingOrder(self):
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers, 5)
-
-        for i in range(len(nextNodes) - 1):
-            vehiclel, custl, costl = nextNodes[i]
-            vehicler, custr, costr = nextNodes[i+1]
-            self.assertLessEqual(costl, costr)
-    
-    def testTopNodeIsMaxOfNNodes(self):
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers,5)
-
-        nt = min(nextNodes, key = lambda x: x[2])
-        top = self.routes.getBestNode(self.costFunction, \
-            [1]*7, self.sp.customers)
-
-        self.assertEqual(top, nt)
-
-    def testNNodesIsRightSize(self):
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers,5)
-        self.assertEqual(len(nextNodes), 5)
-
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers,1)
-        self.assertEqual(len(nextNodes), 1)
-        
-        tmp_customers = list(self.sp.customers)
-        tmp_customers.remove(self.depot)
-       
-        feasibleNodes = [c for c in self.sp.customers if self.routes[0].isFeasible(c)]
-        nextNodes = self.routes.getBestNNodes(self.costFunction, \
-            [1]*7, self.sp.customers,99)
-       
-        self.assertEqual(len(nextNodes), len(feasibleNodes), \
-            "\nnextNoodes: {}\nfeasible nodes:{}".format(nextNodes, feasibleNodes))
 
 if __name__ == "__main__":
     unittest.main()

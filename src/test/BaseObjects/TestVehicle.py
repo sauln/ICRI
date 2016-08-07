@@ -1,11 +1,11 @@
 import unittest
 import pickle
 
-from src.main.SolomonProblem import SolomonProblem
-from src.main.Customer import Customer
-from src.main.Vehicle import Vehicle
-from src.main.Customer import Customer
-from src.main.Parameters import Parameters
+from src.main.BaseObjects.SolomonProblem import SolomonProblem
+from src.main.BaseObjects.Customer import Customer
+from src.main.BaseObjects.Vehicle import Vehicle
+from src.main.BaseObjects.Customer import Customer
+from src.main.BaseObjects.Parameters import Parameters
 
 
 class TestVehicle(unittest.TestCase):

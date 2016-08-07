@@ -5,8 +5,8 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from src.main.SolomonProblem import SolomonProblem
-from src.main.Customer import Customer
+from src.main.BaseObjects.SolomonProblem import SolomonProblem
+from src.main.BaseObjects.Customer import Customer
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))

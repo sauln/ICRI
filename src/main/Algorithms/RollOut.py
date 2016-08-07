@@ -3,50 +3,48 @@ import sys
 import sortedcontainers
 from copy import copy, deepcopy
 
-from src.main.Vehicle import Vehicle
-from src.main.Heuristic import Heuristic
-from src.main.Routes import Routes
-from src.main.Parameters import Parameters
-from src.main.CostFunction import CostFunction
+from src.main.Algorithms.Heuristic import Heuristic
+from src.main.Algorithms.CostFunction import Cost
+from src.main.Algorithms.NextFinder import NextFinder
 
+from src.main.BaseObjects.Routes import Routes
+from src.main.BaseObjects.Parameters import Parameters
 
 class RollOut:
     def __init__(self):
         self.heuristic = Heuristic()
-        self.costFunction = CostFunction("gnnh")
         pm = Parameters()
         self.depot = pm.depot
-        self.customers = list(pm.customers)
+        self.workingCustomers = list(pm.customers)
+
 
         # need to maintain two routes objects
         self.routes = Routes(self.depot)
         self.bestSequence = Routes(self.depot)
-
+        self.W = 100
+        self.delta = [[10,1,1,1,1,1,1]]
+        self.goldenRoutes = None
+        
+        
         # don't need 'start' because we can grab off end of list
         start = self.depot
         numVehicles = minNumVeh = lowestCost = float("inf") 
         lowerLimit = 12
-        self.W = 100
-
-        self.delta = [[10,1,1,1,1,1,1]]
-        self.d = self.delta[0]
-        
-        self.goldenRoutes = None
 
     def constructRoute(self):
         lowestVehicle = self.bestSequence[-1]
-        self.workingCustomers = list(self.customers)
         routes = self.rollOut()
         return routes 
    
     def rollOut(self):
+        self.d = self.delta[0]        
         while len(self.workingCustomers) > 0: 
             self.rollOutNextCustomer() 
         self.goldenRoutes.finish()
         return self.goldenRoutes 
 
     def rollOutNextCustomer(self): 
-        topCusts = self.costFunction.getBestNNodes(self.d, self.bestSequence[-1],  \
+        topCusts = NextFinder.getBestNNodes(self.d, self.bestSequence[-1],  \
                                                     self.workingCustomers,  5)
 
         lowestSeqObj = self.lowestProjectedSequence(topCusts)
@@ -60,13 +58,13 @@ class RollOut:
         self.bestSequence.addNext(seqObj.vehicle, seqObj.customer)
     
     def lowestProjectedSequence(self, topCusts): 
-        baseCost =  self.costFunction.cRoutes(self.bestSequence) 
+        baseCost =  Cost.ofRoutes(self.bestSequence) 
         for top in topCusts:
             top.projectedRoute = self.heuristic.run(self.d, top.customer, \
-                                                    self.workingCustomers) 
+                                                    self.workingCustomers, self.depot) 
             top.tCost = baseCost + \
-                        self.costFunction.cCust(top.vehicle, top.customer) + \
-                        self.costFunction.cRoutes(top.projectedRoute)
+                        Cost.vehicleToCustomer(top.vehicle, top.customer) + \
+                        Cost.ofRoutes(top.projectedRoute)
 
         return min(topCusts, key = lambda x: x.tCost) 
 

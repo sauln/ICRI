@@ -1,13 +1,13 @@
 import unittest
 
-from src.main.SolomonProblem import SolomonProblem
-from src.main.Customer import Customer
-from src.main.Routes import Routes
-from src.main.CostFunction import CostFunction
-from src.main.Heuristic import Heuristic
+from src.main.BaseObjects.SolomonProblem import SolomonProblem
+from src.main.BaseObjects.Customer import Customer
+from src.main.BaseObjects.Routes import Routes
+#from src.main.CostFunction import Cost
+#from src.main.Heuristic import Heuristic
 #from src.main.Matrices import Matrices
 
-from src.main.Parameters import Parameters
+from src.main.BaseObjects.Parameters import Parameters
 
 class TestRoutes(unittest.TestCase):
     def setUp(self):
@@ -34,7 +34,7 @@ class TestRoutes(unittest.TestCase):
         params.build(self.sp, 10,10)
 
         self.routes = Routes(self.depot)
-        self.costFunction = CostFunction('gnnh')
+        #self.costFunction = CostFunction('gnnh')
    
 
 

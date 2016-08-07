@@ -5,13 +5,8 @@ import numpy as np
 
 
 from src.visualization.visualize import Plotter
-from src.main.Parameters import Parameters
-from src.main.RollOut import RollOut 
-
-# improvement algorithm
-# 
-# take a solution set 
-# 
+from src.main.BaseObjects.Parameters import Parameters
+from src.main.Algorithms.RollOut import RollOut 
 
 def shortestRoute(routes):
     # this can go in routes class
@@ -20,7 +15,6 @@ def shortestRoute(routes):
         if (len(route) < len(smallest)):
             smallest = route
 
-    #print("Shortest route: {}".format(smallest))
     return smallest
 
 def diff(st, en):

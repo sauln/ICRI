@@ -2,13 +2,12 @@ import numpy as np
 
 import sortedcontainers
 
-from src.main.Vehicle import Vehicle
-from src.main.ListBase import ListBase
-from src.main.Parameters import Parameters
+from src.main.BaseObjects.Vehicle import Vehicle
+from src.main.BaseObjects.ListBase import ListBase
+from src.main.BaseObjects.Parameters import Parameters
 
 # routes object will need a big overhaul
 # need to only concern ourselves with the last vehicle added to
-
 
 class Routes(ListBase):
     def __init__(self, start, depot = None):

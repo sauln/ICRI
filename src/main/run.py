@@ -10,14 +10,15 @@ import sortedcontainers
 import numpy as np
 
 from src.visualization.visualize import Plotter
-from src.main.Validator import Validator
-from src.main.Vehicle   import Vehicle
-from src.main.Customer  import Customer
-from src.main.Heuristic import Heuristic
-from src.main.RollOut   import RollOut 
 
-from src.main.Parameters import Parameters
-from src.main.Improvement import Improvement
+from src.main.BaseObjects.Vehicle   import Vehicle
+from src.main.BaseObjects.Customer  import Customer
+from src.main.BaseObjects.Parameters import Parameters
+
+from src.main.Algorithms.Heuristic import Heuristic
+from src.main.Algorithms.RollOut   import RollOut 
+from src.main.Algorithms.Validator import Validator
+from src.main.Algorithms.Improvement import Improvement
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))

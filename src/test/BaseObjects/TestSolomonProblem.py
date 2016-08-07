@@ -2,7 +2,7 @@ import unittest
 import pickle
 import copy
 
-from src.main.SolomonProblem import SolomonProblem
+from src.main.BaseObjects.SolomonProblem import SolomonProblem
 
 class TestSolomonProblem(unittest.TestCase):
     def setUp(self):

@@ -19,7 +19,7 @@ class Heuristic():
 
     def run(self, delta, start, customers, depot):
         self.setup(delta, start, customers, depot)
-        
+
         for i in range(len(self.customers)):
             top = NextFinder.getBestNode(delta, self.routes.last(), self.customers)
             self.routes.addNext(top.vehicle, top.customer)

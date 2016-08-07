@@ -26,14 +26,20 @@ class Vehicle(ListBase):
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
+    
     def isValidTime(self, end):
         return self.totalTime + self.travelTime(end) <= end.dueDate
+    
     def canMakeItHomeInTime(self, end):
+        #print("{} + {} <= {}".format(end.dueDate, \
+        #                             Parameters().travelTime(end, self.depot),\
+        #                             self.depot.dueDate))
         return end.dueDate + Parameters().travelTime(end, self.depot) <= self.depot.dueDate
+    
     def isFeasible(self, end):
         return self.isValidTime(end) and \
-               self.isNotFull(end) and \
-               self.canMakeItHomeInTime(end)
+               self.isNotFull(end) #and \
+               #self.canMakeItHomeInTime(end)
 
     def travelDist(self, end):
         return Parameters().travelDist(self.last(), end) 
@@ -62,18 +68,18 @@ class Vehicle(ListBase):
         self.curCapacity = item.demand
 
     def debugStr(self, item):
-        return "Item {} is being added to {}; \nfull? {}, validTime? {}\n\
+        return "Item {} is being added to {}; \n{}\n\
             totaltime: {}  travelTime:{}  duedate:{}\n\
             maxCap: {}     demand:{}      curCap: {}"\
-            .format(item, self, self.isNotFull(item), self.isValidTime(item), \
+            .format(item, self, self.feasibilityStr(item), \
                     self.totalTime, self.travelTime(item), item.dueDate, \
                     self.maxCapacity, item.demand, self.curCapacity)
             
     def feasibilityStr(self, item):
-        return "isFeasible:{}".format(self.isFeasible(item)) +\
-               "isNotFull:{}".format(self.isNotFull(item)) +\
-               "isValidTime:{}".format(self.isValidTime(item)) +\
-               "canMakeItHome:{}".format(self.canMakeItHomeInTime(item))
+        return "isFeasible:{} ".format(self.isFeasible(item)) +\
+               "isNotFull:{} ".format(self.isNotFull(item)) +\
+               "isValidTime:{} ".format(self.isValidTime(item)) +\
+               "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
 
     def append(self, item):
         assert type(item) == Customer, "Cannot add type {} to route".format(type(value))

@@ -32,14 +32,30 @@ class TestCostFunction(unittest.TestCase):
         parameters.build(self.sp, 10,10)
         self.routes = Routes(self.depot)
 
-    def testNextFinderIsPositive(self):
+    def iterateOverCustomers(self, func):
         vehicle = Vehicle(self.depot)
     
         for cust in self.sp.customers:
             if(vehicle.isFeasible(cust)):
-                cost = Cost.gnnh([1]*7, vehicle, cust)
+                cost = func(vehicle, cust)
                 self.assertGreaterEqual(cost, 0, \
                     "\n{}  ->  {} costs {}".format(vehicle.last(), cust, cost)) 
+        
+    @unittest.skip("Unsure of how to test this so far")
+    def testCostOfRoutes(self):
+        pass     
+
+    def testCostOfDistanceOnly(self):
+        self.iterateOverCustomers(Cost.distanceOnly)
+
+    def testCostOfVehicleToCustomer(self):
+        self.iterateOverCustomers(Cost.vehicleToCustomer) 
+
+    def testGnnhIsPositive(self):
+        def closedGNNH(vehicle, end):
+            return Cost.gnnh([1]*7, vehicle, end)
+
+        self.iterateOverCustomers(closedGNNH)
 
 if __name__ == "__main__":
     unittest.main()

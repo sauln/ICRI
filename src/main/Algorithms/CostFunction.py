@@ -6,6 +6,10 @@ class Cost:
         return vehicle.travelTime(end)
     
     @staticmethod
+    def distanceOnly(vehicle, end):
+        return vehicle.travelDist(end)
+    
+    @staticmethod
     def ofRoutes(routes):
         return len(routes)*10 
 
@@ -26,6 +30,3 @@ class Cost:
         cost = np.dot(delta, c)    
         return cost
 
-    @staticmethod
-    def distanceOnly(self, delta, vehicle, end):
-        return vehicle.travelDist(end)

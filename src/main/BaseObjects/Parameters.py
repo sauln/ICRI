@@ -26,7 +26,7 @@ class Parameters:
             self.searchDepth = searchDepth
 
         def getCustomers(self):
-            return list(self.problemSet.customers)
+            return list(self.params.customers)
 
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 

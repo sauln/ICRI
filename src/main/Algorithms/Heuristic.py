@@ -15,7 +15,8 @@ class Heuristic():
         self.depot      = depot
         self.routes     = Routes(start, self.depot)
         
-        if start in customers: self.customers.remove(start)
+        if start in customers: 
+            self.customers.remove(start)
 
     def run(self, delta, start, customers, depot):
         self.setup(delta, start, customers, depot)

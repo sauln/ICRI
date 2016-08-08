@@ -27,10 +27,11 @@ class NextFinder:
 
     @staticmethod
     def getBestNNodes(delta, routes, customers, size):
-        vehicle = routes.last()
         cstest = sortedcontainers.SortedListWithKey(key=lambda x: x.gnnhCost)
-        for cust in customers:
-            cstest.add(NextFinder.getCostOfNext(delta, vehicle, cust))
+        
+        for vehicle in routes: 
+            for cust in customers:
+                cstest.add(NextFinder.getCostOfNext(delta, vehicle, cust))
         return cstest[:size]
     
     @staticmethod

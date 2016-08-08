@@ -35,34 +35,34 @@ class TestNextFinder(unittest.TestCase):
   
     def testNextNodesAreFeasible(self):
         nextNodes = NextFinder.getBestNNodes(\
-            [1]*7, self.routes.last(), self.sp.customers, 5)
+            [1]*7, self.routes, self.sp.customers, 5)
         for v in nextNodes:
             self.assertTrue(v.vehicle.isFeasible(v.customer), \
                 "{} feasibility".format(v.vehicle.feasibilityStr(v.customer)))
 
     def testNextNodesAreAscendingOrder(self):
         nextNodes = NextFinder.getBestNNodes(\
-            [1]*7, self.routes.last(), self.sp.customers, 5)
+            [1]*7, self.routes, self.sp.customers, 5)
 
         for i in range(len(nextNodes) - 1):
             self.assertLessEqual(nextNodes[i].gnnhCost, nextNodes[i+1].gnnhCost)
     
     def testTopNodeIsMaxOfNNodes(self):
-        nextNodes = NextFinder.getBestNNodes([1]*7, self.routes.last(),\
+        nextNodes = NextFinder.getBestNNodes([1]*7, self.routes,\
                                                     self.sp.customers, 5)
 
         nt = min(nextNodes, key = lambda x: x.gnnhCost)
-        top = NextFinder.getBestNode([1]*7, self.routes.last(), self.sp.customers)
+        top = NextFinder.getBestNode([1]*7, self.routes, self.sp.customers)
 
         self.assertEqual(top, nt, "\n{} != \n{}".format(nt, top))
 
     def testNNodesIsRightSize(self):
         nextNodes = NextFinder.getBestNNodes(\
-            [1]*7, self.routes.last(), self.sp.customers, 5)
+            [1]*7, self.routes, self.sp.customers, 5)
         self.assertEqual(len(nextNodes), 5)
 
         nextNodes = NextFinder.getBestNNodes(\
-            [1]*7, self.routes.last(), self.sp.customers, 1)
+            [1]*7, self.routes, self.sp.customers, 1)
         self.assertEqual(len(nextNodes), 1)
 
 if __name__ == "__main__":

@@ -17,7 +17,6 @@ class RollOut:
         self.depot = pm.depot
         self.workingCustomers = list(pm.customers)
 
-
         # need to maintain two routes objects
         self.routes = Routes(self.depot)
         self.bestSequence = Routes(self.depot)
@@ -25,9 +24,6 @@ class RollOut:
         self.delta = [[10,1,1,1,1,1,1]]
         self.goldenRoutes = None
         
-        
-        # don't need 'start' because we can grab off end of list
-        start = self.depot
         numVehicles = minNumVeh = lowestCost = float("inf") 
         lowerLimit = 12
 
@@ -43,9 +39,11 @@ class RollOut:
         self.goldenRoutes.finish()
         return self.goldenRoutes 
 
-    def rollOutNextCustomer(self): 
-        topCusts = NextFinder.getBestNNodes(self.d, self.bestSequence[-1],  \
+    def rollOutNextCustomer(self):
+        # get from any vehicles
+        topCusts = NextFinder.getBestNNodes(self.d, self.bestSequence,  \
                                                     self.workingCustomers,  5)
+
 
         lowestSeqObj = self.lowestProjectedSequence(topCusts)
         self.updateBestSequence(lowestSeqObj)

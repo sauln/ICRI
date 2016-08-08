@@ -3,7 +3,6 @@ import copy
 import sortedcontainers
 import numpy as np
 
-
 from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Parameters import Parameters
 from src.main.Algorithms.RollOut import RollOut 

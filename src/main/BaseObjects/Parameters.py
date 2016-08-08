@@ -25,6 +25,9 @@ class Parameters:
             self.topNodes = topNodes
             self.searchDepth = searchDepth
 
+        def getCustomers(self):
+            return list(self.problemSet.customers)
+
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 
             distm = squareform(pdist(coords, 'euclidean'))

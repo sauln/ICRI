@@ -22,11 +22,12 @@ class PotentialNextCustomer:
 
 class NextFinder:
     @staticmethod
-    def getBestNode(delta, vehicle, customers):
-        return NextFinder.getBestNNodes(delta, vehicle, customers, 1)[0]
+    def getBestNode(delta, routes, customers):
+        return NextFinder.getBestNNodes(delta, routes, customers, 1)[0]
 
     @staticmethod
-    def getBestNNodes(delta, vehicle, customers, size):
+    def getBestNNodes(delta, routes, customers, size):
+        vehicle = routes.last()
         cstest = sortedcontainers.SortedListWithKey(key=lambda x: x.gnnhCost)
         for cust in customers:
             cstest.add(NextFinder.getCostOfNext(delta, vehicle, cust))

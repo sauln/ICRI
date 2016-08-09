@@ -8,7 +8,6 @@ and grouped functions.
 
 ## Base objects
 
-
 ### Customer
 Basic structure of a customer as defined by the Solomon Problem sets
 
@@ -34,31 +33,41 @@ Solution set.  Container of multiple vehicles.  Manages adding new vehicles or
 adding to existing vehicles (routes). Defines functions for finding top N next nodes 
 used in heuristic
 
-One confusing aspect of this class is that it always has a vehicle that is at the depot.
-This represents a vehicle that is ready to leave at a moments notice.  It also makes it
-much easier to find the best next nodes, because we can look at the cost of leaving
-from the depot just the same as from a customer.
-
 ### Parameters
 Singleton object that captures the input parameters of the problem and some metaparameters
 that are used for calculating the problem.
 
+### PotentialNextCustomer
+Temporary object that combines the next customer, the vehicle it is being added to, the 
+projected route if this customer is added, and all the costs associated with these actions.
+
 
 ## Algorithms
-
-
-
-### CostFunction
-Defines multiple different cost functions for defining best next nodes and cost of routes.
-
-Instantiate the class with a string input as heuristicType. Implemented ones are
-the gnnh defined in the paper and a distance only.
-
-### RollOut
-Algorithm for building part 2 of the ICRI paper. 
-
+The algorithms directory contains many objects that describe the main algorithms and 
+functions used in the solution. For many of these functions, there were not clear
+places to go within an object, so they have found their home here, usually exposed
+as static methods.
 
 ### Heuristic
 Algorithm for building part 1 of the ICRI paper.  Use CostFunction to build solution
 using a greedy algorithm
+
+### RollOut
+Algorithm for building part 2 of the ICRI paper. 
+
+### Improvement
+Procedures for part 3 of the ICRI paper.
+
+### Validator
+Helper object that consumes a routes object and confirms that it abides by all our rules.
+
+### NextFinder
+Some special static functions to help us find the best next nodes for appending. Returns 
+a list of PotentialNextCustomer
+
+### Cost
+Defines multiple different cost functions for defining best next nodes and cost of routes.
+
+
+
 

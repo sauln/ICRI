@@ -17,10 +17,10 @@ This repository will both serve as a
 Currently implements the algorithm using...
 
 ## Requirements
-* Python3
-* Numpy
-* Click
-* mkdocs - to build the documentation
+* Python3 - 
+* Numpy   - some numerical optimizations
+* Click   - mostly deprecated
+* mkdocs  - to build the documentation
 
 ## Installation
 
@@ -30,40 +30,39 @@ Currently implements the algorithm using...
 
 ## Commands
 
-* `python run_program.py` - Run current bleeding edge; tests, routing for r101, and visualization
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
+* `./run_program.sh` - Run current bleeding edge; tests, routing for r101, and visualization
 
 ## Project Organization
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
+    ├── Makefile             <- Makefile with commands like `make data` or `make train`
+    ├── README.md            <- The top-level README for developers using this project.
     ├── data
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── interim          <- Intermediate data that has been transformed.
+    │   └── raw              <- The original, immutable data dump.
     │
-    ├── docs               <- A mkdocs documentation 
+    ├── docs                 <- A mkdocs documentation project 
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
+    ├── reports              <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures          <- Generated graphics and figures to be used in reporting
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
+    ├── requirements.txt     <- The requirements file for reproducing the analysis environment, e.g.
+    │                           generated with `pip freeze > requirements.txt`
     │
-    └── src                <- Source code for use in this project.
-        ├── __init__.py    <- Makes src a Python module
+    └── src                  <- Source code for use in this project.
+        ├── __init__.py      <- Makes src a Python module
         │
-        ├── data           <- Scripts to download or generate data
-        │   └── make_dataset.py
+        ├── main             <-
+        │   ├── BaseObjects  
+        │   └── Algorithms   
+        │
+        ├── test             <-
+        │   ├── BaseObjects
+        │   └── Algorithms   
         │
-        └── visualization  <- Scripts to create exploratory and results oriented visualizations
-            └── visualize.py
+        ├── data             <- Scripts to download or generate data
+        │
+        └── visualization    <- Scripts to create exploratory and results oriented visualizations
 
 
 This documentation was build with the help of [mkdocs.org](http://mkdocs.org).

@@ -68,9 +68,9 @@ class Vehicle(ListBase):
         self.curCapacity = item.demand
 
     def debugStr(self, item):
-        return "Item {} is being added to {}; \n{}\n\
-            totaltime: {}  travelTime:{}  duedate:{}\n\
-            maxCap: {}     demand:{}      curCap: {}"\
+        return "\n\t\tItem {} is being added to \n\t\t{}; \n\t\t{}\n\
+                totaltime: {}  travelTime:{:3g}  duedate:{}\n\
+                maxCap: {}     demand:{}      curCap: {}"\
             .format(item, self, self.feasibilityStr(item), \
                     self.totalTime, self.travelTime(item), item.dueDate, \
                     self.maxCapacity, item.demand, self.curCapacity)

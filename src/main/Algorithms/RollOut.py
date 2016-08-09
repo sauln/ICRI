@@ -1,5 +1,6 @@
 import time
 import sys
+import logging
 import sortedcontainers
 from copy import copy, deepcopy
 
@@ -12,6 +13,7 @@ from src.main.BaseObjects.Parameters import Parameters
 
 class RollOut:
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
         self.heuristic = Heuristic()
         self.pm = Parameters()
         self.depot = self.pm.depot
@@ -20,17 +22,21 @@ class RollOut:
         self.routes = Routes(self.depot)
         self.W = 100
 
-        self.Delta = self.genRandomDeltas()
-
-
+        self.Delta = self.genRandomDeltas(20)
         self.workingRoutes = None
         
         self.numVehicles = self.minNumVeh = self.lowestCost = float("inf") 
         self.lowerLimit = 3
 
-    def genRandomDeltas(self):
-        
-        return [[10,1,1,1,1,1,1], [1,1,1,1,1,1,1]]
+    def genRandomDeltas(self, count):
+        import random
+        random.seed(0)
+
+        Delta = []
+        for _ in range(count):
+            Delta.append([random.random() for _ in range(7)])
+
+        return Delta 
         
     def constructRoute(self):
         for delta in self.Delta:
@@ -49,6 +55,7 @@ class RollOut:
         return self.minNumVeh < self.numVehicles
 
     def rollOut(self, delta):
+        self.logger.info("Running roll out with delta: {}".format(delta)) 
         startNum = len(self.workingCustomers)
         while len(self.workingCustomers) > 0:
             if self.solutionIsBestSoFar():
@@ -92,14 +99,23 @@ class RollOut:
 
         return min(topCusts, key = lambda x: x.tCost) 
 
-    def combineRoutes(self, frontSequence, endSequence):
+    def findMatch(self, frontSeq, backSeq):
+        key = backSeq[0]
+        for vehicle in frontSeq:
+            if(vehicle.last() == key):
+                return vehicle
+
+    def combineRoutes(self, frontSequence, backSequence):
         # shallow copy might not copy the routes objects?!
+        #self.logger.info("Combining routes {}\n and {} together".format(frontSequence, backSequence))
+       
         routes = deepcopy(frontSequence)
-        if(endSequence[0][0].custNo != 0):
-            restOfVehicle = endSequence.pop(0) 
-            for cust in restOfVehicle[1:]:
-                routes.last().append(cust)
-        for route in endSequence:
+        if(backSequence[0][0].custNo != 0):
+            frontVehicle = self.findMatch(routes, backSequence[0])
+            endVehicle = backSequence.pop(0) 
+            for cust in endVehicle[1:]:
+                frontVehicle.append(cust)
+        for route in backSequence:
             routes.objList.append(route)
        
         return routes

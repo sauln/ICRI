@@ -32,7 +32,7 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
 
-    sp.customers = sp.customers[:20]
+    sp.customers = sp.customers
     parameters = Parameters()
     parameters.build(sp, 10, 20)
 

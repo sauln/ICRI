@@ -40,8 +40,9 @@ class Routes(ListBase):
         # every route ends at the depot, and the vehicle on deck is removed
         #if(len(self[0]) == 1): self.pop(0)
         for v in self.objList:
-            v.update(self.depot)
-            v.append(self.depot)
+            if(v[-1] != self.depot):
+                v.update(self.depot)
+                v.append(self.depot)
     
     def cost(self):
         print("Need to find the cost")

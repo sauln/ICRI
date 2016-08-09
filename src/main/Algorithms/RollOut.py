@@ -29,10 +29,9 @@ class RollOut:
         self.lowerLimit = 3
 
     def genRandomDeltas(self):
+        
         return [[10,1,1,1,1,1,1], [1,1,1,1,1,1,1]]
         
-
-
     def constructRoute(self):
         for delta in self.Delta:
             self.bestSequence = Routes(self.depot)
@@ -77,7 +76,6 @@ class RollOut:
         self.workingRoutes = self.combineRoutes(self.bestSequence, \
             lowestSeqObj.projectedRoute)
 
-        
     def updateBestSequence(self, seqObj):
         self.workingCustomers.remove(seqObj.customer)
         self.bestSequence.addNext(seqObj.vehicle, seqObj.customer)

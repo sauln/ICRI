@@ -18,32 +18,53 @@ class RollOut:
 
         # need to maintain two routes objects
         self.routes = Routes(self.depot)
-        self.bestSequence = Routes(self.depot)
         self.W = 100
-        self.Delta = [[10,1,1,1,1,1,1]]
-        self.goldenRoutes = None
+
+        self.Delta = self.genRandomDeltas()
+
+
+        self.workingRoutes = None
         
         self.numVehicles = self.minNumVeh = self.lowestCost = float("inf") 
-        self.lowerLimit = 12
+        self.lowerLimit = 3
+
+    def genRandomDeltas(self):
+        return [[10,1,1,1,1,1,1], [1,1,1,1,1,1,1]]
+        
+
 
     def constructRoute(self):
         for delta in self.Delta:
-            lowestVehicle = self.bestSequence[-1]
+            self.bestSequence = Routes(self.depot)
             self.workingCustomers = Parameters().getCustomers() 
-        
-            routes = self.rollOut(delta)
+            tmpRoutes = self.rollOut(delta)
+            if(tmpRoutes):
+                routes = tmpRoutes
             self.minNumVeh = min(len(routes), self.minNumVeh)
         return routes 
-  
-    def shortCurcuit(self):
-        return self.lowerLimit >= self.numVehicles and \
-               self.minNumVeh > self.numVehicles
+
+    def solutionIsBestSoFar(self):
+        return self.numVehicles <= self.lowerLimit
+    
+    def deltaIsTerrible(self):
+        return self.minNumVeh < self.numVehicles
 
     def rollOut(self, delta):
-        while len(self.workingCustomers) > 0 and not self.shortCurcuit(): 
+        startNum = len(self.workingCustomers)
+        while len(self.workingCustomers) > 0:
+            if self.solutionIsBestSoFar():
+                self.workingRoutes.finish()
+                return self.workingRoutes
+            
+            if self.deltaIsTerrible():
+                return None
+
+            startNum -= 1
             self.rollOutNextCustomer(delta)
-        self.goldenRoutes.finish()
-        return self.goldenRoutes 
+            self.numVehicles = len(self.workingRoutes)
+             
+        self.workingRoutes.finish()
+        return self.workingRoutes 
 
     def rollOutNextCustomer(self, delta):
         topCusts = NextFinder.getBestNNodes(delta, self.bestSequence,  \
@@ -53,10 +74,9 @@ class RollOut:
         self.updateBestSequence(lowestSeqObj)
         
         self.numRoutes = len(self.bestSequence) + len(lowestSeqObj.projectedRoute)
-        self.goldenRoutes = self.combineRoutes(self.bestSequence, \
+        self.workingRoutes = self.combineRoutes(self.bestSequence, \
             lowestSeqObj.projectedRoute)
 
-        self.numVehicles = len(self.goldenRoutes)
         
     def updateBestSequence(self, seqObj):
         self.workingCustomers.remove(seqObj.customer)

@@ -8,7 +8,8 @@ class Parameters:
             self.distMatrix = None
             self.timeMatrix = None
             self.params = None
-        
+            self.depot = None
+
         def __getattr__(self, name):
             return getattr(self.params, name)
 
@@ -16,8 +17,12 @@ class Parameters:
             return str(self.params) + str(self.distMatrix) + str(self.timeMatrix)
         
         def build(self, problemSet, topNodes, searchDepth, depot = None):
-            self.depot, self.customers = (depot, problemSet.customers)\
-                if depot is not None else (problemSet.customers[0], problemSet.customers[1:])
+            if depot is not None: 
+                self.depot = depot
+                self.customers = problemSet.customers
+            else:
+                self.depot = problemSet.customers[0]
+                self.customers = problemSet.customers[1:]
 
             self.params = problemSet
             self.distMatrix = self.buildDistMatrix(problemSet.customers)
@@ -26,7 +31,7 @@ class Parameters:
             self.searchDepth = searchDepth
 
         def getCustomers(self):
-            return list(self.params.customers)
+            return list(self.customers)
 
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 

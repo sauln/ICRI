@@ -31,14 +31,13 @@ def main(input_filepath):
         sp = pickle.load(f)
 
     logger.info('Setup parameters singleton')
-    
+
+    sp.customers = sp.customers[:20]
     parameters = Parameters()
     parameters.build(sp, 10, 20)
 
     logger.info('Construct routes')
     
-    
-    d = [1,1,1,1,1,1,1] 
     # routes = Heuristic().run(d, parameters.depot, parameters.customers)
     # print(routes) 
     

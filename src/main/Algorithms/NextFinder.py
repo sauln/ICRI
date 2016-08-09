@@ -11,10 +11,15 @@ class PotentialNextCustomer:
         self.vehicle = vehicle
         self.customer = customer
         self.gnnhCost = gnnhCost
+        self.tCost = None
+        self.projectedRoute = None
+    
     def __str__(self):
-        return "\nVehicle:{}\nCustomer:{}\nCost:{}".format(self.vehicle, self.customer, self.gnnhCost)
+        return "\nVehicle:{}\nCustomer:{}\nCost:{}\nAdding for {} Projected Route:{}".format(self.vehicle, self.customer, self.gnnhCost, self.tCost, self.projectedRoute)
+
     def __repr__(self):
         return self.__str__()
+
     def __eq__(self, other):
         return self.vehicle == other.vehicle and \
                self.customer == other.customer and \

@@ -5,6 +5,21 @@ This is written in an amalgamation of procedural and object oriented code.
 There are a set of base objects that are very obviously objects and a set of algorithms
 and grouped functions.
 
+I have tried to isolate all of the points of interest into just a few places.
+
+There are a few cost functions in in Algorithms.CostFunction.
+
+These are 
+* Cost.ofRoutes - Cost of a routes object
+* Cost.vehicleToCustomer - Cost of appending customer to vehicle
+* Cost.gnnh - Generalized cost for greedy algorithm.
+
+Cost.ofRoutes and Cost.vehicleToCustomer are used in the roll out algorithm to decide 
+which route completion is the best
+
+Cost.gnnh is used to build the greedy route
+
+
 
 ## Base objects
 

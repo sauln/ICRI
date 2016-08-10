@@ -1,6 +1,5 @@
 # Welcome to blineVRP 
 
-
 Prototype for the ICRI algorithm found in 
 
  > Figliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement Algorithm for the Vehicle Routing Problem with Soft-Time Windows. Transportation Research Part C, Vol. 18, No. 5, pp. 668–679.
@@ -52,12 +51,12 @@ Currently implements the algorithm using...
     └── src                  <- Source code for use in this project.
         ├── __init__.py      <- Makes src a Python module
         │
-        ├── main             <-
-        │   ├── BaseObjects  
-        │   └── Algorithms   
+        ├── main             <- Source code
+        │   ├── BaseObjects  <- Objects. Vehicles, Routes, Customers, etc
+        │   └── Algorithms   <- Algorithms and functions. Cost, RollOut, GNNH, etc
         │
-        ├── test             <-
-        │   ├── BaseObjects
+        ├── test             <- Tests for source code - should have one-to-one files with source code
+        │   ├── BaseObjects  <- 
         │   └── Algorithms   
         │
         ├── data             <- Scripts to download or generate data

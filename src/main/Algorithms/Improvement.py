@@ -27,7 +27,7 @@ def geographicSimilarity(routes, seedRoute):
     for r in routes:
         dist.add(r)
 
-    return dist[:Parameters().topNodes]
+    return dist[:5]
 
 def flattenRoutes(routes):
     return list({c for route in routes for c in route})
@@ -38,6 +38,15 @@ def replaceRoutes(base, oldRoutes, newRoutes):
 
     for r in newRoutes:
         base.objList.append(r)
+
+def betterThan(firstRoutes, secondRoutes):
+    if(len(firstRoutes) != len(secondRoutes)):
+        return secondRoutes < firstRoutes
+    else:
+        c1 = sum(r.totalDist for r in firstRoutes)
+        c2 = sum(r.totalDist for r in secondRoutes)
+        print("Compare close solutions: {}<{}".format(c1,c2))
+        return c2 < c1
 
 def Improvement(routes):
     routesWork = copy.deepcopy(routes) 
@@ -51,9 +60,12 @@ def Improvement(routes):
         customers.remove(Parameters().depot) 
         Parameters().customers = customers 
         
-        newRoutes = constructRoute()
-       
-        replaceRoutes(routesWork, simRoutes, newRoutes)
+        newRoutes = RollOut().constructRoute()
+    
+        Plotter().beforeAndAfter(simRoutes, newRoutes).show()
+        if(betterThan(simRoutes, newRoutes)):
+            print("This solution better {} >= {}".format(len(simRoutes), len(newRoutes)))
+            replaceRoutes(routesWork, simRoutes, newRoutes)
    
     Parameters().customers = custBk
 

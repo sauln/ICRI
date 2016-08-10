@@ -11,11 +11,8 @@ import numpy as np
 
 from src.visualization.visualize import Plotter
 
-from src.main.BaseObjects.Vehicle   import Vehicle
-from src.main.BaseObjects.Customer  import Customer
 from src.main.BaseObjects.Parameters import Parameters
 
-from src.main.Algorithms.Heuristic import Heuristic
 from src.main.Algorithms.RollOut   import RollOut 
 from src.main.Algorithms.Validator import Validator
 from src.main.Algorithms.Improvement import Improvement
@@ -32,14 +29,11 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
 
-    sp.customers = sp.customers
+    sp.customers = sp.customers[:50]
     parameters = Parameters()
     parameters.build(sp, 10, 20)
 
     logger.info('Construct routes')
-    
-    # routes = Heuristic().run(d, parameters.depot, parameters.customers)
-    # print(routes) 
     
     routes = RollOut().constructRoute()
 
@@ -48,8 +42,10 @@ def main(input_filepath):
    
     print("Solution {}".format(routes))
 
-    Plotter().plotRoutes(routes).show()
-    #newRoutes = Improvement(routes)
+    #Plotter().plotRoutes(routes).show()
+    newRoutes = Improvement(routes)
+    Plotter().beforeAndAfter(routes, newRoutes).show()
+
 
     logger.info("Pickling routes")
     # pickle the set so we can use that for deving the 

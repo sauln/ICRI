@@ -1,5 +1,6 @@
 import time
 import sys
+import random
 import logging
 import sortedcontainers
 from copy import copy, deepcopy
@@ -29,7 +30,6 @@ class RollOut:
         self.lowerLimit = 3
 
     def genRandomDeltas(self, count):
-        import random
         random.seed(0)
 
         Delta = []
@@ -55,7 +55,7 @@ class RollOut:
         return self.minNumVeh < self.numVehicles
 
     def rollOut(self, delta):
-        self.logger.info("Running roll out with delta: {}".format(delta)) 
+        #self.logger.info("Running roll out with delta: {}".format(delta)) 
         startNum = len(self.workingCustomers)
         while len(self.workingCustomers) > 0:
             if self.solutionIsBestSoFar():
@@ -94,8 +94,8 @@ class RollOut:
                 self.workingCustomers, self.depot) 
             
             top.tCost = baseCost + \
-                Cost.vehicleToCustomer(top.vehicle, top.customer) + \
                 Cost.ofRoutes(top.projectedRoute)
+                #Cost.vehicleToCustomer(top.vehicle, top.customer) + \
 
         return min(topCusts, key = lambda x: x.tCost) 
 

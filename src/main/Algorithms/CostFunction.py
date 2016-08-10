@@ -11,7 +11,7 @@ class Cost:
     
     @staticmethod
     def ofRoutes(routes):
-        return len(routes)*10 
+        return len(routes)*100 
 
     @staticmethod
     def gnnh(delta, vehicle, end): #s:start, e:end customers

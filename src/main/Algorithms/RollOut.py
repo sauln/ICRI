@@ -30,7 +30,7 @@ class RollOut:
         self.lowerLimit = 3
 
     def genRandomDeltas(self, count):
-        random.seed(0)
+        #random.seed(0)
 
         Delta = []
         for _ in range(count):

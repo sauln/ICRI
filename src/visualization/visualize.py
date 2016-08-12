@@ -38,7 +38,7 @@ class Plotter:
         plt.draw()
 
     def plotRoutes(self, routes):
-        print("Generate plot for routes solution") 
+        #print("Generate plot for routes solution") 
         for r in routes:
             xs = [c.xcoord for c in r]
             ys = [c.ycoord for c in r]#fix this

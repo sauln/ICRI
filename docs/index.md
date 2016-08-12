@@ -13,7 +13,8 @@ This repository will both serve as a
 
 ## Features
 
-Currently implements the algorithm using...
+Currently implements the algorithm using.
+
 
 ## Requirements
 * Python3 - 

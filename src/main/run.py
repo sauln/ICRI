@@ -29,28 +29,30 @@ def main(input_filepath):
 
     logger.info('Setup parameters singleton')
 
-    sp.customers = sp.customers[:50]
+    sp.customers = sp.customers
     parameters = Parameters()
     parameters.build(sp, 10, 20)
 
     logger.info('Construct routes')
     
     routes = RollOut().constructRoute()
+    
+    logger.info("Pickling routes")
+    with open("data/interim/tmpr101.p", "wb") as f:
+        pickle.dump(routes, f)
+    
 
     print("There are {} vehicles with {} allowed"\
         .format(len(routes), sp.numVehicles))
    
     print("Solution {}".format(routes))
 
+
     #Plotter().plotRoutes(routes).show()
-    newRoutes = Improvement(routes)
-    Plotter().beforeAndAfter(routes, newRoutes).show()
+    #newRoutes = Improvement(routes)
+    #Plotter().beforeAndAfter(routes, newRoutes).show()
 
 
-    logger.info("Pickling routes")
-    # pickle the set so we can use that for deving the 
-    with open("data/interim/tmpr101.p", "wb") as f:
-        pickle.dump(routes, f)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

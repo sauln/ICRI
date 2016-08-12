@@ -17,3 +17,4 @@ python3 -m unittest -v src.test.BaseObjects
 python3 -m unittest -v src.test.Algorithms
 
 python3 src/main/run.py data/interim/$PROBLEM.p
+

@@ -6,6 +6,8 @@ import logging
 import matplotlib.pyplot as plt
 import pickle
 
+from src.main.BaseObjects.Customer import Customer
+from src.main.BaseObjects.Vehicle import Vehicle
 
 class Plotter:
     def __init__(self):
@@ -21,6 +23,18 @@ class Plotter:
         plt.title("Routes after improvement {}".format(len(after)))
 
         return self
+
+
+
+    def getPoints(self, customers):
+        if(type(customers) == Vehicle):
+            xs = [c.xcoord for c in r]
+            ys = [c.ycoord for c in r]#fix this
+        else:
+            xs = [c.x for c in customers]
+            ys = [c.y for c in customers]
+        return (xs, ys)
+
 
     def multiPlotRoutes(self, *routeSet):
         plt.figure(1)
@@ -38,26 +52,32 @@ class Plotter:
         plt.draw()
 
     def plotCustomers(self, customers):
-        xs = [c.x for c in customers]
-        ys = [c.y for c in customers]
+        xs, ys = self.getPoints(customers)
         plt.scatter(xs, ys)
         return self 
 
     def plotRoutes(self, routes):
         #print("Generate plot for routes solution") 
         for r in routes:
-            xs = [c.xcoord for c in r]
-            ys = [c.ycoord for c in r]#fix this
-            plt.plot(xs, ys)
-        depot = routes[0][0]
+            self.plotRoute(r)
+        self.plotCenter(depot[0][0])
+        return self
 
-        plt.scatter(depot.xcoord, depot.ycoord, 250)
+    def plotRoute(self, route):
+        xs, ys = self.getPoints(route)
+        plt.plot(xs, ys)
+        return self
+
+    def plotCenter(self, center):
+        if(type(center) == Customer):
+            plt.scatter(center.xcoord, center.ycoord, 250)
+        else:
+            plt.scatter(center.x, center.y, 250)
         return self
 
 
 def visualizeProblem(sp):
-    xs = [c.xcoord for c in sp.customers]
-    ys = [c.ycoord for c in sp.customers]
+    xs, ys = self.getPoints(sp.customers)
     depot = sp.customers[0]
 
     plt.scatter(xs, ys)

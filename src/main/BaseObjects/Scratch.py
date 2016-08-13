@@ -33,15 +33,18 @@ class Dispatch():
 # if a.start + dist(a,b) <= b.end -> build edge
 
 import random
+#from src.visualization.visualize import Plotter
 from src.visualization.visualize import Plotter
 
+
 maxTime = 100
-minTime = 0
+minTime = 10
 maxCoord = 20
 
 random.seed(0)
 
-customers = [Customer(0,0, minTime, maxTime)]
+depot = Customer(0,0,0, maxTime) 
+customers = [depot]
 
 
 for i in range(25):
@@ -57,9 +60,10 @@ def dist(a,b):
     # make this into a dynamic programming shiz!
     # I think that means a singleton class that stores the answer and checks if we have
     # it before computing it
-    return np.sqrt((a.start-b.start)**2 + (a.end-b.end)**2)
+    return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
 
 def isFeasible(a, b):
+    # print("{} + {} <= {}".format(a.start, dist(a,b), b.end))
     return a.start + dist(a,b) <= b.end
 
 def build_feasible_graph(customers):
@@ -71,17 +75,26 @@ def build_feasible_graph(customers):
 
 graph = build_feasible_graph(customers)
 
+def cost(start, c):
+    # travel dist, measure of how much time remaining.
+    return dist(start,c) + (c.end)
 
-for key, value in graph.items():
-    print(key, value)
-Plotter().plotCustomers(customers).show()
+def plotNextOptions(key, value):
+    pts = [[key, v] for v in value]
+    for path in pts:
+        Plotter().plotRoute(path)
+    Plotter().plotCenter(key).plotCustomers(customers).show()
 
 
+start = depot
+for i in range(3):
+    distL = lambda x: cost(start,x)
+    nextC = min(graph[start], key = distL)
+    plotNextOptions(start, graph[start])
+    start = nextC
 
-
-
-
-
+#for key, value in graph.items():
+#    plotNextOptions(key, value)
 
 
 

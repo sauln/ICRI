@@ -5,6 +5,16 @@ from src.main.BaseObjects.Customer import Customer
 from src.main.BaseObjects.ListBase import ListBase
 from src.main.BaseObjects.Parameters import Parameters
 
+
+
+
+
+
+
+
+
+
+
 class Vehicle(ListBase):
     def __init__(self, *seed):
         super(Vehicle, self).__init__()

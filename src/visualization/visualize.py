@@ -37,6 +37,12 @@ class Plotter:
     def draw(self):
         plt.draw()
 
+    def plotCustomers(self, customers):
+        xs = [c.x for c in customers]
+        ys = [c.y for c in customers]
+        plt.scatter(xs, ys)
+        return self 
+
     def plotRoutes(self, routes):
         #print("Generate plot for routes solution") 
         for r in routes:

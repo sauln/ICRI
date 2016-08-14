@@ -1,9 +1,27 @@
+''' 
+main layers:
+dispatch - controller for everything, asserts business rules
+vehicle - state machine, only concerned with tracking current states
+        
 
-class Edge():
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-        self.distance = np.sqrt((start.x - end.x)**2 + (start.y - end.y)**2)
+
+'''
+
+
+
+
+
+
+
+
+class Dispatch():
+    ''' This organizes the customers, visited customers, and vehicles''' 
+    ''' Will be similar to the parameters - and should be the only interface
+        to the parameters
+    '''
+    
+    def __init__(self):
+        pass
 
 class Customer():
     def __init__(self, x, y, start, end):
@@ -21,6 +39,7 @@ class VisitedCustomer():
         self.customer = customer
         
 class Vehicle():
+    ''' Vehicle will just keep track of state '''
     def __init__(self):
         self.edges = []
 
@@ -28,14 +47,34 @@ class Dispatch():
     def __init__(self):
         pass
 
+def dist(a,b):
+    # make this into a dynamic programming shiz!
+    return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
 
-# not completely connected - can just build the graph of feasible nodes
-# if a.start + dist(a,b) <= b.end -> build edge
+def isFeasible(a, b):
+    # print("{} + {} <= {}".format(a.start, dist(a,b), b.end))
+    return a.start + dist(a,b) <= b.end
+
+def build_feasible_graph(customers):
+    graph = {}
+    for customer in customers:
+        graph[customer] = [c for c in customers 
+            if isFeasible(customer, c) and c is not customer]
+    return graph
+
+def cost(start, c):
+    # travel dist, measure of how much time remaining.
+    return dist(start,c) + (c.end)
+
+def plotNextOptions(key, value):
+    pts = [[key, v] for v in value]
+    for path in pts:
+        Plotter().plotRoute(path)
+    Plotter().plotCenter(key).plotCustomers(customers).show()
 
 import random
 #from src.visualization.visualize import Plotter
 from src.visualization.visualize import Plotter
-
 
 maxTime = 100
 minTime = 10
@@ -56,35 +95,8 @@ for i in range(25):
 
 from collections import defaultdict
 import numpy as np
-def dist(a,b):
-    # make this into a dynamic programming shiz!
-    # I think that means a singleton class that stores the answer and checks if we have
-    # it before computing it
-    return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
-
-def isFeasible(a, b):
-    # print("{} + {} <= {}".format(a.start, dist(a,b), b.end))
-    return a.start + dist(a,b) <= b.end
-
-def build_feasible_graph(customers):
-    graph = {}
-    for customer in customers:
-        graph[customer] = [c for c in customers if isFeasible(customer, c) and c is not customer]
-       
-    return graph
 
 graph = build_feasible_graph(customers)
-
-def cost(start, c):
-    # travel dist, measure of how much time remaining.
-    return dist(start,c) + (c.end)
-
-def plotNextOptions(key, value):
-    pts = [[key, v] for v in value]
-    for path in pts:
-        Plotter().plotRoute(path)
-    Plotter().plotCenter(key).plotCustomers(customers).show()
-
 
 start = depot
 for i in range(3):

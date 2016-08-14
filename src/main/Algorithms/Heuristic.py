@@ -4,7 +4,7 @@ import sortedcontainers
 
 from src.main.Algorithms.NextFinder import NextFinder 
 from src.visualization.visualize import Plotter
-from src.main.BaseObjects.Routes import Routes
+from src.main.BaseObjects.Routes import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
 
 
@@ -24,6 +24,8 @@ class Heuristic():
     def run(self, delta, start, customers, depot):
         self.setup(delta, start, customers, depot)
 
+        
+
         for i in range(len(self.customers)):
             top = NextFinder.getBestNode(delta, self.routes, self.customers)
             self.routes.addNext(top.vehicle, top.customer)
@@ -36,13 +38,28 @@ if __name__ == "__main__":
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
     
-    parameters = Parameters()
-    parameters.build(sp, 10, 20)
-
-    depot = sp.customers[0]
+    #parameters = Parameters()
+    #parameters.build(sp, 10, 20)
+    
+    
+     
+    
     customers = sp.customers[1:]
-    delta = [1]*7
-    projectedRoute = Heuristic().run(delta, depot, customers, depot) 
+    depot = sp.customers[0]
+    dispatch = Dispatch(customers, depot)
+    
+    for i in range(10):
+        startNodes = dispatch.getRootNodes()
 
-    Plotter().plotRoutes(projectedRoute).show()
+    
+
+
+
+
+    #depot = sp.customers[0]
+    #customers = sp.customers[1:]
+    #delta = [1]*7
+    #projectedRoute = Heuristic().run(delta, depot, customers, depot) 
+
+    #Plotter().plotRoutes(projectedRoute).show()
 

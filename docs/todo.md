@@ -1,6 +1,15 @@
 # TODO
 
 
+Need to put emphasis on the feasibility graph. use it for a first pass on feasiblity.
+
+Build feasibility graph
+
+have the graph be hash table that uses x,y, start time - have it able to hash
+a vehicles location and a customer.  
+
+
+
 ## Bigger
 - [x] revert the algo so it uses all of the last vehicles to find next rather than
 just the most recent

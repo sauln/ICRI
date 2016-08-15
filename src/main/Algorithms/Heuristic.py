@@ -38,20 +38,15 @@ if __name__ == "__main__":
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
     
-    #parameters = Parameters()
-    #parameters.build(sp, 10, 20)
-    
-    
-     
-    
     customers = sp.customers[1:]
     depot = sp.customers[0]
     dispatch = Dispatch(customers, depot)
     
-    for i in range(10):
+    for i in range(2):
         startNodes = dispatch.getRootNodes()
-
-    
+        for node in startNodes:
+            print(dispatch.feasibleGraph[node]) 
+            # get the costs -  
 
 
 

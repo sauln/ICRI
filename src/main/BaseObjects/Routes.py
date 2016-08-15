@@ -26,8 +26,8 @@ class Dispatch():
         self.visitedCustomers = [] 
         self.feasibleGraph = self.buildFeasibleGraph()
 
-    def findNextNodes(self):
-        for vehicle in self.vehicles:
+    #def findNextNodes(self):
+    #    for vehicle in self.vehicles:
 
     def dist(self, a,b):
         # all of the cost objects should be dynamics
@@ -50,6 +50,12 @@ class Dispatch():
             graph[customer] = self.feasibleList(customer)
         graph[self.depot] = self.feasibleList(self.depot)
         return graph
+
+    def getRootNodes(self):
+        nexts = [vehicle.lastServed for vehicle in self.vehicles]
+        nexts.append(self.depot)
+        return nexts
+
 
 
 

@@ -7,7 +7,6 @@ from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Routes import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
 
-
 class Heuristic():
     def __init__(self):
         pass
@@ -22,39 +21,28 @@ class Heuristic():
             self.customers.remove(start)
 
     def run(self, delta, start, customers, depot):
-        self.setup(delta, start, customers, depot)
+        for i in range(100):
+            # print("get next vehicles")
+            vehicles = dispatch.getNextVehicles()
+            nextFeas = dispatch.getFeasibles(vehicles) 
+            vehicle, customer, cost = min(nextFeas, key = lambda x: x[2]) 
+           
+            # print("For {:<8g} add {:<20} to {}".format(cost, customer.__str__(), vehicle))
+            # print("{} customers left".format(len(dispatch.customers)))
+            dispatch.addCustomer(vehicle, customer)
 
-        
-
-        for i in range(len(self.customers)):
-            top = NextFinder.getBestNode(delta, self.routes, self.customers)
-            self.routes.addNext(top.vehicle, top.customer)
-            self.customers.remove(top.customer)
-       
-        return self.routes 
+        print(dispatch.solutionStr())
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
-    
+   
+    Parameters().build(sp, 10, 10)
+
     customers = sp.customers[1:]
     depot = sp.customers[0]
     dispatch = Dispatch(customers, depot)
     
-    for i in range(2):
-        startNodes = dispatch.getRootNodes()
-        for node in startNodes:
-            print(dispatch.feasibleGraph[node]) 
-            # get the costs -  
-
-
-
-
-    #depot = sp.customers[0]
-    #customers = sp.customers[1:]
-    #delta = [1]*7
-    #projectedRoute = Heuristic().run(delta, depot, customers, depot) 
-
-    #Plotter().plotRoutes(projectedRoute).show()
+    Heuristic().run([1]*7, depot, customers, depot)
 

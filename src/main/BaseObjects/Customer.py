@@ -14,10 +14,8 @@ class Customer():
         self.serviceLen   = serviceLen
 
     def __str__(self):
-        return "ID: {}({}) d.({:3},{:3}) t.({:3},{:3})+{}".\
-            format(self.custNo, self.demand, \
-                   self.y, self.y, \
-                   self.readyTime, self.dueDate, self.serviceLen)
+        return "ID: {} t.({:3},{:3})".\
+            format(self.custNo, self.readyTime, self.dueDate)
 
     def __hash__(self):
         return self.custNo
@@ -33,11 +31,4 @@ class Customer():
                        self.readyTime == other.readyTime and \
                        self.dueDate == other.dueDate and \
                        self.serviceLen == other.serviceLen
-
-class VisitedCustomer(Customer):
-    def __init__(self, customer):
-        pass        
-
-
-
 

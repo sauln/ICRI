@@ -5,6 +5,7 @@ import sortedcontainers
 from src.main.BaseObjects.Vehicle import Vehicle
 from src.main.BaseObjects.ListBase import ListBase
 from src.main.BaseObjects.Parameters import Parameters
+from src.main.Algorithms.CostFunction import Cost
 
 # routes object will need a big overhaul
 # need to only concern ourselves with the last vehicle added to
@@ -15,8 +16,6 @@ class Dispatch():
     def __init__(self, customers, depot):
         ''' Dispatch will organize the vehicles '''
         ''' And organize the customers '''
-        self.vehicles = []
-
         assert type(customers) == list, "Must send *list* of customers"
         assert type(customers[0]) == Customer, "Must send list of *customers*"
         assert depot not in customers, "Depot must not be in customers list"
@@ -24,10 +23,14 @@ class Dispatch():
         self.customers = customers
         self.depot = depot
         self.visitedCustomers = [] 
-        self.feasibleGraph = self.buildFeasibleGraph()
+        self.vehicles = []
 
-    #def findNextNodes(self):
-    #    for vehicle in self.vehicles:
+        self.feasibleGraph = self.buildFeasibleGraph()
+        self._onDeck = Vehicle(self.depot)
+        
+    def solutionStr(self):
+        vehstr = "\n".join([str(v) + " \t" + str(v.customerHistory) for v in self.vehicles])
+        return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)
 
     def dist(self, a,b):
         # all of the cost objects should be dynamics
@@ -51,56 +54,32 @@ class Dispatch():
         graph[self.depot] = self.feasibleList(self.depot)
         return graph
 
-    def getRootNodes(self):
-        nexts = [vehicle.lastServed for vehicle in self.vehicles]
-        nexts.append(self.depot)
+    def getNextVehicles(self):
+        nexts = [vehicle for vehicle in self.vehicles]
+        nexts.append(self._onDeck)
         return nexts
 
+    def getFeasibles(self, vehicles):
+        # print("get maybe feasible customers per vehicle")
+        nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
+            for vehicle in vehicles]
+        
+        # print("Flatten customers and get costs if feasible")
+        fNextPairs = [(vehicle, customer, Cost.gnnh([1]* 7, vehicle, customer)) \
+                        for vehicle, cs in nextPairs \
+                        for customer in cs \
+                        if vehicle.isFeasible(customer) and customer in self.customers]
 
+        return fNextPairs
 
+    def addCustomer(self, vehicle, customer):
+        if(vehicle == self._onDeck):
+            self._onDeck = Vehicle(self.depot)
+            self.vehicles.append(vehicle)
+        vehicle.serveCustomer(customer)
 
-class Routes(ListBase):
-    def __init__(self, start, depot = None):
-        #this constructor should take a vehicle 
-        super(Routes, self).__init__()
-        if(depot):
-            self.depot = depot
-        else:
-            self.depot = start
-        self.objList.append(Vehicle(start))
-
-    def __str__(self):
-        return "Total vehicles:{}\n".format(len(self)) \
-            + "\n".join([repr(r) for r in self.objList])
-   
-    def __eq__(self, other):
-        return self.objList == other.objList
-
-    def __repr__(self):
-        return self.__str__()
-
-    """ Route building """
-    def addNext(self, vehicle, end):
-        if vehicle not in self:
-            self.objList.append(vehicle)
-        vehicle.append(end)
-
-    def finish(self):
-        # every route ends at the depot, and the vehicle on deck is removed
-        #if(len(self[0]) == 1): self.pop(0)
-        for v in self.objList:
-            if(v[-1] != self.depot):
-                v.update(self.depot)
-                v.append(self.depot)
-    
-    #def cost(self):
-    #    print("Need to find the cost")
-    #    total = sum(r.totalDist for r in self.objList)
-    #    return total
-
-#if __name__ == "__main__":
-
-
+        # print("Removing {} from {}".format(customer, self.customers))
+        self.customers.remove(customer)
 
 
 

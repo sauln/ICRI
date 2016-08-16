@@ -34,7 +34,7 @@ class Parameters:
             return list(self.customers)
 
         def buildDistMatrix(self, customers):
-            coords = np.asarray([[c.xcoord, c.ycoord] for c in customers]) 
+            coords = np.asarray([[c.location.x, c.location.y] for c in customers]) 
             distm = squareform(pdist(coords, 'euclidean'))
             return distm 
 

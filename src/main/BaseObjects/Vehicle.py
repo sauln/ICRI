@@ -1,7 +1,7 @@
 import numpy as np
 
 from src.main.BaseObjects.Customer import Customer
-from src.main.BaseObjects.ListBase import ListBase
+#from src.main.BaseObjects.ListBase import ListBase
 from src.main.BaseObjects.Parameters import Parameters
 
 class Vehicle():
@@ -45,9 +45,6 @@ class Vehicle():
         return self.totalTime + self.travelTime(end) <= end.dueDate
     
     def canMakeItHomeInTime(self, end):
-        #print("{} + {} <= {}".format(end.dueDate, \
-        #                             Parameters().travelTime(end, self.depot),\
-        #                             self.depot.dueDate))
         return end.dueDate + Parameters().travelTime(end, self.depot) <= self.depot.dueDate
     
     def isFeasible(self, end):
@@ -67,11 +64,6 @@ class Vehicle():
         center = np.mean(coords, axis=0)
         return center
 
-    # def firstItemUpdate(self, item):
-    #     self.totalTime = (item.readyTime if item.custNo == 0 else item.dueDate) \
-    #         + item.serviceLen
-    #     self.curCapacity = item.demand
-
     def debugStr(self, item):
         return "\n\t\tItem {} is being added to \n\t\t{}; \n\t\t{}\n\
                 totaltime: {}  travelTime:{:3g}  duedate:{}\n\
@@ -85,16 +77,4 @@ class Vehicle():
                "isNotFull:{} ".format(self.isNotFull(item)) +\
                "isValidTime:{} ".format(self.isValidTime(item)) +\
                "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
-
-    # def append(self, item):
-    #     assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
-    #     
-    #     if (self.__len__() == 0):
-    #         self.firstItemUpdate(item)
-    #     elif (item.custNo != 0):
-    #         assert self.isFeasible(item), self.debugStr(item)           
-    #         self.update(item)
-    #     self.objList.append(item)
-
-
 

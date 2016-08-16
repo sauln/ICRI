@@ -1,15 +1,10 @@
 import numpy as np
 
-import sortedcontainers
+from sortedcontainers import SortedListWithKey 
 
 from src.main.BaseObjects.Vehicle import Vehicle
-from src.main.BaseObjects.ListBase import ListBase
 from src.main.BaseObjects.Parameters import Parameters
 from src.main.Algorithms.CostFunction import Cost
-
-# routes object will need a big overhaul
-# need to only concern ourselves with the last vehicle added to
-
 from src.main.BaseObjects.Customer import Customer
 
 class Dispatch():
@@ -69,8 +64,11 @@ class Dispatch():
                         for vehicle, cs in nextPairs \
                         for customer in cs \
                         if vehicle.isFeasible(customer) and customer in self.customers]
+        
+        cs = SortedListWithKey(key = lambda x: x[2])
+        cs.update(fNextPairs)
 
-        return fNextPairs
+        return cs 
 
     def addCustomer(self, vehicle, customer):
         if(vehicle == self._onDeck):
@@ -80,6 +78,4 @@ class Dispatch():
 
         # print("Removing {} from {}".format(customer, self.customers))
         self.customers.remove(customer)
-
-
 

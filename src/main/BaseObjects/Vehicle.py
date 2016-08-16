@@ -1,38 +1,42 @@
 import numpy as np
 
-
 from src.main.BaseObjects.Customer import Customer
 from src.main.BaseObjects.ListBase import ListBase
 from src.main.BaseObjects.Parameters import Parameters
 
-
-
-
-
-
-
-
-
-
-
-class Vehicle(ListBase):
-    def __init__(self, *seed):
+class Vehicle():
+    def __init__(self, seed):
         super(Vehicle, self).__init__()
         self.totalDist, self.totalSlack = 0,0
         self.totalTime, self.curCapacity = 0,0 
-        
+        self.servedCustomers = 0
+
         self.maxCapacity = Parameters().params.capacity
         self.timeMatrix = Parameters().timeMatrix
         self.distMatrix = Parameters().distMatrix
         self.depot = Parameters().depot
-
-        for s in seed:
-            self.append(s)
-
-    def __eq__(self, other):
-        return self.objList == other.objList
+        
+        self.customerHistory = [seed]
+        self.lastCustomer = seed
+        
     def __str__(self):
-        return super(Vehicle, self).__str__()+"t:{}".format(self.totalTime)
+        return "Veh: {} at {:2g}.now:{}".format(self.servedCustomers, \
+                                                self.totalDist, \
+                                                self.lastCustomer)
+
+    def last(self):
+        return self.lastCustomer
+
+    def serveCustomer(self, customer):
+        arrivalTime = self.totalTime + self.travelTime(customer)
+        servedTime = max(arrivalTime, customer.readyTime)
+        self.totalSlack += servedTime - arrivalTime
+        self.totalTime = servedTime + customer.serviceLen
+        self.totalDist += self.travelDist(customer)
+        self.curCapacity += customer.demand
+        self.customerHistory.append(customer)
+        self.servedCustomers += 1
+        self.lastCustomer = customer
 
     def isNotFull(self, end):
         return self.maxCapacity >= end.demand + self.curCapacity
@@ -63,19 +67,10 @@ class Vehicle(ListBase):
         center = np.mean(coords, axis=0)
         return center
 
-    def update(self, item):
-        assert self.last() != item, "Need to update values before inserting!"
-        arrivalTime = self.totalTime + self.travelTime(item)
-        srv = max(arrivalTime, item.readyTime)
-        self.totalSlack  += srv - arrivalTime
-        self.totalTime   =  srv + item.serviceLen
-        self.totalDist   += self.travelDist(item)
-        self.curCapacity += item.demand
-    
-    def firstItemUpdate(self, item):
-        self.totalTime = (item.readyTime if item.custNo == 0 else item.dueDate) \
-            + item.serviceLen
-        self.curCapacity = item.demand
+    # def firstItemUpdate(self, item):
+    #     self.totalTime = (item.readyTime if item.custNo == 0 else item.dueDate) \
+    #         + item.serviceLen
+    #     self.curCapacity = item.demand
 
     def debugStr(self, item):
         return "\n\t\tItem {} is being added to \n\t\t{}; \n\t\t{}\n\
@@ -91,15 +86,15 @@ class Vehicle(ListBase):
                "isValidTime:{} ".format(self.isValidTime(item)) +\
                "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
 
-    def append(self, item):
-        assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
-        
-        if (self.__len__() == 0):
-            self.firstItemUpdate(item)
-        elif (item.custNo != 0):
-            assert self.isFeasible(item), self.debugStr(item)           
-            self.update(item)
-        self.objList.append(item)
+    # def append(self, item):
+    #     assert type(item) == Customer, "Cannot add type {} to route".format(type(value))
+    #     
+    #     if (self.__len__() == 0):
+    #         self.firstItemUpdate(item)
+    #     elif (item.custNo != 0):
+    #         assert self.isFeasible(item), self.debugStr(item)           
+    #         self.update(item)
+    #     self.objList.append(item)
 
 
 

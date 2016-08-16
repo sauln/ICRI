@@ -6,7 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 import pickle
 
 from src.main.BaseObjects.SolomonProblem import SolomonProblem
-from src.main.BaseObjects.Customer import Customer
+from src.main.BaseObjects.Customer import Customer, Point
 
 @click.command()
 @click.argument('input_filepath', type=click.Path(exists=True))
@@ -30,8 +30,10 @@ def main(input_filepath, output_filepath):
             data = [int(d) for d in line.split()]
             
             assert len(data) == 7, "must be 7 attributes for solomon dataset"
-            
-            c = Customer(*data)
+            cid = data[0]
+            loc = Point(data[1], data[2])
+            rest = data[3:]
+            c = Customer(cid, loc, *rest)
             customers.append(c)
 
     problem = SolomonProblem(problem_name, num_vehicles, capacity, customers) 

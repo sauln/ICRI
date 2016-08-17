@@ -11,15 +11,10 @@ class Heuristic:
         self.dispatch = dispatch
 
     def run(self):
-        
-
         while self.dispatch.customers:
             vehicles = self.dispatch.getNextVehicles()
             nextFeas = self.dispatch.getFeasibles(vehicles) 
             vehicle, customer, cost = nextFeas[0]
-
-            #print("For {:<8g} add {:<20} to {}".format(cost, customer.__str__(), vehicle))
-            #print("{} customers left".format(len(self.dispatch.customers)))
             self.dispatch.addCustomer(vehicle, customer)
 
         return self.dispatch

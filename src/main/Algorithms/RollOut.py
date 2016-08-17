@@ -44,46 +44,35 @@ class RollOut:
             for v in dispatch.vehicles]
 
         return tmpDispatch, tmpVehicle
+    
+    def rollHeuristicOut(self, topCustomers):
+        lowestCost = float('inf')
+        for vehicle, customer, cost in topCustomers:    
+            tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
+
+            tmpDispatch.addCustomer(tmpVehicle, customer)
+            potentialSolution = Heuristic(tmpDispatch).run()
+            
+            if(Cost.ofSolution(potentialSolution) < lowestCost):
+                lowestCost = Cost.ofSolution(potentialSolution)
+                bestCustomer = customer
+                bestVehicle = vehicle
+        return bestVehicle, bestCustomer, lowestCost
 
     def run(self):
         print("Run rollout")
 
-        for i in range(3):
-            print(" * get next vehicles")
+        while self.dispatch.customers:
             vehicles = self.dispatch.getNextVehicles()
-
-            print(" * get best next nodes")
             rankedCustomers = self.dispatch.getFeasibles(vehicles) 
             topCustomers = rankedCustomers[:2]
-            
-            lowestCost = float('inf')
-
-            print(" * make a prediction using heuristic")
-            for vehicle, customer, cost in topCustomers:    
-                tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
-
-                tmpDispatch.addCustomer(tmpVehicle, customer)
-                potentialSolution = Heuristic(tmpDispatch).run()
-                
-                print("Projected solution: {}".format(potentialSolution.solutionStr()))
-
-                if(Cost.ofSolution(potentialSolution) < lowestCost):
-                    lowestCost = Cost.ofSolution(potentialSolution)
-                    bestCustomer = customer
-                    bestVehicle = vehicle
-
-            print("Lowest cost: {}.  Add {} to {}."\
-                .format(lowestCost, bestCustomer, bestVehicle))
-
+            bestVehicle, bestCustomer, bestCost = self.rollHeuristicOut(topCustomers)
             self.dispatch.addCustomer(bestVehicle, bestCustomer)
 
-            print(self.dispatch.solutionStr())
+        return self.dispatch
+   
 
-
-        print(" * choose best")
-        print(" * serve customer")
-
-    
+    '''
     def constructRoute(self):
         for delta in self.Delta:
             self.bestSequence = Routes(self.depot)
@@ -93,12 +82,17 @@ class RollOut:
                 routes = tmpRoutes
             self.minNumVeh = min(len(routes), self.minNumVeh)
         return routes 
+    '''
 
+    '''
     def solutionIsBestSoFar(self):
         return self.numVehicles <= self.lowerLimit
     
     def deltaIsTerrible(self):
         return self.minNumVeh < self.numVehicles
+
+    '''
+    '''
 
     def rollOut(self, delta):
         #self.logger.info("Running roll out with delta: {}".format(delta)) 
@@ -117,7 +111,9 @@ class RollOut:
              
         self.workingRoutes.finish()
         return self.workingRoutes 
+    '''
 
+    '''
     def rollOutNextCustomer(self, delta):
         topCusts = NextFinder.getBestNNodes(delta, self.bestSequence,  \
             self.workingCustomers,  5)
@@ -128,11 +124,16 @@ class RollOut:
         self.numRoutes = len(self.bestSequence) + len(lowestSeqObj.projectedRoute)
         self.workingRoutes = self.combineRoutes(self.bestSequence, \
             lowestSeqObj.projectedRoute)
+    '''
+
+    '''
 
     def updateBestSequence(self, seqObj):
         self.workingCustomers.remove(seqObj.customer)
         self.bestSequence.addNext(seqObj.vehicle, seqObj.customer)
-    
+    '''
+
+    '''
     def lowestProjectedSequence(self, topCusts, delta): 
         baseCost =  Cost.ofRoutes(self.bestSequence) 
         for top in topCusts:
@@ -145,16 +146,17 @@ class RollOut:
 
         return min(topCusts, key = lambda x: x.tCost) 
 
+    '''
+
+    '''
     def findMatch(self, frontSeq, backSeq):
         key = backSeq[0]
         for vehicle in frontSeq:
             if(vehicle.last() == key):
                 return vehicle
 
+    
     def combineRoutes(self, frontSequence, backSequence):
-        # shallow copy might not copy the routes objects?!
-        #self.logger.info("Combining routes {}\n and {} together".format(frontSequence, backSequence))
-       
         routes = deepcopy(frontSequence)
         if(backSequence[0][0].custNo != 0):
             frontVehicle = self.findMatch(routes, backSequence[0])
@@ -165,6 +167,7 @@ class RollOut:
             routes.objList.append(route)
        
         return routes
+    '''
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
@@ -177,6 +180,7 @@ if __name__ == "__main__":
     depot = sp.customers[0]
     dispatch = Dispatch(customers, depot)
 
-    RollOut(dispatch).run()
+    solution = RollOut(dispatch).run()
+    print(solution.solutionStr())
 
 

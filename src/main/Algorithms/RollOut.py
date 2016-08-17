@@ -10,7 +10,7 @@ from src.main.Algorithms.Heuristic import Heuristic
 from src.main.Algorithms.CostFunction import Cost
 from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
-
+from src.main.BaseObjects.Vehicle import Vehicle
 
 def genRandomDeltas(count):
     #random.seed(0)
@@ -39,7 +39,7 @@ class RollOut:
         # but also need the vehicle inside of dispatch
         # to be the same as this one
         tmpDispatch = Dispatch(dispatch)
-        tmpVehicle = copy(vehicle)
+        tmpVehicle = Vehicle(vehicle)
         tmpDispatch.vehicles = [v if v is not vehicle else tmpVehicle \
             for v in dispatch.vehicles]
 
@@ -48,39 +48,37 @@ class RollOut:
     def run(self):
         print("Run rollout")
 
-        print(" * get next vehicles")
-        vehicles = self.dispatch.getNextVehicles()
+        for i in range(3):
+            print(" * get next vehicles")
+            vehicles = self.dispatch.getNextVehicles()
 
-        print(" * get best next nodes")
-        rankedCustomers = self.dispatch.getFeasibles(vehicles) 
-        topCustomers = rankedCustomers[:2]
-        
-        lowestCost = float('inf')
-       
-        print("Potential bests:")
-        for each in topCustomers:
-            print(each)
+            print(" * get best next nodes")
+            rankedCustomers = self.dispatch.getFeasibles(vehicles) 
+            topCustomers = rankedCustomers[:2]
+            
+            lowestCost = float('inf')
 
-        print(" * make a prediction using heuristic")
-        for vehicle, customer, cost in topCustomers:    
-            # copying should only happen in here.
-            tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
+            print(" * make a prediction using heuristic")
+            for vehicle, customer, cost in topCustomers:    
+                tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
 
-            print(self.dispatch, vehicle)
-            print(tmpDispatch, tmpVehicle)
+                tmpDispatch.addCustomer(tmpVehicle, customer)
+                potentialSolution = Heuristic(tmpDispatch).run()
+                
+                print("Projected solution: {}".format(potentialSolution.solutionStr()))
 
-            tmpDispatch.addCustomer(tmpVehicle, customer)
-            potentialSolution = Heuristic(tmpDispatch).run()
-      
-            if(Cost.ofSolution(potentialSolution) < lowestCost):
-                lowestCost = Cost.ofSolution(potentialSolution)
-                bestCustomer = customer
-                bestVehicle = vehicle
+                if(Cost.ofSolution(potentialSolution) < lowestCost):
+                    lowestCost = Cost.ofSolution(potentialSolution)
+                    bestCustomer = customer
+                    bestVehicle = vehicle
 
             print("Lowest cost: {}.  Add {} to {}."\
                 .format(lowestCost, bestCustomer, bestVehicle))
 
-        self.dispatch.addCustomer(bestVehicle, bestCustomer)
+            self.dispatch.addCustomer(bestVehicle, bestCustomer)
+
+            print(self.dispatch.solutionStr())
+
 
         print(" * choose best")
         print(" * serve customer")

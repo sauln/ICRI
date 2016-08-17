@@ -18,13 +18,11 @@ class Heuristic:
             nextFeas = self.dispatch.getFeasibles(vehicles) 
             vehicle, customer, cost = nextFeas[0]
 
-            # print("For {:<8g} add {:<20} to {}".format(cost, customer.__str__(), vehicle))
-            # print("{} customers left".format(len(dispatch.customers)))
+            #print("For {:<8g} add {:<20} to {}".format(cost, customer.__str__(), vehicle))
+            #print("{} customers left".format(len(self.dispatch.customers)))
             self.dispatch.addCustomer(vehicle, customer)
 
         return self.dispatch
-
-        # print(self.dispatch.solutionStr())
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
@@ -37,6 +35,6 @@ if __name__ == "__main__":
     depot = sp.customers[0]
 
     dispatch = Dispatch(customers, depot)
+    solution = Heuristic(dispatch).run()
+    print(solution.solutionStr())
     
-    Heuristic(dispatch).run()
-

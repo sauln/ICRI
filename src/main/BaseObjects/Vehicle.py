@@ -7,25 +7,30 @@ from src.main.BaseObjects.Parameters import Parameters
 class Vehicle():
     def __init__(self, depot):
         # constructing with seed != depot is deprecated
-        super(Vehicle, self).__init__()
-        self.totalDist, self.totalSlack = 0,0
-        self.totalTime, self.curCapacity = 0,0 
-        self.servedCustomers = 0
+        if isinstance(depot, self.__class__):
+            self.__dict__ = depot.__dict__.copy()
+            self.customerHistory = list(depot.customerHistory)
+        else:
+            self.totalDist, self.totalSlack = 0,0
+            self.totalTime, self.curCapacity = 0,0 
+            self.servedCustomers = 0
 
-        self.maxCapacity = Parameters().params.capacity
-        self.timeMatrix = Parameters().timeMatrix
-        self.distMatrix = Parameters().distMatrix
-        self.depot = Parameters().depot
-        
-        assert self.depot == depot
-        self.customerHistory = [depot]
-        self.lastCustomer = depot
+            self.maxCapacity = Parameters().params.capacity
+            self.timeMatrix = Parameters().timeMatrix
+            self.distMatrix = Parameters().distMatrix
+            self.depot = Parameters().depot
+            
+            assert self.depot == depot
+            self.customerHistory = [depot]
+            self.lastCustomer = depot
         
     def __str__(self):
-        return "Veh: {}[{}] at {:2g}.now:{}".format(self.servedCustomers, \
-            ", ".join(str(c.custNo) for c in self.customerHistory), \
+        return "Veh: {}{:<34} \tat {:g} last served {}".format(self.servedCustomers, \
+            "["+", ".join(str(c.custNo) for c in self.customerHistory) +"]", \
             self.totalDist, \
-            self.lastCustomer)
+            self.lastCustomer.custNo)
+    def __repr__(self):
+        return self.__str__()
 
     def last(self):
         return self.lastCustomer

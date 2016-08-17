@@ -14,14 +14,7 @@ class Dispatch():
         # assert type(customers) == list, "Must send *list* of customers"
         # assert type(customers[0]) == Customer, "Must send list of *customers*"
         # assert depot not in customers, "Depot must not be in customers list"
-       
-        if(depot):
-            self.customers = customers
-            self.depot = depot
-            self.visitedCustomers = [] 
-            self.vehicles = []
-            self.feasibleGraph = self.buildFeasibleGraph()
-        else:
+        if isinstance(customers, self.__class__):
             # copying from other dispatch
             dispatch = customers
             self.customers = list(dispatch.customers)
@@ -29,15 +22,20 @@ class Dispatch():
             self.visitedCustomers = list(dispatch.visitedCustomers)
             self.vehicles = list(dispatch.vehicles)
             self.feasibleGraph = dispatch.feasibleGraph
+       
+        else:
+            self.customers = customers
+            self.depot = depot
+            self.visitedCustomers = [] 
+            self.vehicles = []
+            self.feasibleGraph = self.buildFeasibleGraph()
         #self._onDeck = Vehicle(self.depot)
        
     def _onDeck(self):
         return Vehicle(self.depot)
 
-
-
     def solutionStr(self):
-        vehstr = "\n".join([str(v) + " \t" + str(v.customerHistory) for v in self.vehicles])
+        vehstr = "\n".join([str(v) for v in self.vehicles])
         return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)
 
     def dist(self, a,b):
@@ -84,7 +82,7 @@ class Dispatch():
         return cs 
 
     def addCustomer(self, vehicle, customer):
-        if(vehicle == self._onDeck()):
+        if(vehicle.lastCustomer == self.depot):
             self.vehicles.append(vehicle)
         vehicle.serveCustomer(customer)
 

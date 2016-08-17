@@ -8,24 +8,32 @@ class Vehicle():
     def __init__(self, depot):
         # constructing with seed != depot is deprecated
         if isinstance(depot, self.__class__):
-            self.__dict__ = depot.__dict__.copy()
-            self.customerHistory = list(depot.customerHistory)
+            #self.__dict__ = depot.__dict__.copy()
+            vehicle = depot
+            self.totalDist = vehicle.totalDist
+            self.totalSlack = vehicle.totalSlack
+            self.totalTime = vehicle.totalTime
+            self.curCapacity = vehicle.curCapacity
+            self.servedCustomers = vehicle.servedCustomers
+            self.customerHistory = list(vehicle.customerHistory)
+            self.lastCustomer = vehicle.lastCustomer
         else:
             self.totalDist, self.totalSlack = 0,0
             self.totalTime, self.curCapacity = 0,0 
             self.servedCustomers = 0
-
-            self.maxCapacity = Parameters().params.capacity
-            self.timeMatrix = Parameters().timeMatrix
-            self.distMatrix = Parameters().distMatrix
-            self.depot = Parameters().depot
             
-            assert self.depot == depot
             self.customerHistory = [depot]
             self.lastCustomer = depot
         
+        self.maxCapacity = Parameters().params.capacity
+        self.timeMatrix = Parameters().timeMatrix
+        self.distMatrix = Parameters().distMatrix
+        self.depot = Parameters().depot
+            
+
+        
     def __str__(self):
-        return "Veh: {}{:<34} \tat {:g} last served {}".format(self.servedCustomers, \
+        return "Veh: {}{}".format(self.servedCustomers, \
             "["+", ".join(str(c.custNo) for c in self.customerHistory) +"]", \
             self.totalDist, \
             self.lastCustomer.custNo)

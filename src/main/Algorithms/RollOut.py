@@ -12,6 +12,8 @@ from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
 from src.main.BaseObjects.Vehicle import Vehicle
 
+import pdb
+
 def genRandomDeltas(count):
     #random.seed(0)
     Delta = []
@@ -37,7 +39,7 @@ class RollOut:
     def duplicateEnv(self, dispatch, vehicle):
         # need to make a copy of the dispatch and copy of the vehicle
         # but also need the vehicle inside of dispatch
-        # to be the same as this one
+        # to be the same as this one. copy, copy, replace
         tmpDispatch = Dispatch(dispatch)
         tmpVehicle = Vehicle(vehicle)
         tmpDispatch.vehicles = [v if v is not vehicle else tmpVehicle \
@@ -48,6 +50,8 @@ class RollOut:
     def rollHeuristicOut(self, topCustomers):
         lowestCost = float('inf')
         for vehicle, customer, cost in topCustomers:    
+            if(customer.custNo == 89):
+                pdb.set_trace()
             tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
 
             tmpDispatch.addCustomer(tmpVehicle, customer)
@@ -61,7 +65,7 @@ class RollOut:
 
     def run(self):
         print("Run rollout")
-
+        pdb.set_trace()
         while self.dispatch.customers:
             vehicles = self.dispatch.getNextVehicles()
             rankedCustomers = self.dispatch.getFeasibles(vehicles) 

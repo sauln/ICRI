@@ -9,11 +9,12 @@ For source code visit [github/ICRI](http://github.com/sauln/ICRI).
 This repository will both serve as a
 
 * foundation for future research on stochastic generalizations of the problem and 
-* to apply the solutions to real applicatoins, potentially for B-line freight bicycle routing
+* to apply the solutions to real applicatoins, potentially for freight bicycle routing
 
 ## Features
 
-Currently implements the algorithm using.
+Currently implements the rollout with a design that was considerate of future attempts for parallelization.  
+
 
 
 ## Requirements

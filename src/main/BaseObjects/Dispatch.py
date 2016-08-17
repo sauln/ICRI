@@ -8,21 +8,33 @@ from src.main.Algorithms.CostFunction import Cost
 from src.main.BaseObjects.Customer import Customer
 
 class Dispatch():
-    def __init__(self, customers, depot):
+    def __init__(self, customers, depot=None):
         ''' Dispatch will organize the vehicles '''
         ''' And organize the customers '''
-        assert type(customers) == list, "Must send *list* of customers"
-        assert type(customers[0]) == Customer, "Must send list of *customers*"
-        assert depot not in customers, "Depot must not be in customers list"
-        
-        self.customers = customers
-        self.depot = depot
-        self.visitedCustomers = [] 
-        self.vehicles = []
-
-        self.feasibleGraph = self.buildFeasibleGraph()
+        # assert type(customers) == list, "Must send *list* of customers"
+        # assert type(customers[0]) == Customer, "Must send list of *customers*"
+        # assert depot not in customers, "Depot must not be in customers list"
+       
+        if(depot):
+            self.customers = customers
+            self.depot = depot
+            self.visitedCustomers = [] 
+            self.vehicles = []
+            self.feasibleGraph = self.buildFeasibleGraph()
+        else:
+            # copying from other dispatch
+            dispatch = customers
+            self.customers = list(dispatch.customers)
+            self.depot = dispatch.depot
+            self.visitedCustomers = list(dispatch.visitedCustomers)
+            self.vehicles = list(dispatch.vehicles)
+            self.feasibleGraph = dispatch.feasibleGraph
         self._onDeck = Vehicle(self.depot)
-        
+       
+
+
+
+
     def solutionStr(self):
         vehstr = "\n".join([str(v) + " \t" + str(v.customerHistory) for v in self.vehicles])
         return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)

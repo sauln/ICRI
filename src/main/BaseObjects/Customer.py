@@ -25,8 +25,7 @@ class Customer():
 
     def __eq__(self, other):
         return other is not None and self.custNo == other.custNo and \
-                       self.y  == other.y  and \
-                       self.y  == other.y  and \
+                       self.location  == other.location  and \
                        self.demand  == other.demand  and \
                        self.readyTime == other.readyTime and \
                        self.dueDate == other.dueDate and \

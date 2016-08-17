@@ -10,19 +10,19 @@ class Heuristic:
     def __init__(self, dispatch):
         self.dispatch = dispatch
 
-    def run(self, delta, start, customers, depot):
+    def run(self):
+        
 
-
-        for i in range(100):
+        while self.dispatch.customers:
             vehicles = self.dispatch.getNextVehicles()
             nextFeas = self.dispatch.getFeasibles(vehicles) 
-            vehicle, customer, cost = min(nextFeas, key = lambda x: x[2]) 
-           
+            vehicle, customer, cost = nextFeas[0]
+
             # print("For {:<8g} add {:<20} to {}".format(cost, customer.__str__(), vehicle))
             # print("{} customers left".format(len(dispatch.customers)))
-            dispatch.addCustomer(vehicle, customer)
+            self.dispatch.addCustomer(vehicle, customer)
 
-        print(self.dispatch.solutionStr())
+        # print(self.dispatch.solutionStr())
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
@@ -36,5 +36,5 @@ if __name__ == "__main__":
 
     dispatch = Dispatch(customers, depot)
     
-    Heuristic(dispatch).run([1]*7, depot, customers, depot)
+    Heuristic(dispatch).run()
 

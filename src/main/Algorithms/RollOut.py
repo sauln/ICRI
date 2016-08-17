@@ -1,4 +1,3 @@
-
 import pickle
 import time
 import sys
@@ -37,10 +36,32 @@ class RollOut:
 
     def run(self):
         print("Run rollout")
+
+
+
+
+        print(" * get next vehicles")
+        vehicles = self.dispatch.getNextVehicles()
         print(" * get best next nodes")
-
-
+        rankedCustomers = self.dispatch.getFeasibles(vehicles) 
+        topCustomers = rankedCustomers[:2]
+        
         print(" * make a prediction using heuristic")
+        for vehicle, customer, cost in topCustomers:
+        #vehicle, customer, cost = topCustomers
+        
+            tmpDispatch = Dispatch(self.dispatch)
+            #print(self.dispatch.vehicles, tmpDispatch.vehicles)
+            tmpDispatch.addCustomer(vehicle, customer)
+            potentialSolution = Heuristic(tmpDispatch).run()
+
+            
+
+            print("Customers in dispatch: {}".format(len(self.dispatch.customers)))
+            print("Customers in tmpDispatch: {}".format(len(tmpDispatch.customers)))
+
+         
+
         print(" * choose best")
         print(" * serve customer")
 

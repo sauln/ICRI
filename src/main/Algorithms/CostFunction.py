@@ -8,7 +8,11 @@ class Cost:
     @staticmethod
     def distanceOnly(vehicle, end):
         return vehicle.travelDist(end)
-    
+
+    @staticmethod
+    def ofSolution(solution):
+        return len(solution.vehicles)
+
     @staticmethod
     def ofRoutes(routes):
         return len(routes)*100 

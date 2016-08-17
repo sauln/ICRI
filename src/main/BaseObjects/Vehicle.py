@@ -5,7 +5,8 @@ from src.main.BaseObjects.Customer import Customer
 from src.main.BaseObjects.Parameters import Parameters
 
 class Vehicle():
-    def __init__(self, seed):
+    def __init__(self, depot):
+        # constructing with seed != depot is deprecated
         super(Vehicle, self).__init__()
         self.totalDist, self.totalSlack = 0,0
         self.totalTime, self.curCapacity = 0,0 
@@ -16,13 +17,15 @@ class Vehicle():
         self.distMatrix = Parameters().distMatrix
         self.depot = Parameters().depot
         
-        self.customerHistory = [seed]
-        self.lastCustomer = seed
+        assert self.depot == depot
+        self.customerHistory = [depot]
+        self.lastCustomer = depot
         
     def __str__(self):
-        return "Veh: {} at {:2g}.now:{}".format(self.servedCustomers, \
-                                                self.totalDist, \
-                                                self.lastCustomer)
+        return "Veh: {}[{}] at {:2g}.now:{}".format(self.servedCustomers, \
+            ", ".join(str(c.custNo) for c in self.customerHistory), \
+            self.totalDist, \
+            self.lastCustomer)
 
     def last(self):
         return self.lastCustomer

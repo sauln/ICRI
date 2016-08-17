@@ -22,6 +22,8 @@ class Heuristic:
             # print("{} customers left".format(len(dispatch.customers)))
             self.dispatch.addCustomer(vehicle, customer)
 
+        return self.dispatch
+
         # print(self.dispatch.solutionStr())
 
 if __name__ == "__main__":

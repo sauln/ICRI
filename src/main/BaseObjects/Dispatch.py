@@ -29,9 +29,10 @@ class Dispatch():
             self.visitedCustomers = list(dispatch.visitedCustomers)
             self.vehicles = list(dispatch.vehicles)
             self.feasibleGraph = dispatch.feasibleGraph
-        self._onDeck = Vehicle(self.depot)
+        #self._onDeck = Vehicle(self.depot)
        
-
+    def _onDeck(self):
+        return Vehicle(self.depot)
 
 
 
@@ -63,7 +64,7 @@ class Dispatch():
 
     def getNextVehicles(self):
         nexts = [vehicle for vehicle in self.vehicles]
-        nexts.append(self._onDeck)
+        nexts.append(self._onDeck())
         return nexts
 
     def getFeasibles(self, vehicles):
@@ -83,8 +84,7 @@ class Dispatch():
         return cs 
 
     def addCustomer(self, vehicle, customer):
-        if(vehicle == self._onDeck):
-            self._onDeck = Vehicle(self.depot)
+        if(vehicle == self._onDeck()):
             self.vehicles.append(vehicle)
         vehicle.serveCustomer(customer)
 

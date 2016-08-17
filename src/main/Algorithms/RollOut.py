@@ -34,33 +34,53 @@ class RollOut:
 
         self.dispatch = dispatch
 
+    def duplicateEnv(self, dispatch, vehicle):
+        # need to make a copy of the dispatch and copy of the vehicle
+        # but also need the vehicle inside of dispatch
+        # to be the same as this one
+        tmpDispatch = Dispatch(dispatch)
+        tmpVehicle = copy(vehicle)
+        tmpDispatch.vehicles = [v if v is not vehicle else tmpVehicle \
+            for v in dispatch.vehicles]
+
+        return tmpDispatch, tmpVehicle
+
     def run(self):
         print("Run rollout")
 
-
-
-
         print(" * get next vehicles")
         vehicles = self.dispatch.getNextVehicles()
+
         print(" * get best next nodes")
         rankedCustomers = self.dispatch.getFeasibles(vehicles) 
         topCustomers = rankedCustomers[:2]
         
+        lowestCost = float('inf')
+       
+        print("Potential bests:")
+        for each in topCustomers:
+            print(each)
+
         print(" * make a prediction using heuristic")
-        for vehicle, customer, cost in topCustomers:
-        #vehicle, customer, cost = topCustomers
-        
-            tmpDispatch = Dispatch(self.dispatch)
-            #print(self.dispatch.vehicles, tmpDispatch.vehicles)
-            tmpDispatch.addCustomer(vehicle, customer)
+        for vehicle, customer, cost in topCustomers:    
+            # copying should only happen in here.
+            tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
+
+            print(self.dispatch, vehicle)
+            print(tmpDispatch, tmpVehicle)
+
+            tmpDispatch.addCustomer(tmpVehicle, customer)
             potentialSolution = Heuristic(tmpDispatch).run()
+      
+            if(Cost.ofSolution(potentialSolution) < lowestCost):
+                lowestCost = Cost.ofSolution(potentialSolution)
+                bestCustomer = customer
+                bestVehicle = vehicle
 
-            
+            print("Lowest cost: {}.  Add {} to {}."\
+                .format(lowestCost, bestCustomer, bestVehicle))
 
-            print("Customers in dispatch: {}".format(len(self.dispatch.customers)))
-            print("Customers in tmpDispatch: {}".format(len(tmpDispatch.customers)))
-
-         
+        self.dispatch.addCustomer(bestVehicle, bestCustomer)
 
         print(" * choose best")
         print(" * serve customer")

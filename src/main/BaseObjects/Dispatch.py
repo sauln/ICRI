@@ -87,6 +87,5 @@ class Dispatch():
             self.vehicles.append(vehicle)
         vehicle.serveCustomer(customer)
 
-        # print("Removing {} from {}".format(customer, self.customers))
         self.customers.remove(customer)
 

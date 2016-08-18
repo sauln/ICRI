@@ -20,7 +20,8 @@ class Dispatch():
             self.customers = list(dispatch.customers)
             self.depot = dispatch.depot
             self.visitedCustomers = list(dispatch.visitedCustomers)
-            self.vehicles = list(dispatch.vehicles)
+            self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
+            #self.vehicles = list(dispatch.vehicles)
             self.feasibleGraph = dispatch.feasibleGraph
        
         else:
@@ -82,7 +83,7 @@ class Dispatch():
         return cs 
 
     def addCustomer(self, vehicle, customer):
-        if(vehicle.lastCustomer == self.depot):
+        if vehicle not in self.vehicles:
             self.vehicles.append(vehicle)
         vehicle.serveCustomer(customer)
 

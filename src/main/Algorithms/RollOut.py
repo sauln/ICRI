@@ -40,18 +40,27 @@ class RollOut:
         # need to make a copy of the dispatch and copy of the vehicle
         # but also need the vehicle inside of dispatch
         # to be the same as this one. copy, copy, replace
+        
         tmpDispatch = Dispatch(dispatch)
         tmpVehicle = Vehicle(vehicle)
-        tmpDispatch.vehicles = [v if v is not vehicle else tmpVehicle \
-            for v in dispatch.vehicles]
+
+        # this does not account for vehicle not being in the dispatch.vehicles
+        
+        tmpDispatch.vehicles = [v if v == tmpVehicle else tmpVehicle \
+            for v in tmpDispatch.vehicles]
+        if tmpVehicle not in tmpDispatch.vehicles:
+            tmpDispatch.vehicles.append(tmpVehicle)
+        #if vehicle not in dispatch.vehicles:
+        #    tmpDispatch.vehicles.append(tmpVehicle)
+        #else:
+        #    tmpDispatch.vehicles = [v if v is not vehicle else tmpVehicle \
+        #        for v in dispatch.vehicles]
 
         return tmpDispatch, tmpVehicle
     
     def rollHeuristicOut(self, topCustomers):
         lowestCost = float('inf')
         for vehicle, customer, cost in topCustomers:    
-            if(customer.custNo == 89):
-                pdb.set_trace()
             tmpDispatch, tmpVehicle = self.duplicateEnv(self.dispatch, vehicle)
 
             tmpDispatch.addCustomer(tmpVehicle, customer)
@@ -65,14 +74,13 @@ class RollOut:
 
     def run(self):
         print("Run rollout")
-        pdb.set_trace()
         while self.dispatch.customers:
             vehicles = self.dispatch.getNextVehicles()
             rankedCustomers = self.dispatch.getFeasibles(vehicles) 
             topCustomers = rankedCustomers[:2]
             bestVehicle, bestCustomer, bestCost = self.rollHeuristicOut(topCustomers)
             self.dispatch.addCustomer(bestVehicle, bestCustomer)
-
+            
         return self.dispatch
    
 

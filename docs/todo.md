@@ -1,15 +1,8 @@
 # TODO
 
-Need to put emphasis on the feasibility graph. use it for a first pass on feasiblity.
-
-Build feasibility graph
-
-have the graph be hash table that uses x,y, start time - have it able to hash
-a vehicles location and a customer.  
-
-
 ## Bigger
-- [ ] push dispatch object through
+- [x] Build feasibility graph
+- [x] push dispatch object through
 - [ ] incorporate *robustness* of solution into the cost function
 - [ ] integrate changing hyperparameters (delta) into loop
 - [ ] more sophisticated method for choosing between possible solutions w/ delta

@@ -1,0 +1,129 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Welcome to blineVRP\n\n\nPrototype for the ICRI algorithm found in \n\n\n\n\nFigliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement Algorithm for the Vehicle Routing Problem with Soft-Time Windows. Transportation Research Part C, Vol. 18, No. 5, pp. 668\u2013679.\n\n\n\n\nFor source code visit \ngithub/ICRI\n.\n\n\nThis repository will both serve as a\n\n\n\n\nfoundation for future research on stochastic generalizations of the problem and \n\n\nto apply the solutions to real applicatoins, potentially for freight bicycle routing\n\n\n\n\nFeatures\n\n\nCurrently implements the rollout with a design that was considerate of future attempts for parallelization.  \n\n\nRequirements\n\n\n\n\nPython3 - \n\n\nNumpy   - some numerical optimizations\n\n\nClick   - mostly deprecated\n\n\nmkdocs  - to build the documentation\n\n\n\n\nInstallation\n\n\ngit clone http://github.com/sauln/ICRI.git\n\n\npip install requirements.txt\n\n\nCommands\n\n\n\n\n./run_program.sh\n - Run current bleeding edge; tests, routing for r101, and visualization\n\n\n\n\nProject Organization\n\n\n\u251c\u2500\u2500 LICENSE\n\u251c\u2500\u2500 Makefile             \n- Makefile with commands like `make data` or `make train`\n\u251c\u2500\u2500 README.md            \n- The top-level README for developers using this project.\n\u251c\u2500\u2500 data\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 interim          \n- Intermediate data that has been transformed.\n\u2502\u00a0\u00a0 \u2514\u2500\u2500 raw              \n- The original, immutable data dump.\n\u2502\n\u251c\u2500\u2500 docs                 \n- A mkdocs documentation project \n\u2502\n\u251c\u2500\u2500 reports              \n- Generated analysis as HTML, PDF, LaTeX, etc.\n\u2502\u00a0\u00a0 \u2514\u2500\u2500 figures          \n- Generated graphics and figures to be used in reporting\n\u2502\n\u251c\u2500\u2500 requirements.txt     \n- The requirements file for reproducing the analysis environment, e.g.\n\u2502                           generated with `pip freeze \n requirements.txt`\n\u2502\n\u2514\u2500\u2500 src                  \n- Source code for use in this project.\n \u00a0\u00a0 \u251c\u2500\u2500 __init__.py      \n- Makes src a Python module\n    \u2502\n \u00a0\u00a0 \u251c\u2500\u2500 main             \n- Source code\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u251c\u2500\u2500 BaseObjects  \n- Objects. Vehicles, Routes, Customers, etc\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u2514\u2500\u2500 Algorithms   \n- Algorithms and functions. Cost, RollOut, GNNH, etc\n \u00a0\u00a0 \u2502\n    \u251c\u2500\u2500 test             \n- Tests for source code - should have one-to-one files with source code\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u251c\u2500\u2500 BaseObjects  \n- \n    \u2502   \u2514\u2500\u2500 Algorithms   \n    \u2502\n \u00a0\u00a0 \u251c\u2500\u2500 data             \n- Scripts to download or generate data\n    \u2502\n \u00a0\u00a0 \u2514\u2500\u2500 visualization    \n- Scripts to create exploratory and results oriented visualizations\n\n\n\nThis documentation was build with the help of \nmkdocs.org\n.",
+            "title": "Home"
+        },
+        {
+            "location": "/#welcome-to-blinevrp",
+            "text": "Prototype for the ICRI algorithm found in    Figliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement Algorithm for the Vehicle Routing Problem with Soft-Time Windows. Transportation Research Part C, Vol. 18, No. 5, pp. 668\u2013679.   For source code visit  github/ICRI .  This repository will both serve as a   foundation for future research on stochastic generalizations of the problem and   to apply the solutions to real applicatoins, potentially for freight bicycle routing",
+            "title": "Welcome to blineVRP"
+        },
+        {
+            "location": "/#features",
+            "text": "Currently implements the rollout with a design that was considerate of future attempts for parallelization.",
+            "title": "Features"
+        },
+        {
+            "location": "/#requirements",
+            "text": "Python3 -   Numpy   - some numerical optimizations  Click   - mostly deprecated  mkdocs  - to build the documentation",
+            "title": "Requirements"
+        },
+        {
+            "location": "/#installation",
+            "text": "git clone http://github.com/sauln/ICRI.git  pip install requirements.txt",
+            "title": "Installation"
+        },
+        {
+            "location": "/#commands",
+            "text": "./run_program.sh  - Run current bleeding edge; tests, routing for r101, and visualization",
+            "title": "Commands"
+        },
+        {
+            "location": "/#project-organization",
+            "text": "\u251c\u2500\u2500 LICENSE\n\u251c\u2500\u2500 Makefile              - Makefile with commands like `make data` or `make train`\n\u251c\u2500\u2500 README.md             - The top-level README for developers using this project.\n\u251c\u2500\u2500 data\n\u2502\u00a0\u00a0 \u251c\u2500\u2500 interim           - Intermediate data that has been transformed.\n\u2502\u00a0\u00a0 \u2514\u2500\u2500 raw               - The original, immutable data dump.\n\u2502\n\u251c\u2500\u2500 docs                  - A mkdocs documentation project \n\u2502\n\u251c\u2500\u2500 reports               - Generated analysis as HTML, PDF, LaTeX, etc.\n\u2502\u00a0\u00a0 \u2514\u2500\u2500 figures           - Generated graphics and figures to be used in reporting\n\u2502\n\u251c\u2500\u2500 requirements.txt      - The requirements file for reproducing the analysis environment, e.g.\n\u2502                           generated with `pip freeze   requirements.txt`\n\u2502\n\u2514\u2500\u2500 src                   - Source code for use in this project.\n \u00a0\u00a0 \u251c\u2500\u2500 __init__.py       - Makes src a Python module\n    \u2502\n \u00a0\u00a0 \u251c\u2500\u2500 main              - Source code\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u251c\u2500\u2500 BaseObjects   - Objects. Vehicles, Routes, Customers, etc\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u2514\u2500\u2500 Algorithms    - Algorithms and functions. Cost, RollOut, GNNH, etc\n \u00a0\u00a0 \u2502\n    \u251c\u2500\u2500 test              - Tests for source code - should have one-to-one files with source code\n \u00a0\u00a0 \u2502\u00a0\u00a0 \u251c\u2500\u2500 BaseObjects   - \n    \u2502   \u2514\u2500\u2500 Algorithms   \n    \u2502\n \u00a0\u00a0 \u251c\u2500\u2500 data              - Scripts to download or generate data\n    \u2502\n \u00a0\u00a0 \u2514\u2500\u2500 visualization     - Scripts to create exploratory and results oriented visualizations  This documentation was build with the help of  mkdocs.org .",
+            "title": "Project Organization"
+        },
+        {
+            "location": "/about/",
+            "text": "About\n\n\nThis software suite implements a basic roll out approach for the Solomon set of vehicle\nrouting problems.  It uses as it's base heuristic the generalized nearest neighbors\nalgorithm. \n\n\nThere are a set of base objects that are very obviously objects and a set of algorithms\nand grouped functions.\n\n\nI have tried to isolate all of the points of interest into just a few places.\n\n\nBase objects\n\n\nCustomer\n\n\nBasic structure of a customer as defined by the Solomon Problem sets\n\n\nVehicle\n\n\nBasic concept of the vehicle.  Tracks visited customers, current time, current capacity.\n\n\nVehicle supplies functions that help check whether we can add to the list, \nand to find feasible customers.\n\n\nisFeasible, travelTime, travelDist, geographicCenter, serveCustomer, last.\n\n\nDispatch\n\n\nCoordinates customers and vehicles. Decides which customers the vehicles serve and when\nto add new vehicles.  \n\n\nA dispatch is implicitly (\nTODO build this into the code\n) considered \ncomplete\n when\nall of it's customers have been served (assigned to a vehicle). \nAn incomplete or empty dispatch is the input of both the heuristic\nand roll out algorithms where a complete dispatch is the output of both algorithms.\n\n\nParameters\n\n\nSingleton object that captures the input parameters of the problem and some metaparameters\nthat are used for calculating the problem.  Much of these parameters should be explicitly \ncaptured in the various other objects, but a handful of pseudo-global \nvariables greatly eases development and prototyping.\n\n\nSolomonProblem\n\n\nBasic problem definition of the Solomon Problem set. Used to define the customers and basic\nhyperparameters for the problem.\n\n\nAlgorithms\n\n\nThe algorithms directory contains many objects that describe the main algorithms and \nfunctions used in the solution. For some of these functions, there was no clear\nplace to go within an object, so they have found their home here, usually exposed\nas static methods.\n\n\nThe four main algorithms will each be featured here: Heuristic(1), RollOut(2), \nImprovement(3), and WindowMods(4).\n\n\nEach of the main for algorithms will come equiped with a main method for both debugging\nand demoing purposes.\n\n\nHeuristic\n\n\nAlgorithm for building part 1 of the ICRI paper. \n\n\nThe rollout uses this heuristic algorithm for the \nrolling out\n aspect of the algorithm.\nThis should have a very uniform interface so that switching heuristics is very simple.\n\n\n(\nTODO  Should there be two different cost functions, one for the bestSequence in \nthe roll out, and another for the heursistic?\n)\n\n\nRollOut\n\n\nAlgorithm for building part 2 of the ICRI paper. \n\n\nA point of note for this algorithm is the use of copying objects.  The basic premise is\nto copy the dispatch solution, rollout the heuristic on this solution, and if it's good, \nsave it.\n\n\nImprovement\n\n\nAlgorithm for building part 3 of the ICRI paper.\n\n\nValidator\n\n\nHelper object that consumes a routes object and confirms that it abides by all our rules.\n\n\nCost\n\n\nDefines multiple different cost functions for defining best next nodes and cost of routes.\n\n\nThese main cost functions are: \n\n Cost.ofSolution - Cost of a solution generated by the heuristic \n\n Cost.gnnh - Generalized cost used by the heuristic.",
+            "title": "About"
+        },
+        {
+            "location": "/about/#about",
+            "text": "This software suite implements a basic roll out approach for the Solomon set of vehicle\nrouting problems.  It uses as it's base heuristic the generalized nearest neighbors\nalgorithm.   There are a set of base objects that are very obviously objects and a set of algorithms\nand grouped functions.  I have tried to isolate all of the points of interest into just a few places.",
+            "title": "About"
+        },
+        {
+            "location": "/about/#base-objects",
+            "text": "",
+            "title": "Base objects"
+        },
+        {
+            "location": "/about/#customer",
+            "text": "Basic structure of a customer as defined by the Solomon Problem sets",
+            "title": "Customer"
+        },
+        {
+            "location": "/about/#vehicle",
+            "text": "Basic concept of the vehicle.  Tracks visited customers, current time, current capacity.  Vehicle supplies functions that help check whether we can add to the list, \nand to find feasible customers.  isFeasible, travelTime, travelDist, geographicCenter, serveCustomer, last.",
+            "title": "Vehicle"
+        },
+        {
+            "location": "/about/#dispatch",
+            "text": "Coordinates customers and vehicles. Decides which customers the vehicles serve and when\nto add new vehicles.    A dispatch is implicitly ( TODO build this into the code ) considered  complete  when\nall of it's customers have been served (assigned to a vehicle). \nAn incomplete or empty dispatch is the input of both the heuristic\nand roll out algorithms where a complete dispatch is the output of both algorithms.",
+            "title": "Dispatch"
+        },
+        {
+            "location": "/about/#parameters",
+            "text": "Singleton object that captures the input parameters of the problem and some metaparameters\nthat are used for calculating the problem.  Much of these parameters should be explicitly \ncaptured in the various other objects, but a handful of pseudo-global \nvariables greatly eases development and prototyping.",
+            "title": "Parameters"
+        },
+        {
+            "location": "/about/#solomonproblem",
+            "text": "Basic problem definition of the Solomon Problem set. Used to define the customers and basic\nhyperparameters for the problem.",
+            "title": "SolomonProblem"
+        },
+        {
+            "location": "/about/#algorithms",
+            "text": "The algorithms directory contains many objects that describe the main algorithms and \nfunctions used in the solution. For some of these functions, there was no clear\nplace to go within an object, so they have found their home here, usually exposed\nas static methods.  The four main algorithms will each be featured here: Heuristic(1), RollOut(2), \nImprovement(3), and WindowMods(4).  Each of the main for algorithms will come equiped with a main method for both debugging\nand demoing purposes.",
+            "title": "Algorithms"
+        },
+        {
+            "location": "/about/#heuristic",
+            "text": "Algorithm for building part 1 of the ICRI paper.   The rollout uses this heuristic algorithm for the  rolling out  aspect of the algorithm.\nThis should have a very uniform interface so that switching heuristics is very simple.  ( TODO  Should there be two different cost functions, one for the bestSequence in \nthe roll out, and another for the heursistic? )",
+            "title": "Heuristic"
+        },
+        {
+            "location": "/about/#rollout",
+            "text": "Algorithm for building part 2 of the ICRI paper.   A point of note for this algorithm is the use of copying objects.  The basic premise is\nto copy the dispatch solution, rollout the heuristic on this solution, and if it's good, \nsave it.",
+            "title": "RollOut"
+        },
+        {
+            "location": "/about/#improvement",
+            "text": "Algorithm for building part 3 of the ICRI paper.",
+            "title": "Improvement"
+        },
+        {
+            "location": "/about/#validator",
+            "text": "Helper object that consumes a routes object and confirms that it abides by all our rules.",
+            "title": "Validator"
+        },
+        {
+            "location": "/about/#cost",
+            "text": "Defines multiple different cost functions for defining best next nodes and cost of routes.  These main cost functions are:   Cost.ofSolution - Cost of a solution generated by the heuristic   Cost.gnnh - Generalized cost used by the heuristic.",
+            "title": "Cost"
+        },
+        {
+            "location": "/todo/",
+            "text": "TODO\n\n\nMake it so the vehicles can start at any time.\n * this would mostly be centered in how the next vehicles are found\nFix the incorporated deltas\n * Does this modification to the algorithm happen anywhere else?\n * Is it important?\n * Are there other heuristics that need many hyper parameters?\n\n\nBigger\n\n\n\n\n Build feasibility graph\n\n\n push dispatch object through\n\n\n incorporate \nrobustness\n of solution into the cost function\n\n\n integrate changing hyperparameters (delta) into loop\n\n\n more sophisticated method for choosing between possible solutions w/ delta\n\n\n incorporate stopping conditions into algo 2\n\n\n build soft timewindows into algo\n\n\n make it faster - there are tons of opportunity for caching and short circuiting\n\n\n\n\nSmaller\n\n\n\n\n make Parameters::customers return a shallow copy on \nget\n\n\n Cost functions in rollout only account for two parts of the route \n\n\n\n\nCrazy idea:\nThink of the state of each vehicle as a tuple (location_m, capacity_m, arrival_time_m)\nThen we can construct a tensor of all the states.\nThen we want to turn it on it's side and shake down all the values.\nWhere if one dimension is vehicles (m), we shake and let gravity settle out all the values.\nThis is kind of like simulated annealing.",
+            "title": "TODO"
+        },
+        {
+            "location": "/todo/#todo",
+            "text": "Make it so the vehicles can start at any time.\n * this would mostly be centered in how the next vehicles are found\nFix the incorporated deltas\n * Does this modification to the algorithm happen anywhere else?\n * Is it important?\n * Are there other heuristics that need many hyper parameters?",
+            "title": "TODO"
+        },
+        {
+            "location": "/todo/#bigger",
+            "text": "Build feasibility graph   push dispatch object through   incorporate  robustness  of solution into the cost function   integrate changing hyperparameters (delta) into loop   more sophisticated method for choosing between possible solutions w/ delta   incorporate stopping conditions into algo 2   build soft timewindows into algo   make it faster - there are tons of opportunity for caching and short circuiting",
+            "title": "Bigger"
+        },
+        {
+            "location": "/todo/#smaller",
+            "text": "make Parameters::customers return a shallow copy on  get   Cost functions in rollout only account for two parts of the route    Crazy idea:\nThink of the state of each vehicle as a tuple (location_m, capacity_m, arrival_time_m)\nThen we can construct a tensor of all the states.\nThen we want to turn it on it's side and shake down all the values.\nWhere if one dimension is vehicles (m), we shake and let gravity settle out all the values.\nThis is kind of like simulated annealing.",
+            "title": "Smaller"
+        }
+    ]
+}

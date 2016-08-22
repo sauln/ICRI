@@ -7,17 +7,18 @@ from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
 
 class Heuristic:
-    def __init__(self, dispatch):
-        self.dispatch = dispatch
+    def __init__(self):
+        pass
 
-    def run(self):
-        while self.dispatch.customers:
-            vehicles = self.dispatch.getNextVehicles()
-            nextFeas = self.dispatch.getFeasibles(vehicles) 
+    def run(self, dispatch):
+        while dispatch.customers:
+            vehicles = dispatch.getNextVehicles()
+            nextFeas = dispatch.getFeasibles(vehicles) 
             vehicle, customer, cost = nextFeas[0]
-            self.dispatch.addCustomer(vehicle, customer)
+            dispatch.addCustomer(vehicle, customer)
 
-        return self.dispatch
+        dispatch.finish()
+        return dispatch
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     depot = sp.customers[0]
 
     dispatch = Dispatch(customers, depot)
-    solution = Heuristic(dispatch).run()
+    solution = Heuristic().run(dispatch)
     print(solution.solutionStr())
+    Plotter().plotDispatch(solution).show()
     

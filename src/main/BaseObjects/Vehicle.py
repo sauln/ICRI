@@ -8,7 +8,6 @@ class Vehicle():
     def __init__(self, depot):
         # constructing with seed != depot is deprecated
         if isinstance(depot, self.__class__):
-            #self.__dict__ = depot.__dict__.copy()
             vehicle = depot
             self.totalDist = vehicle.totalDist
             self.totalSlack = vehicle.totalSlack
@@ -29,8 +28,6 @@ class Vehicle():
         self.timeMatrix = Parameters().timeMatrix
         self.distMatrix = Parameters().distMatrix
         self.depot = Parameters().depot
-            
-
         
     def __str__(self):
         return "Veh: {}{}".format(self.servedCustomers, \
@@ -75,8 +72,8 @@ class Vehicle():
         return Parameters().travelTime(self.last(), end) 
 
     def geographicCenter(self):
-        custs = set(self)
-        coords = [[c.xcoord, c.ycoord] for c in custs]
+        custs = set(self.customerHistory)
+        coords = [[c.location.x, c.location.y] for c in custs]
         center = np.mean(coords, axis=0)
         return center
 

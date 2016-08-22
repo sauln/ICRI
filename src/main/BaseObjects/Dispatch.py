@@ -23,15 +23,18 @@ class Dispatch():
             self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
             #self.vehicles = list(dispatch.vehicles)
             self.feasibleGraph = dispatch.feasibleGraph
-       
         else:
             self.customers = customers
             self.depot = depot
             self.visitedCustomers = [] 
             self.vehicles = []
             self.feasibleGraph = self.buildFeasibleGraph()
-        #self._onDeck = Vehicle(self.depot)
-       
+
+    def finish(self):
+        for vehicle in self.vehicles:
+            vehicle.serveCustomer(self.depot)
+
+
     def _onDeck(self):
         return Vehicle(self.depot)
 

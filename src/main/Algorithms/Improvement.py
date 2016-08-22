@@ -8,26 +8,27 @@ from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Parameters import Parameters
 from src.main.Algorithms.RollOut import RollOut 
 
-import pdb
 
-def shortestRoute(routes):
+class Improvement():
+    def __init__(self):
+        pass
+
+def shortestRoute(solution):
     # this can go in routes class
-    sortedRoutes = sortedcontainers.SortedListWithKey(key = lambda x: (len(x), x.totalDist))
-    sortedRoutes.update(routes)
+    sortedRoutes = sortedcontainers.SortedListWithKey(\
+        key = lambda x: (len(x.customerHistory), x.totalDist))
+    sortedRoutes.update(solution.vehicles)
     r = random.randint(0,5)
-    print("This random int: {}".format(r))
     rbest = sortedRoutes[0] 
     return rbest 
 
-def diff(st, en):
-    return np.linalg.norm(np.asarray(st) - np.asarray(en))
+def geographicSimilarity(dispatch, vehicle):
+    base = vehicle.geographicCenter() 
 
-def geographicSimilarity(routes, seedRoute):
-    base = seedRoute.geographicCenter() 
-    
-    distL = lambda x: diff(base, x.geographicCenter())
+    distL = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
+                                   - np.asarray(x.geographicCenter()))
     dist = sortedcontainers.SortedListWithKey(key = distL)
-    dist.update(routes)
+    dist.update(dispatch.vehicles)
 
     return dist[:5]
 
@@ -50,51 +51,43 @@ def betterThan(firstRoutes, secondRoutes):
         print("Compare close solutions: {}<{}".format(c1,c2))
         return c2 < c1
 
-def Improvement(routes):
-    routesWork = copy.deepcopy(routes) 
-    pdb.set_trace()
-    custBk = copy.deepcopy(Parameters().customers)
-    #print(random.getstate())
-    for i in range(5):
-        print("Start loop")
-        ls = []
-        for i in range(10):
-            ls.append(random.randint(0,5))
-        print(ls)
-        #print(random.getstate())
-        
-        r1 = shortestRoute(routesWork)
-        simRoutes = geographicSimilarity(routesWork, r1)
-        
-        ls = []
-        for i in range(10):
-            ls.append(random.randint(0,5))
-        print(ls)
+def setupNextRound(simRoutes):
+    customers = flattenRoutes(simRoutes)
+    customers.remove(Parameters().depot) 
+    Parameters().customers = customers 
 
-        customers = flattenRoutes(simRoutes)
-        customers.remove(Parameters().depot) 
-        Parameters().customers = customers 
+def candidateRoutes(dispatch):
+    r1 = shortestRoute(dispatch)
+    simRoutes = geographicSimilarity(dispatch, r1)
+    return simRoutes
+
+def Improvement(dispatch):
+    dispatchTmp = copy.deepcopy(dispatch) 
+    custBk = copy.deepcopy(Parameters().customers)
+  
+
+    simRoutes = candidateRoutes(dispatchTmp)
+    print(simRoutes) 
+    setupNextRound(simRoutes)
+    
+    
+    '''
+    for i in range(5):
         newRoutes = RollOut().constructRoute()
 
         Plotter().beforeAndAfter(simRoutes, newRoutes).show()
+        
         if(betterThan(simRoutes, newRoutes)):
             print("This solution better {} >= {}".format(len(simRoutes), len(newRoutes)))
             replaceRoutes(routesWork, simRoutes, newRoutes)
-  
-        ls = []
-        for i in range(10):
-            ls.append(random.randint(0,5))
-        print(ls)
+    '''
 
-        #print(random.getstate())
+    # Parameters().customers = custBk
 
-
-    Parameters().customers = custBk
-
-    return routesWork
+    return dispatchTmp
 
 if __name__ == "__main__":
-    with open("data/interim/tmpr101.p", "rb") as f:
+    with open("data/interim/SolutionR101.p", "rb") as f:
         routes = pickle.load(f)
     with open("data/interim/r101.p", "rb") as f:
         sp = pickle.load(f)
@@ -103,5 +96,6 @@ if __name__ == "__main__":
     parameters.build(sp, 10, 20)
     
     newRoutes = Improvement(routes)
-    Plotter().beforeAndAfter(routes, newRoutes).show()
+    # Plotter().beforeAndAfter(routes, newRoutes).show()
+
 

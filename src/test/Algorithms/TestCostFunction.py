@@ -2,7 +2,6 @@ import unittest
 import pickle
 
 from src.main.BaseObjects.Vehicle import Vehicle
-from src.main.BaseObjects.Routes import Routes
 from src.main.BaseObjects.Customer import Customer
 from src.main.BaseObjects.SolomonProblem import SolomonProblem
 from src.main.BaseObjects.Parameters import Parameters
@@ -30,7 +29,6 @@ class TestCostFunction(unittest.TestCase):
        
         parameters = Parameters()
         parameters.build(self.sp, 10,10)
-        self.routes = Routes(self.depot)
 
     def iterateOverCustomers(self, func):
         vehicle = Vehicle(self.depot)

@@ -36,7 +36,7 @@ class Improvement:
 
     def run(self, dispatch):
         dispatchBackup = copy.deepcopy(dispatch) # keep for comparison purposes
-        for i in range(10):
+        for i in range(100):
             self.improve(dispatch)
 
         self.summarizeSolution(dispatch, dispatchBackup)
@@ -60,9 +60,14 @@ class Improvement:
                 rankByVehiclesAndTotalDistance(solution.vehicles),\
                 rankByVehiclesAndTotalDistance(simVehicles)))
 
+            #Plotter().compareRouteSets(solution.vehicles, simVehicles).show()
+
+
     def shouldReplaceWith(self, oldVehicles, newVehicles):
-        return set(oldVehicles) != set(newVehicles) and \
-            self.bestOf(newVehicles, oldVehicles) == newVehicles
+        #set(oldVehicles) != set(newVehicles) and \
+        #            self.bestOf(newVehicles, oldVehicles) == newVehicles
+        #return len(newVehicles) <= len(oldVehicles)
+        return 1
 
     def candidateVehicles(self, dispatch):
         worst = self.worstVehicle(dispatch)
@@ -80,8 +85,8 @@ class Improvement:
         sortedRoutes.update(solution.vehicles)
         
         rbest = sortedRoutes.pop(0)
-        while(rbest in self.previousCandidates):
-            rbest = sortedRoutes.pop(0) 
+        if(rbest in self.previousCandidates):
+            rbest = random.choice(sortedRoutes)
         
         self.previousCandidates.append(rbest)
         return rbest 

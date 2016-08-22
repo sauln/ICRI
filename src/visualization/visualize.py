@@ -12,23 +12,32 @@ from src.main.BaseObjects.Vehicle import Vehicle
 class Plotter:
     def __init__(self):
         pass
-   
-    def beforeAndAfter(self, before, after):
+  
+
+    def twoPlotComparison(self, plotFunc, before, after):
         plt.figure(1)
         plt.subplot(2, 1, 1)
-        self.plotRoutes(before)
-        plt.title("Routes before improvement {}".format(len(before)))
+        plotFunc(before)
+        plt.title("Before")
         plt.subplot(2, 1, 2)
-        self.plotRoutes(after)
-        plt.title("Routes after improvement {}".format(len(after)))
+        plotFunc(after)
+        plt.title("After")
 
         return self
+
+
+    def beforeAndAfter(self, before, after):
+        return self.twoPlotComparison(self.plotDispatch, before, after)
 
     def plotDispatch(self, dispatch):
         vehicles = dispatch.vehicles
         self.plotVehicles(dispatch.vehicles)
         self.plotCenter(dispatch.depot)
         return self
+
+    def compareRouteSets(self, set1, set2):
+        return self.twoPlotComparison(self.plotVehicles, set1, set2)
+
 
     def getPoints(self, vehicle):
         xs = [c.location.x for c in vehicle.customerHistory]

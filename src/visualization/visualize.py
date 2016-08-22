@@ -24,15 +24,15 @@ class Plotter:
 
         return self
 
+    def plotDispatch(self, dispatch):
+        vehicles = dispatch.vehicles
+        self.plotVehicles(dispatch.vehicles)
+        self.plotCenter(dispatch.depot)
+        return self
 
-
-    def getPoints(self, customers):
-        if(type(customers) == Vehicle):
-            xs = [c.xcoord for c in r]
-            ys = [c.ycoord for c in r]#fix this
-        else:
-            xs = [c.x for c in customers]
-            ys = [c.y for c in customers]
+    def getPoints(self, vehicle):
+        xs = [c.location.x for c in vehicle.customerHistory]
+        ys = [c.location.y for c in vehicle.customerHistory]
         return (xs, ys)
 
 
@@ -56,23 +56,19 @@ class Plotter:
         plt.scatter(xs, ys)
         return self 
 
-    def plotRoutes(self, routes):
+    def plotVehicles(self, vehicles):
         #print("Generate plot for routes solution") 
-        for r in routes:
-            self.plotRoute(r)
-        self.plotCenter(depot[0][0])
+        for r in vehicles:
+            self.plotVehicle(r)
         return self
 
-    def plotRoute(self, route):
-        xs, ys = self.getPoints(route)
+    def plotVehicle(self, vehicle):
+        xs, ys = self.getPoints(vehicle)
         plt.plot(xs, ys)
         return self
 
     def plotCenter(self, center):
-        if(type(center) == Customer):
-            plt.scatter(center.xcoord, center.ycoord, 250)
-        else:
-            plt.scatter(center.x, center.y, 250)
+        plt.scatter(center.location.x, center.location.y, 250)
         return self
 
 

@@ -28,7 +28,15 @@ class Vehicle():
         self.timeMatrix = Parameters().timeMatrix
         self.distMatrix = Parameters().distMatrix
         self.depot = Parameters().depot
-        
+    
+    def __hash__(self):
+        return hash((str(self.customerHistory), self.totalDist, self.curCapacity))
+
+    def __eq__(self, other):
+        return self.customerHistory == other.customerHistory and \
+               self.totalDist       == other.totalDist and \
+               self.curCapacity     == other.curCapacity
+
     def __str__(self):
         return "Veh: {}{}".format(self.servedCustomers, \
             "["+", ".join(str(c.custNo) for c in self.customerHistory) +"]", \
@@ -73,6 +81,7 @@ class Vehicle():
 
     def geographicCenter(self):
         custs = set(self.customerHistory)
+        custs.remove(Parameters().depot)
         coords = [[c.location.x, c.location.y] for c in custs]
         center = np.mean(coords, axis=0)
         return center

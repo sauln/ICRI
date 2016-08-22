@@ -64,7 +64,7 @@ class RollOut:
         return bestVehicle, bestCustomer, lowestCost
 
     def run(self, dispatch):
-        print("Run rollout")
+        logging.info("Run rollout")
         while dispatch.customers:
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 

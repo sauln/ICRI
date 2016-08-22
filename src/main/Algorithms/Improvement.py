@@ -3,90 +3,120 @@ import copy
 import sortedcontainers
 import numpy as np
 import random
+import logging, sys
 
 from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Parameters import Parameters
 from src.main.Algorithms.RollOut import RollOut 
+from src.main.BaseObjects.Dispatch import Dispatch
 
-
-class Improvement():
-    def __init__(self):
-        pass
-
-def shortestRoute(solution):
-    # this can go in routes class
-    sortedRoutes = sortedcontainers.SortedListWithKey(\
-        key = lambda x: (len(x.customerHistory), x.totalDist))
-    sortedRoutes.update(solution.vehicles)
-    r = random.randint(0,5)
-    rbest = sortedRoutes[0] 
-    return rbest 
 
 def geographicSimilarity(dispatch, vehicle):
-    base = vehicle.geographicCenter() 
-
     distL = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
                                    - np.asarray(x.geographicCenter()))
     dist = sortedcontainers.SortedListWithKey(key = distL)
     dist.update(dispatch.vehicles)
 
-    return dist[:5]
+    return dist
 
-def flattenRoutes(routes):
-    return list({c for route in routes for c in route})
+def rankByVehiclesAndTotalDistance(vehicleSet):
+    return (len(vehicleSet), sum(v.totalDist for v in vehicleSet))
 
-def replaceRoutes(base, oldRoutes, newRoutes):
-    for r in oldRoutes:
-        base.objList.remove(r)
+def rankByNumCustomersAndDist(vehicle):
+    return (len(vehicle.customerHistory), vehicle.totalDist)
 
-    for r in newRoutes:
-        base.objList.append(r)
+def vehicleSetPrint(vehicleSet):
+    return "\n".join(str(v) for v in vehicleSet)
 
-def betterThan(firstRoutes, secondRoutes):
-    if(len(firstRoutes) != len(secondRoutes)):
-        return len(secondRoutes) < len(firstRoutes)
-    else:
-        c1 = sum(r.totalDist for r in firstRoutes)
-        c2 = sum(r.totalDist for r in secondRoutes)
-        print("Compare close solutions: {}<{}".format(c1,c2))
-        return c2 < c1
 
-def setupNextRound(simRoutes):
-    customers = flattenRoutes(simRoutes)
-    customers.remove(Parameters().depot) 
-    Parameters().customers = customers 
 
-def candidateRoutes(dispatch):
-    r1 = shortestRoute(dispatch)
-    simRoutes = geographicSimilarity(dispatch, r1)
-    return simRoutes
+class Improvement:
+    def __init__(self):
+        self.previousCandidates = []
 
-def Improvement(dispatch):
-    dispatchTmp = copy.deepcopy(dispatch) 
-    custBk = copy.deepcopy(Parameters().customers)
-  
+    def run(self, dispatch):
+        dispatchBackup = copy.deepcopy(dispatch) # keep for comparison purposes
+        for i in range(10):
+            self.improve(dispatch)
 
-    simRoutes = candidateRoutes(dispatchTmp)
-    print(simRoutes) 
-    setupNextRound(simRoutes)
+        self.summarizeSolution(dispatch, dispatchBackup)
+
+    def summarizeSolution(self, dispatch, dispatchBackup):
+        logging.info("Before improvement: {}".format(dispatchBackup.solutionStr()))
+        logging.info("After improvement: {}".format(dispatch.solutionStr()))
+
+        Plotter().beforeAndAfter(dispatchBackup, dispatch).show() 
+
+    def improve(self, dispatch):
+        simVehicles = self.candidateVehicles(dispatch)
+
+        tmpDispatch = self.setupNextRound(simVehicles)
+        solution = RollOut().run(tmpDispatch)
+      
+        if(self.shouldReplaceWith(simVehicles, solution.vehicles)):
+            self.replaceRoutes(dispatch, simVehicles, solution.vehicles) 
+        else:
+            logging.debug("Wont replace because {} is worse than {}".format( \
+                rankByVehiclesAndTotalDistance(solution.vehicles),\
+                rankByVehiclesAndTotalDistance(simVehicles)))
+
+    def shouldReplaceWith(self, oldVehicles, newVehicles):
+        return set(oldVehicles) != set(newVehicles) and \
+            self.bestOf(newVehicles, oldVehicles) == newVehicles
+
+    def candidateVehicles(self, dispatch):
+        worst = self.worstVehicle(dispatch)
+        logging.debug("Improve around {}".format(worst))
+        candidateVehicles = self.choseCandidates(dispatch, worst)
+        return candidateVehicles
     
-    
-    '''
-    for i in range(5):
-        newRoutes = RollOut().constructRoute()
+    def choseCandidates(self, dispatch, worst):
+        criterion = geographicSimilarity
+        return criterion(dispatch, worst)[:5]
 
-        Plotter().beforeAndAfter(simRoutes, newRoutes).show()
+    def worstVehicle(self, solution):
+        criterion = rankByNumCustomersAndDist 
+        sortedRoutes = sortedcontainers.SortedListWithKey(key = criterion)
+        sortedRoutes.update(solution.vehicles)
         
-        if(betterThan(simRoutes, newRoutes)):
-            print("This solution better {} >= {}".format(len(simRoutes), len(newRoutes)))
-            replaceRoutes(routesWork, simRoutes, newRoutes)
-    '''
+        rbest = sortedRoutes.pop(0)
+        while(rbest in self.previousCandidates):
+            rbest = sortedRoutes.pop(0) 
+        
+        self.previousCandidates.append(rbest)
+        return rbest 
 
-    # Parameters().customers = custBk
+    def setupNextRound(self, simRoutes):
+        customers = self.flattenRoutes(simRoutes)
+        customers.remove(Parameters().depot) 
+        dispatch = Dispatch(customers, Parameters().depot)
+        return dispatch
 
-    return dispatchTmp
+    def flattenRoutes(self, vehicles):
+        return list({c for vehicle in vehicles for c in vehicle.customerHistory})
+
+    def replaceRoutes(self, dispatch, oldVehicles, newVehicles):
+        logging.debug("Replace routes")
+        logging.debug("Are they the same? {}".format(set(oldVehicles) == set(newVehicles)))
+        
+        for r in oldVehicles:
+            dispatch.vehicles.remove(r)
+        for r in newVehicles:
+            dispatch.vehicles.append(r)
+
+    def bestOf(self, *allVehicleSets):
+        if(allVehicleSets[0] == allVehicleSets[1]):
+            return 0
+        criterion = rankByVehiclesAndTotalDistance 
+
+        rankedVehicleSets = sortedcontainers.SortedListWithKey(key = criterion)
+        rankedVehicleSets.update(allVehicleSets)
+
+        
+        return rankedVehicleSets[0] 
 
 if __name__ == "__main__":
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     with open("data/interim/SolutionR101.p", "rb") as f:
         routes = pickle.load(f)
     with open("data/interim/r101.p", "rb") as f:
@@ -95,7 +125,7 @@ if __name__ == "__main__":
     parameters = Parameters()
     parameters.build(sp, 10, 20)
     
-    newRoutes = Improvement(routes)
+    newRoutes = Improvement().run(routes)
     # Plotter().beforeAndAfter(routes, newRoutes).show()
 
 

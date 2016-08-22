@@ -2,6 +2,9 @@ class Point():
     def __init__(self, x, y):
         self.x = x
         self.y = y
+    def __eq__(self, other):
+        return self.x == other.x and \
+               self.y == other.y
 
 class Customer():
     #todo: change these to camel case
@@ -24,10 +27,10 @@ class Customer():
         return "c{}".format(self.custNo)
 
     def __eq__(self, other):
-        return other is not None and self.custNo == other.custNo and \
-                       self.location  == other.location  and \
-                       self.demand  == other.demand  and \
-                       self.readyTime == other.readyTime and \
-                       self.dueDate == other.dueDate and \
-                       self.serviceLen == other.serviceLen
+        return self.custNo == other.custNo and \
+               self.location  == other.location  and \
+               self.demand  == other.demand  and \
+               self.readyTime == other.readyTime and \
+               self.dueDate == other.dueDate and \
+               self.serviceLen == other.serviceLen
 

@@ -1,19 +1,18 @@
 # Welcome to blineVRP 
 
-Prototype for the ICRI algorithm found in 
-
- > Figliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement Algorithm for the Vehicle Routing Problem with Soft-Time Windows. Transportation Research Part C, Vol. 18, No. 5, pp. 668–679.
-
-For source code visit [github/ICRI](http://github.com/sauln/ICRI).
-
+## Summary
 This repository will both serve as a
 
 * foundation for future research on stochastic generalizations of the problem and 
 * to apply the solutions to real applicatoins, potentially for freight bicycle routing
 
-## Features
 
-Currently implements the rollout with a design that was considerate of future attempts for parallelization.  
+Prototype for the ICRI algorithm found in 
+ > Figliozzi,  M. A.  An  Iterative  Route  Construction  and  Improvement Algorithm for the Vehicle Routing Problem with Soft-Time Windows. Transportation Research Part C, Vol. 18, No. 5, pp. 668–679.
+
+For source code visit [github/ICRI](http://github.com/sauln/ICRI).
+
+For complete documentation, please visit the [documentaiton](https://sauln.github.io/ICRI/).
 
 
 

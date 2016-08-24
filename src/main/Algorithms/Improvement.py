@@ -10,6 +10,7 @@ from src.main.BaseObjects.Parameters import Parameters
 from src.main.Algorithms.RollOut import RollOut 
 from src.main.BaseObjects.Dispatch import Dispatch
 
+logger = logging.getLogger(__name__)
 
 def geographicSimilarity(dispatch, vehicle):
     distL = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
@@ -28,22 +29,26 @@ def rankByNumCustomersAndDist(vehicle):
 def vehicleSetPrint(vehicleSet):
     return "\n".join(str(v) for v in vehicleSet)
 
-
-
 class Improvement:
     def __init__(self):
         self.previousCandidates = []
 
     def run(self, dispatch):
         dispatchBackup = copy.deepcopy(dispatch) # keep for comparison purposes
-        for i in range(100):
+
+        iterations = 100
+        for i in range(iterations):
+            if(not i%10):
+                logger.info("Improvement phase {}/{}".format(i, iterations))
             self.improve(dispatch)
 
         self.summarizeSolution(dispatch, dispatchBackup)
 
+        return dispatch
+
     def summarizeSolution(self, dispatch, dispatchBackup):
-        logging.info("Before improvement: {}".format(dispatchBackup.solutionStr()))
-        logging.info("After improvement: {}".format(dispatch.solutionStr()))
+        logger.info("Before improvement: {}".format(dispatchBackup.solutionStr()))
+        logger.info("After improvement: {}".format(dispatch.solutionStr()))
 
         Plotter().beforeAndAfter(dispatchBackup, dispatch).show() 
 
@@ -56,7 +61,7 @@ class Improvement:
         if(self.shouldReplaceWith(simVehicles, solution.vehicles)):
             self.replaceRoutes(dispatch, simVehicles, solution.vehicles) 
         else:
-            logging.debug("Wont replace because {} is worse than {}".format( \
+            logger.debug("Wont replace because {} is worse than {}".format( \
                 rankByVehiclesAndTotalDistance(solution.vehicles),\
                 rankByVehiclesAndTotalDistance(simVehicles)))
 
@@ -66,12 +71,12 @@ class Improvement:
     def shouldReplaceWith(self, oldVehicles, newVehicles):
         #set(oldVehicles) != set(newVehicles) and \
         #            self.bestOf(newVehicles, oldVehicles) == newVehicles
-        #return len(newVehicles) <= len(oldVehicles)
-        return 1
+        return len(newVehicles) <= len(oldVehicles)
+        #return 1
 
     def candidateVehicles(self, dispatch):
         worst = self.worstVehicle(dispatch)
-        logging.debug("Improve around {}".format(worst))
+        logger.debug("Improve around {}".format(worst))
         candidateVehicles = self.choseCandidates(dispatch, worst)
         return candidateVehicles
     

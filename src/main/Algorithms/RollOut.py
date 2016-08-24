@@ -15,6 +15,7 @@ from src.main.BaseObjects.Parameters import Parameters
 from src.main.BaseObjects.Vehicle import Vehicle
 
 import pdb
+logger = logging.getLogger(__name__)
 
 def genRandomDeltas(count):
     #random.seed(0)
@@ -26,7 +27,6 @@ def genRandomDeltas(count):
 
 class RollOut:
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
         self.customers = Parameters().getCustomers()
         self.depot = Parameters().depot
         self.W = 100
@@ -64,7 +64,7 @@ class RollOut:
         return bestVehicle, bestCustomer, lowestCost
 
     def run(self, dispatch):
-        logging.info("Run rollout")
+        logger.info("Run rollout")
         while dispatch.customers:
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 

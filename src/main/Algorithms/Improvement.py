@@ -1,132 +1,145 @@
+#!/usr/bin/python3
+""" Improvement algorithm complete routing solution.  """
+
+import random
 import pickle
+import logging
+import sys
 import copy
+
 import sortedcontainers
 import numpy as np
-import random
-import logging, sys
 
 from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Parameters import Parameters
-from src.main.Algorithms.RollOut import RollOut 
+from src.main.Algorithms.RollOut import RollOut
 from src.main.BaseObjects.Dispatch import Dispatch
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
-def geographicSimilarity(dispatch, vehicle):
-    distL = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
+def geographic_similarity(dispatch, vehicle):
+    """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
+    dist_f = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
                                    - np.asarray(x.geographicCenter()))
-    dist = sortedcontainers.SortedListWithKey(key = distL)
+    dist = sortedcontainers.SortedListWithKey(key=dist_f)
     dist.update(dispatch.vehicles)
 
     return dist
 
-def rankByVehiclesAndTotalDistance(vehicleSet):
-    return (len(vehicleSet), sum(v.totalDist for v in vehicleSet))
+def by_vehicles_dist(vehicles):
+    """ Determines how a set of vehicles should be compared """
+    return (len(vehicles), sum(v.totalDist for v in vehicles))
 
-def rankByNumCustomersAndDist(vehicle):
+def by_customers_dist(vehicle):
+    """ Determines how vehicles should be compared """
     return (len(vehicle.customerHistory), vehicle.totalDist)
 
-def vehicleSetPrint(vehicleSet):
-    return "\n".join(str(v) for v in vehicleSet)
+def vehicle_set_print(vehicles):
+    """ Nice print function for a vehicle set """
+    return "\n".join(str(v) for v in vehicles)
+
+def should_replace_with(old_vehicles, new_vehicles):
+    """ Criterion for replacing vehicle sets for improvement """
+    return len(new_vehicles) <= len(old_vehicles)
+    #return 1
+
+def summarize_solution(dispatch, dispatch_backup):
+    """ Helper function for printing output"""
+    LOGGER.info("Before improvement: {}"\
+        .format(dispatch_backup.solutionStr()))
+    LOGGER.info("After improvement: {}".format(dispatch.solutionStr()))
+
+    Plotter().beforeAndAfter(dispatch_backup, dispatch).show()
+
+def chose_candidates(dispatch, worst):
+    """ method for choosing the vehicles for improvement"""
+    criterion = geographic_similarity
+    return criterion(dispatch, worst)[:5]
+
+def flatten_vehicles(vehicles):
+    """ Get all customers from many vehicles """
+    return list({c for v in vehicles for c in v.customerHistory})
+
+def replace_vehicles(dispatch, old_vehicles, new_vehicles):
+    """ Replace the old vehicles in a dispatch object with new vehicles """
+    logging.debug("Replace routes")
+    logging.debug("Are they the same? {}".format(\
+        set(old_vehicles) == set(new_vehicles)))
+
+    for v in old_vehicles:
+        dispatch.vehicles.remove(v)
+    for v in new_vehicles:
+        dispatch.vehicles.append(v)
+
+
+
 
 class Improvement:
+    """ Encapslates the improvement algorithm """
     def __init__(self):
-        self.previousCandidates = []
+        """ Setup very simple memoization"""
+        self.previous_candidates = []
 
     def run(self, dispatch):
-        dispatchBackup = copy.deepcopy(dispatch) # keep for comparison purposes
+        """ Master function for this class - initiates optimization """
+        dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
         iterations = 100
         for i in range(iterations):
-            if(not i%10):
-                logger.info("Improvement phase {}/{}".format(i, iterations))
+            if not i%10:
+                LOGGER.info("Improvement phase {}/{}".format(i, iterations))
             self.improve(dispatch)
 
-        self.summarizeSolution(dispatch, dispatchBackup)
+        summarize_solution(dispatch, dispatch_backup)
 
         return dispatch
 
-    def summarizeSolution(self, dispatch, dispatchBackup):
-        logger.info("Before improvement: {}".format(dispatchBackup.solutionStr()))
-        logger.info("After improvement: {}".format(dispatch.solutionStr()))
-
-        Plotter().beforeAndAfter(dispatchBackup, dispatch).show() 
-
     def improve(self, dispatch):
-        simVehicles = self.candidateVehicles(dispatch)
+        """ Workhorse of Improvement. Manages the improve phase"""
+        similar_vehicles = self.candidate_vehicles(dispatch)
 
-        tmpDispatch = self.setupNextRound(simVehicles)
-        solution = RollOut().run(tmpDispatch)
-      
-        if(self.shouldReplaceWith(simVehicles, solution.vehicles)):
-            self.replaceRoutes(dispatch, simVehicles, solution.vehicles) 
+        tmp_dispatch = self.setup_next_round(similar_vehicles)
+        solution = RollOut().run(tmp_dispatch)
+
+        if should_replace_with(similar_vehicles, solution.vehicles):
+            replace_vehicles(dispatch, similar_vehicles, solution.vehicles)
         else:
-            logger.debug("Wont replace because {} is worse than {}".format( \
-                rankByVehiclesAndTotalDistance(solution.vehicles),\
-                rankByVehiclesAndTotalDistance(simVehicles)))
+            LOGGER.debug("Wont replace because {} is worse than {}".format( \
+                by_vehicles_dist(solution.vehicles),\
+                by_vehicles_dist(similar_vehicles)))
 
-            #Plotter().compareRouteSets(solution.vehicles, simVehicles).show()
+            #Plotter().compareRouteSets(solution.vehicles, similar_vehicles).show()
 
+    def candidate_vehicles(self, dispatch):
+        """ Find next vehicles to improve """
+        worst = self.worst_vehicle(dispatch)
+        LOGGER.debug("Improve around {}".format(worst))
+        candidate_vehicles = chose_candidates(dispatch, worst)
+        return candidate_vehicles
 
-    def shouldReplaceWith(self, oldVehicles, newVehicles):
-        #set(oldVehicles) != set(newVehicles) and \
-        #            self.bestOf(newVehicles, oldVehicles) == newVehicles
-        return len(newVehicles) <= len(oldVehicles)
-        #return 1
+    def worst_vehicle(self, solution):
+        """ Find worst vehicle to improve around """
+        criterion = by_customers_dist
+        sorted_vehicles = sortedcontainers.SortedListWithKey(key=criterion)
+        sorted_vehicles.update(solution.vehicles)
 
-    def candidateVehicles(self, dispatch):
-        worst = self.worstVehicle(dispatch)
-        logger.debug("Improve around {}".format(worst))
-        candidateVehicles = self.choseCandidates(dispatch, worst)
-        return candidateVehicles
-    
-    def choseCandidates(self, dispatch, worst):
-        criterion = geographicSimilarity
-        return criterion(dispatch, worst)[:5]
+        rbest = sorted_vehicles.pop(0)
+        if rbest in self.previous_candidates:
+            rbest = random.choice(sorted_vehicles)
 
-    def worstVehicle(self, solution):
-        criterion = rankByNumCustomersAndDist 
-        sortedRoutes = sortedcontainers.SortedListWithKey(key = criterion)
-        sortedRoutes.update(solution.vehicles)
-        
-        rbest = sortedRoutes.pop(0)
-        if(rbest in self.previousCandidates):
-            rbest = random.choice(sortedRoutes)
-        
-        self.previousCandidates.append(rbest)
-        return rbest 
+        self.previous_candidates.append(rbest)
+        return rbest
 
-    def setupNextRound(self, simRoutes):
-        customers = self.flattenRoutes(simRoutes)
-        customers.remove(Parameters().depot) 
+    def setup_next_round(self, similar_vehicles):
+        """ With the candidate vehicles, setup the rollout algorithm """
+        customers = flatten_vehicles(similar_vehicles)
+        customers.remove(Parameters().depot)
         dispatch = Dispatch(customers, Parameters().depot)
         return dispatch
 
-    def flattenRoutes(self, vehicles):
-        return list({c for vehicle in vehicles for c in vehicle.customerHistory})
-
-    def replaceRoutes(self, dispatch, oldVehicles, newVehicles):
-        logging.debug("Replace routes")
-        logging.debug("Are they the same? {}".format(set(oldVehicles) == set(newVehicles)))
-        
-        for r in oldVehicles:
-            dispatch.vehicles.remove(r)
-        for r in newVehicles:
-            dispatch.vehicles.append(r)
-
-    def bestOf(self, *allVehicleSets):
-        if(allVehicleSets[0] == allVehicleSets[1]):
-            return 0
-        criterion = rankByVehiclesAndTotalDistance 
-
-        rankedVehicleSets = sortedcontainers.SortedListWithKey(key = criterion)
-        rankedVehicleSets.update(allVehicleSets)
-
-        
-        return rankedVehicleSets[0] 
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
     with open("data/interim/SolutionR101.p", "rb") as f:
         routes = pickle.load(f)
     with open("data/interim/r101.p", "rb") as f:
@@ -134,8 +147,6 @@ if __name__ == "__main__":
 
     parameters = Parameters()
     parameters.build(sp, 10, 20)
-    
+
     newRoutes = Improvement().run(routes)
     # Plotter().beforeAndAfter(routes, newRoutes).show()
-
-

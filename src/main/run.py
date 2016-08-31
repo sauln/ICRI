@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import click
 import time
 import logging
 from dotenv import find_dotenv, load_dotenv
@@ -21,11 +20,7 @@ from src.main.Algorithms.Improvement import Improvement
 
 logger = logging.getLogger(__name__)
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-def main(input_filepath):
-    logger.info('Loading Solomon Problem file {}'.format(input_filepath))
-
+def main():
     problem_number = "r107"
     input_filepath = "data/raw/{}.txt".format(problem_number)
     output_filepath = "data/interim/{}.p".format(problem_number)

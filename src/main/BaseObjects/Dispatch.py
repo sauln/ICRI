@@ -62,6 +62,11 @@ class Dispatch():
         for customer in self.customers:
             graph[customer] = self.feasibleList(customer)
         graph[self.depot] = self.feasibleList(self.depot)
+
+        #for key, value in graph.items():
+        #    assert len(value) > 0, "Vehicle {} has no feasible next vehicles!"\
+        #        .format(key)
+
         return graph
 
     def getNextVehicles(self):

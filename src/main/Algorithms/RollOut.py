@@ -27,8 +27,8 @@ def genRandomDeltas(count):
 
 class RollOut:
     def __init__(self):
-        self.customers = Parameters().getCustomers()
-        self.depot = Parameters().depot
+        #self.customers = Parameters().getCustomers()
+        #self.depot = Parameters().depot
         self.W = 100
         self.Delta = genRandomDeltas(2)
         self.workingRoutes = None

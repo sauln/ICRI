@@ -84,7 +84,7 @@ class Improvement:
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        iterations = 100
+        iterations = 10
         for i in range(iterations):
             if not i%10:
                 LOGGER.info("Improvement phase {}/{}".format(i, iterations))

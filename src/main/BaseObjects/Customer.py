@@ -17,8 +17,8 @@ class Customer():
         self.serviceLen   = serviceLen
 
     def __str__(self):
-        return "ID: {} t.({:3},{:3})".\
-            format(self.custNo, self.readyTime, self.dueDate)
+        return "ID: {} t.({:3},{:3}) d.({:3}, {:3})".\
+            format(self.custNo, self.readyTime, self.dueDate, self.location.x, self.location.y)
 
     def __hash__(self):
         return self.custNo

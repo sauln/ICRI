@@ -18,7 +18,7 @@ class DataBuilder:
         self.lines = self.loadLines()
         self.problem = self.getProblemDefinition()
         self.saveSP()
-
+    
     def getProblemDefinition(self):
         logger.info('Extract problem definition.')
         lines = self.lines

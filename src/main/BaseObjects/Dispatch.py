@@ -11,9 +11,6 @@ class Dispatch():
     def __init__(self, customers, depot=None):
         ''' Dispatch will organize the vehicles '''
         ''' And organize the customers '''
-        # assert type(customers) == list, "Must send *list* of customers"
-        # assert type(customers[0]) == Customer, "Must send list of *customers*"
-        # assert depot not in customers, "Depot must not be in customers list"
         if isinstance(customers, self.__class__):
             # copying from other dispatch
             dispatch = customers
@@ -21,8 +18,8 @@ class Dispatch():
             self.depot = dispatch.depot
             self.visitedCustomers = list(dispatch.visitedCustomers)
             self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
-            #self.vehicles = list(dispatch.vehicles)
             self.feasibleGraph = dispatch.feasibleGraph
+            self.delta = dispatch.delta
         else:
             self.customers = customers
             self.depot = depot
@@ -30,10 +27,14 @@ class Dispatch():
             self.vehicles = []
             self.feasibleGraph = self.buildFeasibleGraph()
 
+            self.delta = None
+    
+    def set_delta(self, delta):
+        self.delta = delta
+
     def finish(self):
         for vehicle in self.vehicles:
             vehicle.serveCustomer(self.depot)
-
 
     def _onDeck(self):
         return Vehicle(self.depot)
@@ -42,6 +43,9 @@ class Dispatch():
         vehstr = "\n".join([str(v) for v in self.vehicles])
         return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)
 
+
+    ##############################################################
+    #####     These should probably not be there
     def dist(self, a,b):
         # all of the cost objects should be dynamics
         return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
@@ -49,6 +53,8 @@ class Dispatch():
     def cost(self, start, c):
         # travel dist, measure of how much time remaining.
         return self.dist(start,c) + (c.end)
+
+    ##############################################################
 
     def isFeasible(self, a, b):
         return a.readyTime + self.dist(a.location, b.location) <= b.dueDate
@@ -62,11 +68,6 @@ class Dispatch():
         for customer in self.customers:
             graph[customer] = self.feasibleList(customer)
         graph[self.depot] = self.feasibleList(self.depot)
-
-        #for key, value in graph.items():
-        #    assert len(value) > 0, "Vehicle {} has no feasible next vehicles!"\
-        #        .format(key)
-
         return graph
 
     def getNextVehicles(self):
@@ -75,12 +76,12 @@ class Dispatch():
         return nexts
 
     def getFeasibles(self, vehicles):
-        # print("get maybe feasible customers per vehicle")
+        # usually only needs 1 of these, if that's the case,
+        # we can do this in O(n) time instead of O(n*log(n)).
         nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
             for vehicle in vehicles]
         
-        # print("Flatten customers and get costs if feasible")
-        fNextPairs = [(vehicle, customer, Cost.gnnh([1]* 7, vehicle, customer)) \
+        fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
                         for vehicle, cs in nextPairs \
                         for customer in cs \
                         if vehicle.isFeasible(customer) and customer in self.customers]

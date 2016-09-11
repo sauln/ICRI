@@ -30,7 +30,7 @@ class RollOut:
         #self.customers = Parameters().getCustomers()
         #self.depot = Parameters().depot
         self.W = 100
-        self.Delta = genRandomDeltas(2)
+        #self.Delta = genRandomDeltas(2)
         self.workingRoutes = None
         self.numVehicles = self.minNumVeh = self.lowestCost = float("inf") 
         self.lowerLimit = 3
@@ -64,11 +64,13 @@ class RollOut:
         return bestVehicle, bestCustomer, lowestCost
 
     def run(self, dispatch):
+        dispatch = deepcopy(dispatch)
+
         logger.info("Run rollout")
         while dispatch.customers:
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 
-            topCustomers = rankedCustomers[:2]
+            topCustomers = rankedCustomers[:10]
             bestVehicle, bestCustomer, bestCost = \
                 self.rollHeuristicOut(dispatch, topCustomers)
             dispatch.addCustomer(bestVehicle, bestCustomer)
@@ -87,6 +89,10 @@ if __name__ == "__main__":
     depot = sp.customers[0]
     dispatch = Dispatch(customers, depot)
 
+    delta = [1]*7
+    dispatch.set_delta(delta)
+   
+    print(dispatch.delta)
     solution = RollOut().run(dispatch)
     print(solution.solutionStr())
     

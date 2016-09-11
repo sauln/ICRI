@@ -13,10 +13,7 @@ class Heuristic:
     def run(self, dispatch):
         while dispatch.customers:
             vehicles = dispatch.getNextVehicles()
-            nextFeas = dispatch.getFeasibles(vehicles)
-
-            #assert len(nextFeas) > 0, "There is no feasible vehicle after {} in \n{}"\
-            #    .format(vehicles, ", ".join([str(c) for c in dispatch.customers]))
+            nextFeas = dispatch.getFeasibles(vehicles) # ordered by g
             vehicle, customer, cost = nextFeas[0]
             dispatch.addCustomer(vehicle, customer)
 

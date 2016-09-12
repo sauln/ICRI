@@ -27,7 +27,7 @@ class Dispatch():
             self.vehicles = []
             self.feasibleGraph = self.buildFeasibleGraph()
 
-            self.delta = None
+            self.delta = [1]*5
     
     def set_delta(self, delta):
         self.delta = delta

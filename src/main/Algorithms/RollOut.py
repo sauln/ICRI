@@ -48,9 +48,24 @@ class RollOut:
             tmpDispatch.vehicles.append(tmpVehicle)
 
         return tmpDispatch, tmpVehicle
+   
     
+    '''
+        want to implement in the loop heuristic tuning
+          implementation like parallel heuristic - 
+
+          choose new heuristics
+
+
+    '''
+
+
+
+
+
+
     def rollHeuristicOut(self, dispatch, topCustomers):
-        lowestCost = float('inf')
+        lowestCost = (float('inf'),float('inf'))
         for vehicle, customer, cost in topCustomers:    
             tmpDispatch, tmpVehicle = self.duplicateEnv(dispatch, vehicle)
 
@@ -62,6 +77,9 @@ class RollOut:
                 bestCustomer = customer
                 bestVehicle = vehicle
         return bestVehicle, bestCustomer, lowestCost
+
+
+
 
     def run(self, dispatch):
         dispatch = deepcopy(dispatch)

@@ -9,13 +9,16 @@ class Cost:
     def distanceOnly(vehicle, end):
         return vehicle.travelDist(end)
 
+    def totalDistance(solution):
+        return sum([v.totalDist for v in solution.vehicles]) 
+
     @staticmethod
     def ofSolution(solution):
-        return len(solution.vehicles)
+        return (len(solution.vehicles), Cost.totalDistance(solution)) 
 
     @staticmethod
     def ofRoutes(routes):
-        return len(routes)*100 
+        return len(routes) 
 
     @staticmethod
     def gnnh(delta, vehicle, end): #s:start, e:end customers

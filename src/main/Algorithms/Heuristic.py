@@ -6,6 +6,51 @@ from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
 
+from src.main.BaseObjects.Vehicle import Vehicle
+from src.main.Algorithms.CostFunction import Cost
+
+class Heuristic_new:
+    def run(self, dispatch):
+        # sort customers by time window
+        # foreach customer (sorted)
+        #   lowestcost = \inf
+        #   next = null
+
+        #   foreach vehicle
+        #       if g(m, c) < lowestCost:
+        #           lowestcost = g(m, c)
+        #           nexts = (m, c)
+        #   
+
+        # import pdb
+        # pdb.set_trace()
+
+        cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
+
+        for customer in cs:
+            # pdb.set_trace()
+            lowestCost = float("inf")
+            nexts = None
+            for vehicle in dispatch.vehicles:
+                if vehicle.isFeasible(customer): 
+                    cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                    if cost < lowestCost:
+                        nexts = (vehicle, customer)
+                        lowestCost = cost
+
+            if nexts == None:
+                newV = Vehicle(dispatch.depot)
+                dispatch.vehicles.append(newV)
+                nexts = (newV, customer)
+
+            veh, cust = nexts
+            veh.serveCustomer(cust)
+            # cs.remove(cust)
+        dispatch.finish()
+        return dispatch
+
+
+
 class Heuristic:
     def __init__(self):
         pass
@@ -31,7 +76,7 @@ if __name__ == "__main__":
     depot = sp.customers[0]
 
     dispatch = Dispatch(customers, depot)
-    solution = Heuristic().run(dispatch)
+    solution = Heuristic_new().run(dispatch)
     print(solution.solutionStr())
     Plotter().plotDispatch(solution).show()
     

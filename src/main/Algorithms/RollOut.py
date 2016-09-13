@@ -8,7 +8,7 @@ from copy import copy, deepcopy
 
 
 from src.visualization.visualize import Plotter
-from src.main.Algorithms.Heuristic import Heuristic
+from src.main.Algorithms.Heuristic import Heuristic_new
 from src.main.Algorithms.CostFunction import Cost
 from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
@@ -70,7 +70,7 @@ class RollOut:
             tmpDispatch, tmpVehicle = self.duplicateEnv(dispatch, vehicle)
 
             tmpDispatch.addCustomer(tmpVehicle, customer)
-            potentialSolution = Heuristic().run(tmpDispatch)
+            potentialSolution = Heuristic_new().run(tmpDispatch)
             
             if(Cost.ofSolution(potentialSolution) < lowestCost):
                 lowestCost = Cost.ofSolution(potentialSolution)
@@ -95,8 +95,9 @@ class RollOut:
            
         dispatch.finish()
         return dispatch
-   
-if __name__ == "__main__":
+  
+
+def run_roll_out():
     input_filepath = "data/interim/r101.p"
     with open(input_filepath, "rb") as f:
         sp = pickle.load(f)
@@ -118,5 +119,10 @@ if __name__ == "__main__":
     with open(output_filepath, "wb") as f:
         pickle.dump(solution, f)
 
-    Plotter().plotDispatch(solution).show()
+    #Plotter().plotDispatch(solution).show()
 
+
+
+
+if __name__ == "__main__":
+    run_roll_out()

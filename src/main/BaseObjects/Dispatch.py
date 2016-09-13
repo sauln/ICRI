@@ -80,11 +80,21 @@ class Dispatch():
         # we can do this in O(n) time instead of O(n*log(n)).
         nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
             for vehicle in vehicles]
+      
+        # This is broken out to get better profile information
+        # `customer in self.customers` takes a lot of time.
+        # `
+        fNextPairs = []
+        for vehicle, cs in nextPairs:
+            for customer in cs:
+                if vehicle.isFeasible(customer) and customer in self.customers:
+                    cost = Cost.gnnh(self.delta, vehicle, customer)
+                    fNextPairs.append( (vehicle, customer, cost))
         
-        fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
-                        for vehicle, cs in nextPairs \
-                        for customer in cs \
-                        if vehicle.isFeasible(customer) and customer in self.customers]
+        #fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+        #                for vehicle, cs in nextPairs \
+        #                for customer in cs \
+        #                if vehicle.isFeasible(customer) and customer in self.customers]
         
         cs = SortedListWithKey(key = lambda x: x[2])
         cs.update(fNextPairs)

@@ -27,6 +27,7 @@ class Customer():
         return "c{}".format(self.custNo)
 
     def __eq__(self, other):
+        # There are a lot of these calls.  why so much?
         return self.custNo == other.custNo and \
                self.location  == other.location  and \
                self.demand  == other.demand  and \

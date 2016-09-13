@@ -1,18 +1,51 @@
 # TODO
 
+
+
+
+## Hyperparameters
+Want to approach hyperparameter optimization from two directions:
+  
+### Traditional Outer loop
+* Compare grid search, random search, and sequential grid search
+* Learn about sequential parameter tunings, 
+* Setup naive in-the-loop adaptive parameter tuning.  Apply ideas from sequential parameter tunings.
+
+### New Heuristics
+* Implement new heuristic
+
+### Optimizations
+* Profile the roll out and improve slow points
+
+
+
+
+
 ## Bigger
-- [x] Build feasibility graph
-- [x] push dispatch object through
 - [ ] incorporate *robustness* of solution into the cost function
-- [ ] integrate changing hyperparameters (delta) into loop
-- [ ] more sophisticated method for choosing between possible solutions w/ delta
-- [x] incorporate stopping conditions into algo 2
 - [ ] build soft timewindows into algo
 - [ ] make it faster - there are tons of opportunity for caching and short circuiting
+- [ ] use O(n) min/max rather than sort+pop.
+- [ ] profile time results
+- [ ] document profiled results
+
 
 ## Smaller
 - [x] make Parameters::customers return a shallow copy on `get`
 - [ ] Cost functions in rollout only account for two parts of the route 
 (base and potential new) but does not incorporate the cost of bridging the two
+
+
+
+Crazy idea:
+Think of the state of each vehicle as a tuple (location_m, capacity_m, arrival_time_m)
+Then we can construct a tensor of all the states.
+Then we want to turn it on it's side and shake down all the values.
+Where if one dimension is vehicles (m), we shake and let gravity settle out all the values.
+This is kind of like simulated annealing. 
+
+
+
+
 
 

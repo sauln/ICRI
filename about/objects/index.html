@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+	<title>Objects - blinevrp</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">blinevrp</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../">About</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Objects</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../todo/">TODO</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../../todo/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#base-objects">Base objects</a></li>
+        
+            <li><a href="#customer">Customer</a></li>
+        
+            <li><a href="#vehicle">Vehicle</a></li>
+        
+            <li><a href="#dispatch">Dispatch</a></li>
+        
+            <li><a href="#parameters">Parameters</a></li>
+        
+            <li><a href="#solomonproblem">SolomonProblem</a></li>
+        
+    
+        <li class="main "><a href="#algorithms">Algorithms</a></li>
+        
+            <li><a href="#heuristic">Heuristic</a></li>
+        
+            <li><a href="#rollout">RollOut</a></li>
+        
+            <li><a href="#improvement">Improvement</a></li>
+        
+            <li><a href="#validator">Validator</a></li>
+        
+            <li><a href="#cost">Cost</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>These are some basic rough definitions for the objects used in the optimization routines.</p>
+<p>A lot of these have been over-engineered and have since been dialed down considerably.<br />
+For accurate information, please see the source code.  It's structured almost the same
+as this page</p>
+<h2 id="base-objects">Base objects</h2>
+<h3 id="customer">Customer</h3>
+<p>Basic structure of a customer as defined by the Solomon Problem sets</p>
+<h3 id="vehicle">Vehicle</h3>
+<p>Basic concept of the vehicle.  Tracks visited customers, current time, current capacity.</p>
+<p>Vehicle supplies functions that help check whether we can add to the list, 
+and to find feasible customers.</p>
+<p>isFeasible, travelTime, travelDist, geographicCenter, serveCustomer, last.</p>
+<h3 id="dispatch">Dispatch</h3>
+<p>Coordinates customers and vehicles. Decides which customers the vehicles serve and when
+to add new vehicles.  </p>
+<p>A dispatch is implicitly (<em>TODO build this into the code</em>) considered <code>complete</code> when
+all of it's customers have been served (assigned to a vehicle). 
+An incomplete or empty dispatch is the input of both the heuristic
+and roll out algorithms where a complete dispatch is the output of both algorithms.</p>
+<h3 id="parameters">Parameters</h3>
+<p>Singleton object that captures the input parameters of the problem and some metaparameters
+that are used for calculating the problem.  Much of these parameters should be explicitly 
+captured in the various other objects, but a handful of pseudo-global 
+variables greatly eases development and prototyping.</p>
+<h3 id="solomonproblem">SolomonProblem</h3>
+<p>Basic problem definition of the Solomon Problem set. Used to define the customers and basic
+hyperparameters for the problem.</p>
+<h2 id="algorithms">Algorithms</h2>
+<p>The algorithms directory contains many objects that describe the main algorithms and 
+functions used in the solution. For some of these functions, there was no clear
+place to go within an object, so they have found their home here, usually exposed
+as static methods.</p>
+<p>The four main algorithms will each be featured here: Heuristic(1), RollOut(2), 
+Improvement(3), and WindowMods(4).</p>
+<p>Each of the main for algorithms will come equiped with a main method for both debugging
+and demoing purposes.</p>
+<h3 id="heuristic">Heuristic</h3>
+<p>Algorithm for building part 1 of the ICRI paper. </p>
+<p>The rollout uses this heuristic algorithm for the <code>rolling out</code> aspect of the algorithm.
+This should have a very uniform interface so that switching heuristics is very simple.</p>
+<p>(<em>TODO  Should there be two different cost functions, one for the bestSequence in 
+the roll out, and another for the heursistic?</em>)</p>
+<h3 id="rollout">RollOut</h3>
+<p>Algorithm for building part 2 of the ICRI paper. </p>
+<p>A point of note for this algorithm is the use of copying objects.  The basic premise is
+to copy the dispatch solution, rollout the heuristic on this solution, and if it's good, 
+save it.</p>
+<h3 id="improvement">Improvement</h3>
+<p>Algorithm for building part 3 of the ICRI paper.</p>
+<h3 id="validator">Validator</h3>
+<p>Helper object that consumes a routes object and confirms that it abides by all our rules.</p>
+<h3 id="cost">Cost</h3>
+<p>Defines multiple different cost functions for defining best next nodes and cost of routes.</p>
+<p>These main cost functions are: 
+<em> Cost.ofSolution - Cost of a solution generated by the heuristic 
+</em> Cost.gnnh - Generalized cost used by the heuristic.</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script>
+        <script>var base_url = '../..';</script>
+        <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+        <script src="../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

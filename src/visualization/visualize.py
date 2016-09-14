@@ -4,6 +4,9 @@ import click
 import logging
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
 import pickle
 
 from src.main.BaseObjects.Customer import Customer
@@ -12,7 +15,46 @@ from src.main.BaseObjects.Vehicle import Vehicle
 class Plotter:
     def __init__(self):
         pass
-  
+
+    def vehicles3D(self, dispatch):
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+ 
+        print(dispatch)
+        for vehicle in dispatch.vehicles:
+            self.vehicle3D(ax, vehicle)
+
+        plt.show()
+        return self
+
+    def vehicle3D(self, ax, vehicle):
+        xs, ys, time = map(list, zip(*[(c.location.x, c.location.y, c.readyTime) 
+            for c in vehicle.customerHistory]))
+
+        time[-1] = 230
+        ax.plot(xs,ys,time)
+        
+
+    def customers3D(self, customers):
+        # take list of cusomters
+        # plot x,y, time 
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        xs, ys, time = map(list, zip(*[(c.location.x, c.location.y, c.readyTime) 
+            for c in customers]))
+        #xs = [c.location.x for c in customers]
+        #ys = [c.location.y for c in customers]
+        #time = [c.readyTime for c in customers]
+   
+        ax.scatter(xs,ys, time)
+        plt.show()
+
+
+    def savefig(filename):
+        plt.savefig(filename)
+        
+
 
     def twoPlotComparison(self, plotFunc, before, after):
         plt.figure(1)

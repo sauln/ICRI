@@ -78,5 +78,6 @@ if __name__ == "__main__":
     dispatch = Dispatch(customers, depot)
     solution = Heuristic_new().run(dispatch)
     print(solution.solutionStr())
-    Plotter().plotDispatch(solution).show()
-    
+    #Plotter().plotDispatch(solution).show()
+    Plotter().vehicles3D(solution).show() 
+    Plotter().customers3D(customers).show() 

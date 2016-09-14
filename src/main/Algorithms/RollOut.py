@@ -8,7 +8,7 @@ from copy import copy, deepcopy
 
 
 from src.visualization.visualize import Plotter
-from src.main.Algorithms.Heuristic import Heuristic_new
+from src.main.Algorithms.Heuristic import Heuristic, Heuristic_new
 from src.main.Algorithms.CostFunction import Cost
 from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
@@ -16,14 +16,6 @@ from src.main.BaseObjects.Vehicle import Vehicle
 
 import pdb
 logger = logging.getLogger(__name__)
-
-def genRandomDeltas(count):
-    #random.seed(0)
-    Delta = []
-    for _ in range(count):
-        Delta.append([random.random() for _ in range(7)])
-
-    return Delta 
 
 class RollOut:
     def __init__(self):
@@ -39,10 +31,13 @@ class RollOut:
         # need to make a copy of the dispatch and copy of the vehicle
         # but also need the vehicle inside of dispatch
         # to be the same as this one. copy, copy, replace
-        
+       
+        # need 
+
+
         tmpDispatch = Dispatch(dispatch)
         tmpVehicle = Vehicle(vehicle)
-        tmpDispatch.vehicles = [v if v == tmpVehicle else tmpVehicle \
+        tmpDispatch.vehicles = [v if v != tmpVehicle else tmpVehicle \
             for v in tmpDispatch.vehicles]
         if tmpVehicle not in tmpDispatch.vehicles:
             tmpDispatch.vehicles.append(tmpVehicle)
@@ -70,26 +65,31 @@ class RollOut:
             tmpDispatch, tmpVehicle = self.duplicateEnv(dispatch, vehicle)
 
             tmpDispatch.addCustomer(tmpVehicle, customer)
-            potentialSolution = Heuristic_new().run(tmpDispatch)
+            #potentialSolution = Heuristic_new().run(tmpDispatch)
+            potentialSolution = Heuristic().run(tmpDispatch)
             
-            if(Cost.ofSolution(potentialSolution) < lowestCost):
-                lowestCost = Cost.ofSolution(potentialSolution)
+            cost = Cost.ofSolution(potentialSolution)
+            if(cost < lowestCost):
+                lowestCost = cost
                 bestCustomer = customer
                 bestVehicle = vehicle
-        return bestVehicle, bestCustomer, lowestCost
+                bestSolution = potentialSolution
+        return bestVehicle, bestCustomer, lowestCost, bestSolution
 
 
 
 
     def run(self, dispatch):
         dispatch = deepcopy(dispatch)
+        #import pdb
 
         logger.info("Run rollout")
         while dispatch.customers:
+            #pdb.set_trace()
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 
             topCustomers = rankedCustomers[:10]
-            bestVehicle, bestCustomer, bestCost = \
+            bestVehicle, bestCustomer, bestCost, bestSolution = \
                 self.rollHeuristicOut(dispatch, topCustomers)
             dispatch.addCustomer(bestVehicle, bestCustomer)
            

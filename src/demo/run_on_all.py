@@ -1,25 +1,22 @@
 import os
 import pickle
 
+from collections import defaultdict
+
 
 from src.main.Algorithms.GridSearch import run_search
 from src.main.Algorithms.RollOut import run_roll_out 
 from src.data.make_dataset import DataBuilder
 
-
 def load_files(data_root):
     files = os.listdir(data_root)
-
     outfiles = [f.replace(".txt", ".p") for f in files] 
-
     return (files, outfiles)
 
 def save_sp(solution, fname, root="data/solutions/"):
     output_filepath = root + fname 
     with open(output_filepath, "wb") as f:
         pickle.dump(solution, f)
-
-
 
 def run_on_all_problems():
     data_root = "data/raw"
@@ -28,7 +25,10 @@ def run_on_all_problems():
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
-    for f in outfiles:
+    rfiles = list(filter(lambda x: "c" not in x, outfiles))
+    print("Run for r type files: {}".format(rfiles))
+
+    for f in rfiles:
         print("Run on {}".format(f))
         solution = run_search(f) 
         #solution = run_roll_out(f)
@@ -45,11 +45,6 @@ def summarize_on_all():
     root = "data/solutions/"
     _, files = load_files(root)
     
-
-    # unpickle each file in files,
-    # check get name, vehicle #, and total distance
-    # group them
-
     results = []
 
     for filename in files:
@@ -61,51 +56,24 @@ def summarize_on_all():
         name = filename
         results.append( (name, num_veh, totalDist) )
 
-    rc1s = []
-    rc2s = []
-    c1s = []
-    c2s = []
-    r1s = []
-    r2s = []
-    for r in results:
-        if r[0][:3] == "rc1":
-            rc1s.append(r)
-        elif r[0][:3] == "rc2":
-            rc2s.append(r)
-        elif r[0][:2] == "r1":
-            r1s.append(r)
-        elif r[0][:2] == "r2":
-            r2s.append(r)
-        elif r[0][:2] == "c1":
-            c1s.append(r)
-        elif r[0][:2] == "c2":
-            c2s.append(r)
-    print("Results of all R1 problems:")
-    print(summarize(r1s))
-    print("Results of all R2 problems:")
-    print(summarize(r2s))
-    
-    print("Results of all C1 problems:")
-    print(summarize(c1s))
-    print("Results of all C2 problems:")
-    print(summarize(c2s))
+    problemtypes = ["rc1", "rc2", "r1", "r2", "c1", "c2"]
+    problemdict = defaultdict(list)
 
-    print("Results of all RC1 problems:")
-    print(summarize(rc1s))
-    print("Results of all RC2 problems:")
-    print(summarize(rc2s))
+    for r in results:
+        for pt in problemtypes:
+            if r[0].startswith( pt ):
+                problemdict[pt].append(r)
+
+    for key, value in problemdict.items():
+        print("Results of all {} problems:".format(key))
+        print(summarize(value))
 
 
 if __name__ == "__main__":
-
     print("STARTING THE GRID SEARCH ON ALL FILES!!")
-
-    run_on_all_problems()
-
+    # run_on_all_problems()
     print("SUMMARIZING THE  GRID SEARCH ON ALL FILES!!!!")
     summarize_on_all()
-
-
     print("WOOOOOOHOOOO WE FINISHED!!!!!")
 
 

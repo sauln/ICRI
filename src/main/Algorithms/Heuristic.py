@@ -11,20 +11,6 @@ from src.main.Algorithms.CostFunction import Cost
 
 class Heuristic_new:
     def run(self, dispatch):
-        # sort customers by time window
-        # foreach customer (sorted)
-        #   lowestcost = \inf
-        #   next = null
-
-        #   foreach vehicle
-        #       if g(m, c) < lowestCost:
-        #           lowestcost = g(m, c)
-        #           nexts = (m, c)
-        #   
-
-        # import pdb
-        # pdb.set_trace()
-
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
 
         for customer in cs:
@@ -45,12 +31,10 @@ class Heuristic_new:
 
             veh, cust = nexts
             veh.serveCustomer(cust)
-            # cs.remove(cust)
         dispatch.finish()
         return dispatch
 
-
-
+'''
 class Heuristic:
     def __init__(self):
         pass
@@ -64,6 +48,7 @@ class Heuristic:
 
         dispatch.finish()
         return dispatch
+'''
 
 if __name__ == "__main__":
     input_filepath = "data/interim/r101.p"
@@ -78,6 +63,6 @@ if __name__ == "__main__":
     dispatch = Dispatch(customers, depot)
     solution = Heuristic_new().run(dispatch)
     print(solution.solutionStr())
-    #Plotter().plotDispatch(solution).show()
-    Plotter().vehicles3D(solution).show() 
-    Plotter().customers3D(customers).show() 
+    # Plotter().plotDispatch(solution).show()
+    # Plotter().vehicles3D(solution).show() 
+    # Plotter().customers3D(customers).show() 

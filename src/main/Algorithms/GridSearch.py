@@ -5,7 +5,6 @@ from pyDOE import *
 from abc import ABCMeta, abstractmethod
 import numpy as np
 
-
 from src.visualization.visualize import Plotter
 from src.main.BaseObjects.Dispatch import Dispatch
 from src.main.BaseObjects.Parameters import Parameters
@@ -14,6 +13,8 @@ from src.main.Algorithms.RollOut import RollOut
 
 logger = logging.getLogger(__name__)
 
+
+''' These 3 functions can be used elsewhere '''
 def open_sp(fname, root = "data/interim/"):
     input_filepath = root + fname
     with open(input_filepath, "rb") as f:
@@ -27,7 +28,6 @@ def save_sp(fname, root="data/solution/"):
 
 def save_as_csv(costs, filename, root="data/processed/"):
     print("Saving grid search results as {}".format(root+filename))
-    
     with open(root + filename, "w") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["Num Vehicles", "Distance"] + ["lam"]*5)
@@ -66,25 +66,16 @@ class Tuning:
     def evaluate(self, solution):
         num_vehicles = len(solution.vehicles)
         total_distance = sum(v.totalDist for v in solution.vehicles)
-        
         return [num_vehicles, total_distance]
 
 class Random_search(Tuning):
     def generator(self, count):
-        ''' according to Bergstra/Bengio, random search is better than grid search for 
-         many dimensions'''
-        window = (0, 1)
-        seed = 0
-        dimensions = 5 
-
-        np.random.seed(seed)
-        lambdas = np.random.random_sample((25, 5))
+        np.random.seed(0)
+        lambdas = np.random.random_sample((50, 5))
         return [lambdas]
 
 class Grid_search(Tuning):
     def generator(self, count):
-        # let count be a proxy metric for density
-        # okay to return just 1 list 
         width = 5
         lambdas = lhs(5, samples=10, criterion='cm')
         return [lambdas]
@@ -94,18 +85,15 @@ class Shadow_search(Tuning):
         num_vars = 5
 
         for pos in range(num_vars):
-            #randoms = np.random.uniform(0,1, (count, num_left))
             lambdas = np.ones((count, num_vars))
             lambdas[:,pos] = np.linspace(0, 1, num=count)
             yield lambdas
-    
 
 switch = {"grid_search": Grid_search, \
           "shadow_search":Shadow_search, \
           "random_search":Random_search}
-
+    
 def run_search(fname, search_type="random_search", save=1):
-
     sp = open_sp(fname)
     Parameters().build(sp, 10, 10)
 
@@ -116,7 +104,7 @@ def run_search(fname, search_type="random_search", save=1):
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
 
-    print("Found best for {}: {}".format(fname, bestFound)
+    print("Found best for {}: {}".format(fname, bestFound))
     return bestFound 
 
 if __name__ == "__main__":
@@ -125,17 +113,12 @@ if __name__ == "__main__":
 
     #grid_search_costs = Grid_search().find_costs(sp)
     #random_costs = Random_search().find_costs(sp)
-
     #random_costs = find_random_costs(sp)
     # save_as_csv(random_costs, "data/processed/random_costs.csv")
-
     #gs_costs = find_gs_costs(sp)
     #save_as_csv(gs_costs, "data/processed/gs_costs.csv")
-   
-
     #shadow_costs = find_shadow_costs(sp)
     #shadow_plot(shadow_costs)
-   
     #end = time.gmtime()
     #print("Ending at {}".format(end))
 

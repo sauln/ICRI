@@ -108,50 +108,56 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#todo">TODO</a></li>
+        <li class="main active"><a href="#experiments">Experiments</a></li>
         
-            <li><a href="#hyperparameters">Hyperparameters</a></li>
+    
+        <li class="main "><a href="#hyperparameters">Hyperparameters</a></li>
         
-            <li><a href="#bigger">Bigger</a></li>
-        
-            <li><a href="#smaller">Smaller</a></li>
+    
+        <li class="main "><a href="#software">Software</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="todo">TODO</h1>
-<h2 id="hyperparameters">Hyperparameters</h2>
-<p>Want to approach hyperparameter optimization from two directions:</p>
-<h3 id="traditional-outer-loop">Traditional Outer loop</h3>
+<h1 id="experiments">Experiments</h1>
+<p>Need to start collecting data and running many experiments with many different modifications.
+Look into using AWS.  The problems would be well suited for map-reduce.</p>
+<p>To facilitate these, and for my own edification, run these experiments on AWS.</p>
+<ol>
+<li>Run on all 56 problems all of the following with and without parameter tuning:</li>
+<li>Just the heuristic </li>
+<li>Just the rollout</li>
+<li>Rollout w/ Improvement Algo </li>
+<li>Generate reports for each of the following:</li>
+<li>How rollout and improvement effect the results w.r.t the heuristic.</li>
+<li>How using parameters found from tuning based on just the heuristic effect the 
+  results of the rollout and improvement phases.<ul>
+<li>Is it necessary? and how much improvement can you expect?</li>
+</ul>
+</li>
+<li>Comparison with multiple parameter tuning methods</li>
+<li>Do these reports and results differ if we choose a different heuristic?</li>
+</ol>
+<h1 id="hyperparameters">Hyperparameters</h1>
+<p>Approach hyperparameter optimization from two directions:</p>
 <ul>
-<li>Compare grid search, random search, and sequential grid search</li>
-<li>Learn about sequential parameter tunings, </li>
-<li>Setup naive in-the-loop adaptive parameter tuning.  Apply ideas from sequential parameter tunings.</li>
+<li>Tradiational outer-loop optimization.  </li>
+<li>Compare grid search, random search, and sequential methods.</li>
+<li>Learn multi-armed bandit.</li>
+<li>Inside-the-loop optimization.</li>
+<li>Try tuning mid optimization.</li>
+<li>Integrate the multi-armed bandit into the <code>parallel heuristic</code> rollout step.</li>
 </ul>
-<h3 id="new-heuristics">New Heuristics</h3>
-<ul>
-<li>Implement new heuristic</li>
-</ul>
-<h3 id="optimizations">Optimizations</h3>
-<ul>
-<li>Profile the roll out and improve slow points</li>
-</ul>
-<h2 id="bigger">Bigger</h2>
-<ul class="task-list">
-<li class="task-list-item"><input type="checkbox" disabled> incorporate <em>robustness</em> of solution into the cost function</li>
-<li class="task-list-item"><input type="checkbox" disabled> build soft timewindows into algo</li>
-<li class="task-list-item"><input type="checkbox" disabled> make it faster - there are tons of opportunity for caching and short circuiting</li>
-<li class="task-list-item"><input type="checkbox" disabled> use O(n) min/max rather than sort+pop.</li>
-<li class="task-list-item"><input type="checkbox" disabled> profile time results</li>
-<li class="task-list-item"><input type="checkbox" disabled> document profiled results</li>
-</ul>
-<h2 id="smaller">Smaller</h2>
-<ul class="task-list">
-<li class="task-list-item"><input type="checkbox" disabled checked> make Parameters::customers return a shallow copy on <code>get</code></li>
-<li class="task-list-item"><input type="checkbox" disabled> Cost functions in rollout only account for two parts of the route </li>
-</ul></div>
+<h1 id="software">Software</h1>
+<p>The unittests have fallen to ruin.  Need to update the unittests.  Also need to 
+refactor much of the dispatch code.  Lots of it has become entirely too complicated
+and can be greatly simplified. I believe I also prematurely optimized for readability.</p>
+<p>At each stable point:
+<em> Profile the code and address biggest weaknesses
+</em> Repair unittests
+* Refactor</p></div>
             
         </div>
 

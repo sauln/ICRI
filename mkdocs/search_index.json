@@ -127,43 +127,23 @@
         },
         {
             "location": "/todo/",
-            "text": "TODO\n\n\nHyperparameters\n\n\nWant to approach hyperparameter optimization from two directions:\n\n\nTraditional Outer loop\n\n\n\n\nCompare grid search, random search, and sequential grid search\n\n\nLearn about sequential parameter tunings, \n\n\nSetup naive in-the-loop adaptive parameter tuning.  Apply ideas from sequential parameter tunings.\n\n\n\n\nNew Heuristics\n\n\n\n\nImplement new heuristic\n\n\n\n\nOptimizations\n\n\n\n\nProfile the roll out and improve slow points\n\n\n\n\nBigger\n\n\n\n\n incorporate \nrobustness\n of solution into the cost function\n\n\n build soft timewindows into algo\n\n\n make it faster - there are tons of opportunity for caching and short circuiting\n\n\n use O(n) min/max rather than sort+pop.\n\n\n profile time results\n\n\n document profiled results\n\n\n\n\nSmaller\n\n\n\n\n make Parameters::customers return a shallow copy on \nget\n\n\n Cost functions in rollout only account for two parts of the route",
+            "text": "Experiments\n\n\nNeed to start collecting data and running many experiments with many different modifications.\nLook into using AWS.  The problems would be well suited for map-reduce.\n\n\nTo facilitate these, and for my own edification, run these experiments on AWS.\n\n\n\n\nRun on all 56 problems all of the following with and without parameter tuning:\n\n\nJust the heuristic \n\n\nJust the rollout\n\n\nRollout w/ Improvement Algo \n\n\nGenerate reports for each of the following:\n\n\nHow rollout and improvement effect the results w.r.t the heuristic.\n\n\nHow using parameters found from tuning based on just the heuristic effect the \n  results of the rollout and improvement phases.\n\n\nIs it necessary? and how much improvement can you expect?\n\n\n\n\n\n\nComparison with multiple parameter tuning methods\n\n\nDo these reports and results differ if we choose a different heuristic?\n\n\n\n\nHyperparameters\n\n\nApproach hyperparameter optimization from two directions:\n\n\n\n\nTradiational outer-loop optimization.  \n\n\nCompare grid search, random search, and sequential methods.\n\n\nLearn multi-armed bandit.\n\n\nInside-the-loop optimization.\n\n\nTry tuning mid optimization.\n\n\nIntegrate the multi-armed bandit into the \nparallel heuristic\n rollout step.\n\n\n\n\nSoftware\n\n\nThe unittests have fallen to ruin.  Need to update the unittests.  Also need to \nrefactor much of the dispatch code.  Lots of it has become entirely too complicated\nand can be greatly simplified. I believe I also prematurely optimized for readability.\n\n\nAt each stable point:\n\n Profile the code and address biggest weaknesses\n\n Repair unittests\n* Refactor",
             "title": "TODO"
         },
         {
-            "location": "/todo/#todo",
-            "text": "",
-            "title": "TODO"
+            "location": "/todo/#experiments",
+            "text": "Need to start collecting data and running many experiments with many different modifications.\nLook into using AWS.  The problems would be well suited for map-reduce.  To facilitate these, and for my own edification, run these experiments on AWS.   Run on all 56 problems all of the following with and without parameter tuning:  Just the heuristic   Just the rollout  Rollout w/ Improvement Algo   Generate reports for each of the following:  How rollout and improvement effect the results w.r.t the heuristic.  How using parameters found from tuning based on just the heuristic effect the \n  results of the rollout and improvement phases.  Is it necessary? and how much improvement can you expect?    Comparison with multiple parameter tuning methods  Do these reports and results differ if we choose a different heuristic?",
+            "title": "Experiments"
         },
         {
             "location": "/todo/#hyperparameters",
-            "text": "Want to approach hyperparameter optimization from two directions:",
+            "text": "Approach hyperparameter optimization from two directions:   Tradiational outer-loop optimization.    Compare grid search, random search, and sequential methods.  Learn multi-armed bandit.  Inside-the-loop optimization.  Try tuning mid optimization.  Integrate the multi-armed bandit into the  parallel heuristic  rollout step.",
             "title": "Hyperparameters"
         },
         {
-            "location": "/todo/#traditional-outer-loop",
-            "text": "Compare grid search, random search, and sequential grid search  Learn about sequential parameter tunings,   Setup naive in-the-loop adaptive parameter tuning.  Apply ideas from sequential parameter tunings.",
-            "title": "Traditional Outer loop"
-        },
-        {
-            "location": "/todo/#new-heuristics",
-            "text": "Implement new heuristic",
-            "title": "New Heuristics"
-        },
-        {
-            "location": "/todo/#optimizations",
-            "text": "Profile the roll out and improve slow points",
-            "title": "Optimizations"
-        },
-        {
-            "location": "/todo/#bigger",
-            "text": "incorporate  robustness  of solution into the cost function   build soft timewindows into algo   make it faster - there are tons of opportunity for caching and short circuiting   use O(n) min/max rather than sort+pop.   profile time results   document profiled results",
-            "title": "Bigger"
-        },
-        {
-            "location": "/todo/#smaller",
-            "text": "make Parameters::customers return a shallow copy on  get   Cost functions in rollout only account for two parts of the route",
-            "title": "Smaller"
+            "location": "/todo/#software",
+            "text": "The unittests have fallen to ruin.  Need to update the unittests.  Also need to \nrefactor much of the dispatch code.  Lots of it has become entirely too complicated\nand can be greatly simplified. I believe I also prematurely optimized for readability.  At each stable point:  Profile the code and address biggest weaknesses  Repair unittests\n* Refactor",
+            "title": "Software"
         }
     ]
 }

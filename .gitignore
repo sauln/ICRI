@@ -72,3 +72,4 @@ target/
 # exclude data from source control by default
 data/interim
 site/
+data/processed/*.csv

@@ -59,13 +59,19 @@ class RollOut:
         dispatch.finish()
         return dispatch
   
+def load_sp(fname, root="data/interim/"):
+    input_filepath = root + fname
+    with open(input_filepath, "rb") as f:
+        sp = pickle.load(f)
 
+def save_sp(solution, fname, root="data/solution/"):
+    output_filepath = root + fname 
+    with open(output_filepath, "wb") as f:
+        pickle.dump(solution, f)
 
 
 def run_roll_out(ps):
-    input_filepath = "data/interim/"+ps
-    with open(input_filepath, "rb") as f:
-        sp = pickle.load(f)
+    sp = load_sp(ps)
 
     Parameters().build(sp, 10, 10)
 
@@ -76,13 +82,11 @@ def run_roll_out(ps):
     delta = [1]*7
     dispatch.set_delta(delta)
    
-    print(dispatch.delta)
+    #print(dispatch.delta)
     solution = RollOut().run(dispatch)
-    print(solution.solutionStr())
-    
-    output_filepath = "data/solutions/" + ps
-    with open(output_filepath, "wb") as f:
-        pickle.dump(solution, f)
+    #print(solution.solutionStr())
+    return solution
+    #save_sp(solution, ps)
 
 if __name__ == "__main__":
     run_roll_out("r101.p")

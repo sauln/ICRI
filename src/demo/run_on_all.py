@@ -1,28 +1,38 @@
 import os
 import pickle
- 
+
+
+from src.main.Algorithms.GridSearch import run_search
 from src.main.Algorithms.RollOut import run_roll_out 
 from src.data.make_dataset import DataBuilder
 
 
-def load_files():
-    data_root = "data/raw"
+def load_files(data_root):
     files = os.listdir(data_root)
 
     outfiles = [f.replace(".txt", ".p") for f in files] 
 
     return (files, outfiles)
 
+def save_sp(solution, fname, root="data/solutions/"):
+    output_filepath = root + fname 
+    with open(output_filepath, "wb") as f:
+        pickle.dump(solution, f)
+
+
 
 def run_on_all_problems():
+    data_root = "data/raw"
     
-    files, outfiles = load_files()
+    files, outfiles = load_files(data_root)
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
     for f in outfiles:
         print("Run on {}".format(f))
-        run_roll_out(f)
+        solution = run_search(f) 
+        #solution = run_roll_out(f)
+        save_sp(solution, f)
 
 def summarize(xs):
     avg_veh = sum([x[1] for x in xs])/len(xs)
@@ -32,9 +42,9 @@ def summarize(xs):
         
 
 def summarize_on_all():
-    _, files = load_files()
-    
     root = "data/solutions/"
+    _, files = load_files(root)
+    
 
     # unpickle each file in files,
     # check get name, vehicle #, and total distance
@@ -46,8 +56,8 @@ def summarize_on_all():
         with open(root + filename, "rb") as f:
             solution = pickle.load(f)
         
-        totalDist = sum( [v.totalDist for v in solution.vehicles] )
-        num_veh = len(solution.vehicles)
+        totalDist = solution.total_distance
+        num_veh = solution.num_vehicles
         name = filename
         results.append( (name, num_veh, totalDist) )
 
@@ -87,7 +97,15 @@ def summarize_on_all():
 
 
 if __name__ == "__main__":
-    #run_on_all_problems()
 
+    print("STARTING THE GRID SEARCH ON ALL FILES!!")
+
+    run_on_all_problems()
+
+    print("SUMMARIZING THE  GRID SEARCH ON ALL FILES!!!!")
     summarize_on_all()
+
+
+    print("WOOOOOOHOOOO WE FINISHED!!!!!")
+
 

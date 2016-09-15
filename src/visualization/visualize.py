@@ -5,7 +5,7 @@ import logging
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
+from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 
 import pickle
 
@@ -33,7 +33,29 @@ class Plotter:
 
         time[-1] = 230
         ax.plot(xs,ys,time)
-        
+
+    def shadow_plot(self, shadow_costs):
+        fig = plt.figure()
+
+        print("Plot and save shadow costs")
+
+        for p, var in enumerate(shadow_costs):
+            num_vehicles = var[:,0]
+            distances = var[:,1]
+            lambdas = var[:,p+2]
+           
+            ax = fig.add_subplot(len(shadow_costs), 2, 2*p)
+            ax.scatter(lambdas, distances)
+            ax.set_title("Total distance of parameter {}".format(p))
+            ax.yaxis.set_major_formatter(FormatStrFormatter("%.0f"))
+
+            ax = fig.add_subplot(len(shadow_costs), 2, 2*p + 1)
+            ax.scatter(lambdas, num_vehicles)
+            ax.set_title("Total vehicles of parameter {}".format(p))
+
+        plt.savefig("data/processed/shadow_costs.png")
+        #    plt.show()
+        return self 
 
     def customers3D(self, customers):
         # take list of cusomters

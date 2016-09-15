@@ -1,29 +1,38 @@
-# TODO
+# Experiments
+Need to start collecting data and running many experiments with many different modifications.
+Look into using AWS.  The problems would be well suited for map-reduce.
 
-## Hyperparameters
-Want to approach hyperparameter optimization from two directions:
-  
-### Traditional Outer loop
-* Compare grid search, random search, and sequential grid search
-* Learn about sequential parameter tunings, 
-* Setup naive in-the-loop adaptive parameter tuning.  Apply ideas from sequential parameter tunings.
+To facilitate these, and for my own edification, run these experiments on AWS.
 
-### New Heuristics
-* Implement new heuristic
+1. Run on all 56 problems all of the following with and without parameter tuning:
+  * Just the heuristic 
+  * Just the rollout
+  * Rollout w/ Improvement Algo 
+2. Generate reports for each of the following:
+  * How rollout and improvement effect the results w.r.t the heuristic.
+  * How using parameters found from tuning based on just the heuristic effect the 
+  results of the rollout and improvement phases.
+    * Is it necessary? and how much improvement can you expect?
+  * Comparison with multiple parameter tuning methods
+  * Do these reports and results differ if we choose a different heuristic?
 
-### Optimizations
-* Profile the roll out and improve slow points
+# Hyperparameters
+Approach hyperparameter optimization from two directions:
 
-## Bigger
-- [ ] incorporate *robustness* of solution into the cost function
-- [ ] build soft timewindows into algo
-- [ ] make it faster - there are tons of opportunity for caching and short circuiting
-- [ ] use O(n) min/max rather than sort+pop.
-- [ ] profile time results
-- [ ] document profiled results
+* Tradiational outer-loop optimization.  
+  * Compare grid search, random search, and sequential methods.
+  * Learn multi-armed bandit.
+* Inside-the-loop optimization.
+  * Try tuning mid optimization.
+  * Integrate the multi-armed bandit into the `parallel heuristic` rollout step.
 
-## Smaller
-- [x] make Parameters::customers return a shallow copy on `get`
-- [ ] Cost functions in rollout only account for two parts of the route 
-(base and potential new) but does not incorporate the cost of bridging the two
+# Software
+The unittests have fallen to ruin.  Need to update the unittests.  Also need to 
+refactor much of the dispatch code.  Lots of it has become entirely too complicated
+and can be greatly simplified. I believe I also prematurely optimized for readability.
+
+At each stable point:
+* Profile the code and address biggest weaknesses
+* Repair unittests
+* Refactor
 

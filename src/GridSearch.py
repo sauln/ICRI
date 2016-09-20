@@ -6,10 +6,8 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 
 from src.visualization.visualize import Plotter
-from src.main.BaseObjects.Dispatch import Dispatch
-from src.main.BaseObjects.Parameters import Parameters
-from src.main.BaseObjects.Solution import Solution
-from src.main.Algorithms.RollOut import RollOut
+from baseobjects import Dispatch, Parameters, Solution
+import RollOut
 
 logger = logging.getLogger(__name__)
 

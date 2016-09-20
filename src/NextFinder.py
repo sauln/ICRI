@@ -1,7 +1,5 @@
 import sortedcontainers
-from src.main.Algorithms.CostFunction import Cost
-from src.main.BaseObjects.Vehicle import Vehicle
-from src.main.BaseObjects.Parameters import Parameters
+from baseobjects import Vehicle, Parameters, CostFunction
 
 #TODO pick a better name for NextFinder, this
 

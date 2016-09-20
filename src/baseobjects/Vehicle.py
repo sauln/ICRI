@@ -1,8 +1,9 @@
 import numpy as np
 
-from src.main.BaseObjects.Customer import Customer
-#from src.main.BaseObjects.ListBase import ListBase
-from src.main.BaseObjects.Parameters import Parameters
+from .Customer import Customer
+from .Parameters import Parameters
+#import Customer
+#import Parameters
 
 class Vehicle():
     def __init__(self, depot):

@@ -5,8 +5,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from src.main.BaseObjects.SolomonProblem import SolomonProblem
-from src.main.BaseObjects.Customer import Customer, Point
+from baseobjects import Customer, Point, SolomonProblem
 
 logger = logging.getLogger(__name__)
 
@@ -49,20 +48,25 @@ class DataBuilder:
         with open(self.output_filepath, "wb") as f:
             pickle.dump(self.problem, f)
 
+def load_files(data_root):
+    files = os.listdir(data_root)
+    outfiles = [f.replace(".txt", ".p") for f in files] 
+    return (files, outfiles)
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
+def convert_all():
+    data_root = "data/raw"
+    
     logger = logging.getLogger(__name__)
-    logger.info('parsing solomon file {}'.format(input_filepath))
-
-    DataBuilder(input_filepath, output_filepath)
+    logger.info('parsing all problems in'.format(data_root))
+    
+    files, outfiles = load_files(data_root)
+    for f, of in zip(files, outfiles):
+        DataBuilder(data_root + "/" + f, "data/interim/"+of)
     
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    main()
+    convert_all()
 

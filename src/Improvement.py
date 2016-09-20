@@ -11,9 +11,8 @@ import sortedcontainers
 import numpy as np
 
 from src.visualization.visualize import Plotter
-from src.main.BaseObjects.Parameters import Parameters
-from src.main.Algorithms.RollOut import RollOut
-from src.main.BaseObjects.Dispatch import Dispatch
+from baseobjects import Parameters, Dispatch
+from RollOut import RollOut
 
 LOGGER = logging.getLogger(__name__)
 

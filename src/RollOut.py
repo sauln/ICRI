@@ -6,13 +6,8 @@ import logging
 import sortedcontainers
 from copy import copy, deepcopy
 
-
-from src.visualization.visualize import Plotter
-from src.main.Algorithms.Heuristic import Heuristic, Heuristic_new
-from src.main.Algorithms.CostFunction import Cost
-from src.main.BaseObjects.Dispatch import Dispatch
-from src.main.BaseObjects.Parameters import Parameters
-from src.main.BaseObjects.Vehicle import Vehicle
+import Heuristic
+from baseobjects import Dispatch, Cost, Parameters, Vehicle
 
 import pdb
 logger = logging.getLogger(__name__)

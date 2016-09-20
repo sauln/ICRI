@@ -1,4 +1,4 @@
-from src.main.BaseObjects.Parameters import Parameters
+from baseobjects import Parameters
 
 class Validator():
     def __init__(self, routes):

@@ -2,10 +2,17 @@ import numpy as np
 
 from sortedcontainers import SortedListWithKey 
 
-from src.main.BaseObjects.Vehicle import Vehicle
-from src.main.BaseObjects.Parameters import Parameters
-from src.main.Algorithms.CostFunction import Cost
-from src.main.BaseObjects.Customer import Customer
+from .Vehicle import Vehicle
+from .Parameters import Parameters
+from .Customer import Customer
+from .CostFunction import Cost
+
+#import Vehicle
+#import Parameters
+#import Customer
+#import Cost
+
+
 
 class Dispatch():
     def __init__(self, customers, depot=None):

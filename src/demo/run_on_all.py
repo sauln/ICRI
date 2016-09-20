@@ -3,7 +3,6 @@ import pickle
 
 from collections import defaultdict
 
-
 from src.main.Algorithms.GridSearch import run_search
 from src.main.Algorithms.RollOut import run_roll_out 
 from src.data.make_dataset import DataBuilder
@@ -39,7 +38,6 @@ def summarize(xs):
     avg_dist = sum([x[2] for x in xs])/len(xs)
 
     return (avg_veh, avg_dist)
-        
 
 def summarize_on_all():
     root = "data/solutions/"

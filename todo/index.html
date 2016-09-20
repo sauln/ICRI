@@ -126,11 +126,13 @@
 Look into using AWS.  The problems would be well suited for map-reduce.</p>
 <p>To facilitate these, and for my own edification, run these experiments on AWS.</p>
 <ol>
-<li>Run on all 56 problems all of the following with and without parameter tuning:</li>
+<li>Run on all 56 problems all of the following with and without parameter tuning:<ul>
 <li>Just the heuristic </li>
 <li>Just the rollout</li>
 <li>Rollout w/ Improvement Algo </li>
-<li>Generate reports for each of the following:</li>
+</ul>
+</li>
+<li>Generate reports for each of the following:<ul>
 <li>How rollout and improvement effect the results w.r.t the heuristic.</li>
 <li>How using parameters found from tuning based on just the heuristic effect the 
   results of the rollout and improvement phases.<ul>
@@ -139,6 +141,8 @@ Look into using AWS.  The problems would be well suited for map-reduce.</p>
 </li>
 <li>Comparison with multiple parameter tuning methods</li>
 <li>Do these reports and results differ if we choose a different heuristic?</li>
+</ul>
+</li>
 </ol>
 <h1 id="hyperparameters">Hyperparameters</h1>
 <p>Approach hyperparameter optimization from two directions:</p>
@@ -154,10 +158,12 @@ Look into using AWS.  The problems would be well suited for map-reduce.</p>
 <p>The unittests have fallen to ruin.  Need to update the unittests.  Also need to 
 refactor much of the dispatch code.  Lots of it has become entirely too complicated
 and can be greatly simplified. I believe I also prematurely optimized for readability.</p>
-<p>At each stable point:
-<em> Profile the code and address biggest weaknesses
-</em> Repair unittests
-* Refactor</p></div>
+<p>At each stable point:</p>
+<ul>
+<li>Profile the code and address biggest weaknesses</li>
+<li>Repair unittests</li>
+<li>Refactor</li>
+</ul></div>
             
         </div>
 

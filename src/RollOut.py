@@ -6,7 +6,7 @@ import logging
 import sortedcontainers
 from copy import copy, deepcopy
 
-from baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic
+from .baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic
 
 import pdb
 logger = logging.getLogger(__name__)
@@ -69,9 +69,7 @@ def run_roll_out(ps):
     sp = load_sp(ps)
     Parameters().build(sp, 10, 10)
 
-    customers = sp.customers[1:]
-    depot = sp.customers[0]
-    dispatch = Dispatch(customers, depot)
+    dispatch = Dispatch(sp.customers)
 
     delta = [1]*7
     dispatch.set_delta(delta)

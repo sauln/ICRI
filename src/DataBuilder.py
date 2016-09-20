@@ -5,7 +5,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from baseobjects import Customer, Point, SolomonProblem
+from .baseobjects import Customer, Point, SolomonProblem
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,8 @@ class DataBuilder:
         self.lines = self.loadLines()
         self.problem = self.getProblemDefinition()
         self.saveSP()
-    
+
+
     def getProblemDefinition(self):
         logger.info('Extract problem definition.')
         lines = self.lines

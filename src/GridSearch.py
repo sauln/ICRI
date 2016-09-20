@@ -5,9 +5,8 @@ from pyDOE import *
 from abc import ABCMeta, abstractmethod
 import numpy as np
 
-from src.visualization.visualize import Plotter
-from baseobjects import Dispatch, Parameters, Solution
-from RollOut import RollOut
+from .baseobjects import Dispatch, Parameters, Solution, Plotter
+from .RollOut import RollOut
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +43,8 @@ class Tuning:
         else:
             num_customers = len(sp.customers)
         num_diff_lambdas = count
-
-        customers = sp.customers[1:num_customers+1]
-        depot = sp.customers[0]
-        dispatch = Dispatch(customers, depot)
+        
+        dispatch = Dispatch(sp.customers[:num_customers+2])
         
         results = []
         for lambdas in self.generator(num_diff_lambdas): 

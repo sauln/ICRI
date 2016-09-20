@@ -9,8 +9,8 @@ from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 
 import pickle
 
-from baseobjects import Customer
-from baseobjects import Vehicle
+from .Customer import Customer
+from .Vehicle import Vehicle
 
 class Plotter:
     def __init__(self):

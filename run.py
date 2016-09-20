@@ -8,28 +8,28 @@ import pickle
 import sortedcontainers
 import numpy as np
 
-from src import *
+import src
 
 logger = logging.getLogger(__name__)
 
+
+
+
 def main():
-    problem_number = "r107"
+    problem_number = "r101"
     input_filepath = "data/raw/{}.txt".format(problem_number)
     output_filepath = "data/interim/{}.p".format(problem_number)
     intermediate_filepath = "data/interim/solution_{}.p".format(problem_number)
-    DataBuilder(input_filepath, output_filepath)
-
-    with open(output_filepath, "rb") as f:
-        sp = pickle.load(f)
-
+    
+    
     logger.info('Setup Parameters and Dispatch')
-    Parameters().build(sp, 10, 10)
-    customers = sp.customers[1:]
-    depot = sp.customers[0]
-    dispatch = Dispatch(customers, depot)
+    sp = src.DataBuilder(input_filepath, output_filepath).problem
+    src.Parameters().build(sp, 10, 10)
+    dispatch = src.Dispatch(sp.customers)
+    
 
     logger.info('Construct routes')
-    solution = RollOut().run(dispatch)
+    solution = src.RollOut().run(dispatch)
     
     logger.info("Save intermediate solution.")
     with open(intermediate_filepath, "wb") as f:
@@ -40,10 +40,8 @@ def main():
     #Plotter().plotDispatch(solution).show()
 
     logger.info("Running improvement algorithm on solution")
-    newSolution = Improvement().run(solution)
+    newSolution = src.Improvement().run(solution)
     Plotter().beforeAndAfter(solution, newSolution).show()
-
-
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

@@ -54,13 +54,6 @@ if __name__ == "__main__":
         sp = pickle.load(f)
    
     Parameters().build(sp, 10, 10)
-
-    customers = sp.customers[1:]
-    depot = sp.customers[0]
-
-    dispatch = Dispatch(customers, depot)
+    dispatch = Dispatch(sp.customers)
     solution = Heuristic_new().run(dispatch)
     print(solution.solutionStr())
-    # Plotter().plotDispatch(solution).show()
-    # Plotter().vehicles3D(solution).show() 
-    # Plotter().customers3D(customers).show() 

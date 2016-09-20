@@ -28,7 +28,11 @@ class Dispatch():
             self.feasibleGraph = dispatch.feasibleGraph
             self.delta = dispatch.delta
         else:
-            self.customers = customers
+            if depot is None:
+                depot = customers[0]
+                customers = customers[1:]
+
+            self.customers = list(customers)
             self.depot = depot
             self.visitedCustomers = [] 
             self.vehicles = []

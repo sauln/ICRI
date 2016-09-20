@@ -10,9 +10,8 @@ import copy
 import sortedcontainers
 import numpy as np
 
-from src.visualization.visualize import Plotter
-from baseobjects import Parameters, Dispatch
-from RollOut import RollOut
+from .baseobjects import Parameters, Dispatch, Plotter
+from .RollOut import RollOut
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,8 +68,6 @@ def replace_vehicles(dispatch, old_vehicles, new_vehicles):
         dispatch.vehicles.remove(v)
     for v in new_vehicles:
         dispatch.vehicles.append(v)
-
-
 
 
 class Improvement:
@@ -132,8 +129,8 @@ class Improvement:
     def setup_next_round(self, similar_vehicles):
         """ With the candidate vehicles, setup the rollout algorithm """
         customers = flatten_vehicles(similar_vehicles)
-        customers.remove(Parameters().depot)
-        dispatch = Dispatch(customers, Parameters().depot)
+        #customers.remove(Parameters().depot)
+        dispatch = Dispatch(customers)#, Parameters().depot)
         return dispatch
 
 

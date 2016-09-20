@@ -7,7 +7,7 @@ import numpy as np
 
 from src.visualization.visualize import Plotter
 from baseobjects import Dispatch, Parameters, Solution
-import RollOut
+from RollOut import RollOut
 
 logger = logging.getLogger(__name__)
 

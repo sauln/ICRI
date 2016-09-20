@@ -1,3 +1,5 @@
+from .Validator import *
+from .Heuristic import *
 from .Customer import *
 from .Dispatch import *
 from .Solution import *

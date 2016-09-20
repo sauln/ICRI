@@ -6,12 +6,10 @@ import logging
 import sortedcontainers
 from copy import copy, deepcopy
 
-import Heuristic
-from baseobjects import Dispatch, Cost, Parameters, Vehicle
+from baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic
 
 import pdb
 logger = logging.getLogger(__name__)
- 
 
 def load_sp(fname, root="data/interim/"):
     input_filepath = root + fname
@@ -24,6 +22,13 @@ def save_sp(solution, fname, root="data/solution/"):
     with open(output_filepath, "wb") as f:
         pickle.dump(solution, f)
 
+class Best:
+    def __init__(self, cost, customer, vehicle, solution):
+        self.cost = cost
+        self.customer = customer
+        self.vehicle = vehicle
+        self.solution = solution
+        
 class RollOut:
     def duplicateEnv(self, dispatch, vehicle):
         tmpDispatch = Dispatch(dispatch)
@@ -35,9 +40,6 @@ class RollOut:
 
         return tmpDispatch, tmpVehicle
 
-    def rollHeuristicOut(self, dispatch, topCustomers):
-        return bestVehicle, bestCustomer, bestCost, bestSolution
-
     def run(self, dispatch):
         dispatch = deepcopy(dispatch)
 
@@ -47,28 +49,24 @@ class RollOut:
             rankedCustomers = dispatch.getFeasibles(vehicles) 
             topCustomers = rankedCustomers[:10]
             
-            bestCost = (float('inf'),float('inf'))
+            best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in topCustomers:    
                 tmpDispatch, tmpVehicle = self.duplicateEnv(dispatch, vehicle)
 
                 tmpDispatch.addCustomer(tmpVehicle, customer)
-                potentialSolution = Heuristic_new().run(tmpDispatch)
+                potentialSolution = Heuristic.Heuristic_new().run(tmpDispatch)
                 
                 cost = Cost.ofSolution(potentialSolution)
-                if(cost < bestCost):
-                    bestCost = cost
-                    bestCustomer = customer
-                    bestVehicle = vehicle
-                    bestSolution = potentialSolution
+                if(cost < best.cost):
+                    best = Best(cost, customer, vehicle, potentialSolution)
             
-            dispatch.addCustomer(bestVehicle, bestCustomer)
+            dispatch.addCustomer(best.vehicle, best.customer)
            
         dispatch.finish()
         return dispatch
 
 def run_roll_out(ps):
     sp = load_sp(ps)
-
     Parameters().build(sp, 10, 10)
 
     customers = sp.customers[1:]

@@ -2,12 +2,10 @@
 import pickle
 import sortedcontainers
 
-#from src.visualization.visualize import Plotter
-from baseobjects import Dispatch
-from baseobjects import Parameters
-
-from baseobjects import Vehicle
-from baseobjects import Cost
+from .Dispatch import Dispatch
+from .Parameters import Parameters
+from .Vehicle import Vehicle
+from .CostFunction import Cost
 
 class Heuristic_new:
     def run(self, dispatch):

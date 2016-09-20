@@ -1,8 +1,6 @@
 import sortedcontainers
 from baseobjects import Vehicle, Parameters, CostFunction
 
-#TODO pick a better name for NextFinder, this
-
 
 class PotentialNextCustomer:
     def __init__(self, vehicle, customer, gnnhCost):

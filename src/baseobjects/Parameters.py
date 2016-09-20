@@ -4,11 +4,9 @@ from scipy.spatial.distance import pdist, squareform
 class Parameters:
     class __Parameters:
         def __init__(self):
-            #self.customers = None
             self.distMatrix = None
             self.timeMatrix = None
             self.params = None
-            self.depot = None
 
         def __getattr__(self, name):
             return getattr(self.params, name)
@@ -16,22 +14,12 @@ class Parameters:
         def __str__(self):
             return str(self.params) + str(self.distMatrix) + str(self.timeMatrix)
         
-        def build(self, problemSet, topNodes, searchDepth, depot = None):
-            if depot is not None: 
-                self.depot = depot
-                #self.customers = problemSet.customers
-            else:
-                self.depot = problemSet.customers[0]
-                #self.customers = problemSet.customers[1:]
+        def build(self, problemSet, topNodes, searchDepth):
+            self.depot = problemSet.customers[0]
 
             self.params = problemSet
             self.distMatrix = self.buildDistMatrix(problemSet.customers)
             self.timeMatrix = self.buildTimeMatrix(problemSet.customers)
-            self.topNodes = topNodes
-            self.searchDepth = searchDepth
-
-        #def getCustomers(self):
-        #    return list(self.customers)
 
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.location.x, c.location.y] for c in customers]) 

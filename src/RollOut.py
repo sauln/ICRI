@@ -43,7 +43,7 @@ class RollOut:
     def run(self, dispatch):
         dispatch = deepcopy(dispatch)
 
-        logger.info("Run rollout")
+        logger.info("Run rollout: {}".format(dispatch.delta))
         while dispatch.customers:
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 

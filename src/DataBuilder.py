@@ -7,7 +7,7 @@ import pickle
 
 from .baseobjects import Customer, Point, SolomonProblem
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 class DataBuilder:
     def __init__(self, input_filepath, output_filepath):
@@ -20,7 +20,7 @@ class DataBuilder:
 
 
     def getProblemDefinition(self):
-        logger.info('Extract problem definition.')
+        LOGGER.debug('Extract problem definition.')
         lines = self.lines
         problem_name = lines[0].strip()
         rules = lines[4].split()
@@ -39,13 +39,13 @@ class DataBuilder:
         return Customer(cid, loc, *rest)
 
     def loadLines(self):
-        logger.info('Loading Solomon Problem from {}'.format(self.input_filepath))
+        LOGGER.debug('Loading Solomon Problem from {}'.format(self.input_filepath))
         with open(self.input_filepath, 'r') as f:
             lines = f.readlines()
         return lines
 
     def saveSP(self):
-        logger.info('Saving problem definition to {}'.format(self.output_filepath))
+        LOGGER.debug('Saving problem definition to {}'.format(self.output_filepath))
         with open(self.output_filepath, "wb") as f:
             pickle.dump(self.problem, f)
 
@@ -57,8 +57,8 @@ def load_files(data_root):
 def convert_all():
     data_root = "data/raw"
     
-    logger = logging.getLogger(__name__)
-    logger.info('parsing all problems in'.format(data_root))
+    LOGGER = logging.getLogger(__name__)
+    LOGGER.info('parsing all problems in'.format(data_root))
     
     files, outfiles = load_files(data_root)
     for f, of in zip(files, outfiles):

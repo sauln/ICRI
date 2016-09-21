@@ -49,7 +49,6 @@ class Tuning:
         results = []
         for lambdas in self.generator(num_diff_lambdas): 
             for lam in lambdas:
-                print("Running for {}".format(lam))
                 dispatch.set_delta(lam)
                 solution = RollOut().run(dispatch)
                 num_veh, t_dist = self.evaluate(solution)
@@ -66,13 +65,13 @@ class Tuning:
 class Random_search(Tuning):
     def generator(self, count):
         np.random.seed(0)
-        lambdas = np.random.random_sample((50, 5))
+        lambdas = np.random.random_sample((count, 5))
         return [lambdas]
 
 class Grid_search(Tuning):
     def generator(self, count):
         width = 5
-        lambdas = lhs(5, samples=10, criterion='cm')
+        lambdas = lhs(width, samples=count, criterion='cm')
         return [lambdas]
 
 class Shadow_search(Tuning):
@@ -88,11 +87,11 @@ switch = {"grid_search": Grid_search, \
           "shadow_search":Shadow_search, \
           "random_search":Random_search}
     
-def run_search(fname, search_type="random_search", save=1):
+def run_search(fname, search_type="random_search", save=1, trunc=0, count=5):
     sp = open_sp(fname)
     Parameters().build(sp, 10, 10)
 
-    costs = switch[search_type]().find_costs(sp, trunc=0, fname=fname)
+    costs = switch[search_type]().find_costs(sp, trunc=trunc, fname=fname, count=count)
     if(save):
         save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
     

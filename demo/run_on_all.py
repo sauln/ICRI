@@ -1,11 +1,11 @@
 import os
 import pickle
-
+import logging 
+import sys 
 from collections import defaultdict
 
-from src.main.Algorithms.GridSearch import run_search
-from src.main.Algorithms.RollOut import run_roll_out 
-from src.data.make_dataset import DataBuilder
+from src import DataBuilder, run_search, Improvement
+LOGGER = logging.getLogger(__name__)
 
 def load_files(data_root):
     files = os.listdir(data_root)
@@ -19,18 +19,19 @@ def save_sp(solution, fname, root="data/solutions/"):
 
 def run_on_all_problems():
     data_root = "data/raw"
-    
+   
+    # this is just DataBuilder.convert_all w/ diff args
     files, outfiles = load_files(data_root)
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
     rfiles = list(filter(lambda x: "c" not in x, outfiles))
-    print("Run for r type files: {}".format(rfiles))
+    LOGGER.info("Run for r type files: {}".format(rfiles))
 
     for f in rfiles:
-        print("Run on {}".format(f))
-        solution = run_search(f) 
-        #solution = run_roll_out(f)
+        LOGGER.info("Run on {}".format(f))
+        solution = run_search(f, trunc=0, count=10)
+        solution.solution = Improvement().run(solution.solution)
         save_sp(solution, f)
 
 def summarize(xs):
@@ -63,15 +64,16 @@ def summarize_on_all():
                 problemdict[pt].append(r)
 
     for key, value in problemdict.items():
-        print("Results of all {} problems:".format(key))
-        print(summarize(value))
+        LOGGER.info("Results of all {} problems:".format(key))
+        LOGGER.info(summarize(value))
 
 
 if __name__ == "__main__":
-    print("STARTING THE GRID SEARCH ON ALL FILES!!")
-    # run_on_all_problems()
-    print("SUMMARIZING THE  GRID SEARCH ON ALL FILES!!!!")
+    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+    LOGGER.info("STARTING THE GRID SEARCH ON ALL FILES!!")
+    run_on_all_problems()
+    LOGGER.info("SUMMARIZING THE  GRID SEARCH ON ALL FILES!!!!")
     summarize_on_all()
-    print("WOOOOOOHOOOO WE FINISHED!!!!!")
+    LOGGER.info("WOOOOOOHOOOO WE FINISHED!!!!!")
 
 

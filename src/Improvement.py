@@ -36,18 +36,28 @@ def vehicle_set_print(vehicles):
     """ Nice print function for a vehicle set """
     return "\n".join(str(v) for v in vehicles)
 
-def should_replace_with(old_vehicles, new_vehicles):
+def should_replace_with(old_dispatch, new_dispatch):
     """ Criterion for replacing vehicle sets for improvement """
-    return len(new_vehicles) <= len(old_vehicles)
+    less_vehs = len(new_dispatch.vehicles) < len(old_dispatch.vehicles)  
+    if less_vehs: 
+        return less_vehs
+    else:
+        if len(new_dispatch.vehicles) > len(old_dispatch.vehicles):
+            return 0
+        else:
+            return new_dispatch.total_dist < old_dispatch.total_dist
     #return 1
 
 def summarize_solution(dispatch, dispatch_backup):
     """ Helper function for printing output"""
-    LOGGER.info("Before improvement: {}"\
-        .format(dispatch_backup.solutionStr()))
-    LOGGER.info("After improvement: {}".format(dispatch.solutionStr()))
+    old_total_distance = sum(v.totalDist for v in dispatch_backup.vehicles)
+    total_distance = sum(v.totalDist for v in dispatch.vehicles)
+    LOGGER.debug("Before Improvement: {}: {}"\
+        .format(len(dispatch_backup.vehicles), old_total_distance))
 
-    Plotter().beforeAndAfter(dispatch_backup, dispatch).show()
+    LOGGER.debug("After Improvement: {}: {}"\
+        .format(len(dispatch.vehicles), total_distance))
+    #Plotter().beforeAndAfter(dispatch_backup, dispatch).show()
 
 def chose_candidates(dispatch, worst):
     """ method for choosing the vehicles for improvement"""
@@ -60,8 +70,8 @@ def flatten_vehicles(vehicles):
 
 def replace_vehicles(dispatch, old_vehicles, new_vehicles):
     """ Replace the old vehicles in a dispatch object with new vehicles """
-    logging.debug("Replace routes")
-    logging.debug("Are they the same? {}".format(\
+    LOGGER.debug("Replace routes")
+    LOGGER.debug("Are they the same? {}".format(\
         set(old_vehicles) == set(new_vehicles)))
 
     for v in old_vehicles:
@@ -82,7 +92,7 @@ class Improvement:
 
         iterations = 10
         for i in range(iterations):
-            if not i%10:
+            if not i%5:
                 LOGGER.info("Improvement phase {}/{}".format(i, iterations))
             self.improve(dispatch)
 
@@ -92,17 +102,15 @@ class Improvement:
 
     def improve(self, dispatch):
         """ Workhorse of Improvement. Manages the improve phase"""
-        similar_vehicles = self.candidate_vehicles(dispatch)
-
-        tmp_dispatch = self.setup_next_round(similar_vehicles)
+        tmp_dispatch = self.setup_next_round(dispatch)
         solution = RollOut().run(tmp_dispatch)
 
-        if should_replace_with(similar_vehicles, solution.vehicles):
-            replace_vehicles(dispatch, similar_vehicles, solution.vehicles)
+        if should_replace_with(tmp_dispatch, solution):
+            replace_vehicles(dispatch, tmp_dispatch.vehicles, solution.vehicles)
         else:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
                 by_vehicles_dist(solution.vehicles),\
-                by_vehicles_dist(similar_vehicles)))
+                by_vehicles_dist(dispatch.vehicles)))
 
             #Plotter().compareRouteSets(solution.vehicles, similar_vehicles).show()
 
@@ -120,18 +128,19 @@ class Improvement:
         sorted_vehicles.update(solution.vehicles)
 
         rbest = sorted_vehicles.pop(0)
-        if rbest in self.previous_candidates:
+        if rbest in self.previous_candidates and sorted_vehicles:
             rbest = random.choice(sorted_vehicles)
 
         self.previous_candidates.append(rbest)
         return rbest
 
-    def setup_next_round(self, similar_vehicles):
+    def setup_next_round(self, dispatch):
         """ With the candidate vehicles, setup the rollout algorithm """
+        similar_vehicles = self.candidate_vehicles(dispatch)
         customers = flatten_vehicles(similar_vehicles)
-        #customers.remove(Parameters().depot)
-        dispatch = Dispatch(customers)#, Parameters().depot)
-        return dispatch
+        new_dispatch = Dispatch(customers)
+        new_dispatch.set_delta(dispatch.delta)
+        return new_dispatch
 
 
 if __name__ == "__main__":

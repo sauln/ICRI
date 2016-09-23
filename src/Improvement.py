@@ -36,33 +36,38 @@ def vehicle_set_print(vehicles):
     """ Nice print function for a vehicle set """
     return "\n".join(str(v) for v in vehicles)
 
-def should_replace_with(old_dispatch, new_dispatch):
+def should_replace_with(old_vehicles, new_vehicles):
     """ Criterion for replacing vehicle sets for improvement """
-    less_vehs = len(new_dispatch.vehicles) < len(old_dispatch.vehicles)  
+    less_vehs = len(new_vehicles) < len(old_vehicles)  
+    new_num, new_dist = by_vehicles_dist(new_vehicles)
+    old_num, old_dist = by_vehicles_dist(old_vehicles)
+
+    LOGGER.debug("New solution: {}".format(by_vehicles_dist(new_vehicles)))
+    LOGGER.debug("Original solution: {}".format(by_vehicles_dist(old_vehicles)))
     if less_vehs: 
         return less_vehs
     else:
-        if len(new_dispatch.vehicles) > len(old_dispatch.vehicles):
+        if new_num > old_num:
             return 0
         else:
-            return new_dispatch.total_dist < old_dispatch.total_dist
+            return new_dist < old_dist
     #return 1
 
 def summarize_solution(dispatch, dispatch_backup):
-    """ Helper function for printing output"""
-    old_total_distance = sum(v.totalDist for v in dispatch_backup.vehicles)
-    total_distance = sum(v.totalDist for v in dispatch.vehicles)
-    LOGGER.debug("Before Improvement: {}: {}"\
-        .format(len(dispatch_backup.vehicles), old_total_distance))
-
-    LOGGER.debug("After Improvement: {}: {}"\
-        .format(len(dispatch.vehicles), total_distance))
-    #Plotter().beforeAndAfter(dispatch_backup, dispatch).show()
+    new_num_veh, new_dist = by_vehicles_dist(dispatch.vehicles)
+    old_num_veh, old_dist = by_vehicles_dist(dispatch_backup.vehicles)
+    LOGGER.info("Before Improvement: {}: {}"\
+        .format(old_num_veh, old_dist))
+    LOGGER.info("After Improvement: {}: {}"\
+        .format(new_num_veh, new_dist))
+    LOGGER.info("Improvement: {} vehicles, {} distance".format(\
+        old_num_veh - new_num_veh,\
+        old_dist - new_dist))
 
 def chose_candidates(dispatch, worst):
     """ method for choosing the vehicles for improvement"""
     criterion = geographic_similarity
-    return criterion(dispatch, worst)[:5]
+    return criterion(dispatch, worst)[:10]
 
 def flatten_vehicles(vehicles):
     """ Get all customers from many vehicles """
@@ -90,10 +95,10 @@ class Improvement:
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        iterations = 10
+        iterations = 100
         for i in range(iterations):
             if not i%5:
-                LOGGER.info("Improvement phase {}/{}".format(i, iterations))
+                LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
             self.improve(dispatch)
 
         summarize_solution(dispatch, dispatch_backup)
@@ -102,23 +107,28 @@ class Improvement:
 
     def improve(self, dispatch):
         """ Workhorse of Improvement. Manages the improve phase"""
-        tmp_dispatch = self.setup_next_round(dispatch)
-        solution = RollOut().run(tmp_dispatch)
+        tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
+        LOGGER.debug("Number of vehicles before rollout: {}".format(len(old_vehicles)))
 
-        if should_replace_with(tmp_dispatch, solution):
-            replace_vehicles(dispatch, tmp_dispatch.vehicles, solution.vehicles)
+        solution = RollOut().run(tmp_dispatch)
+        LOGGER.debug("Number of vehicles after rollout: {}".format(len(tmp_dispatch.vehicles)))
+
+        if should_replace_with(old_vehicles, solution.vehicles):
+            replace_vehicles(dispatch, old_vehicles, solution.vehicles)
         else:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
                 by_vehicles_dist(solution.vehicles),\
-                by_vehicles_dist(dispatch.vehicles)))
+                by_vehicles_dist(old_vehicles)))
 
             #Plotter().compareRouteSets(solution.vehicles, similar_vehicles).show()
 
     def candidate_vehicles(self, dispatch):
         """ Find next vehicles to improve """
         worst = self.worst_vehicle(dispatch)
-        LOGGER.debug("Improve around {}".format(worst))
         candidate_vehicles = chose_candidates(dispatch, worst)
+        LOGGER.debug("Improvement candidates around {}: {} vehicles with distance {}"\
+            .format(worst, \
+            len(candidate_vehicles), sum([v.totalDist for v in candidate_vehicles])))
         return candidate_vehicles
 
     def worst_vehicle(self, solution):
@@ -140,7 +150,7 @@ class Improvement:
         customers = flatten_vehicles(similar_vehicles)
         new_dispatch = Dispatch(customers)
         new_dispatch.set_delta(dispatch.delta)
-        return new_dispatch
+        return new_dispatch, similar_vehicles
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ import numpy as np
 from .baseobjects import Dispatch, Parameters, Solution, Plotter
 from .RollOut import RollOut
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 ''' These 3 functions can be used elsewhere '''
@@ -98,7 +98,7 @@ def run_search(fname, search_type="random_search", save=1, trunc=0, count=5):
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
 
-    print("Found best for {}: {}".format(fname, bestFound))
+    LOGGER.info("Found best for {}: {}".format(fname, bestFound))
     return bestFound 
 
 if __name__ == "__main__":

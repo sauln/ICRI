@@ -25,7 +25,8 @@ def run_on_all_problems():
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
-    rfiles = list(filter(lambda x: "c" not in x, outfiles))
+    rfiles = sorted(list(filter(lambda x: "c" not in x, outfiles)))
+    
     LOGGER.info("Run for r type files: {}".format(rfiles))
 
     for f in rfiles:

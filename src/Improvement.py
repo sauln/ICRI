@@ -108,10 +108,8 @@ class Improvement:
     def improve(self, dispatch):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
-        LOGGER.debug("Number of vehicles before rollout: {}".format(len(old_vehicles)))
 
         solution = RollOut().run(tmp_dispatch)
-        LOGGER.debug("Number of vehicles after rollout: {}".format(len(tmp_dispatch.vehicles)))
 
         if should_replace_with(old_vehicles, solution.vehicles):
             replace_vehicles(dispatch, old_vehicles, solution.vehicles)

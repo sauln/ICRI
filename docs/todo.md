@@ -5,16 +5,16 @@ Look into using AWS.  The problems would be well suited for map-reduce.
 To facilitate these, and for my own edification, run these experiments on AWS.
 
 1. Run on all 56 problems all of the following with and without parameter tuning:
-  * Just the heuristic 
-  * Just the rollout
-  * Rollout w/ Improvement Algo 
+    * Just the heuristic 
+    * Just the rollout
+    * Rollout w/ Improvement Algo 
 2. Generate reports for each of the following:
-  * How rollout and improvement effect the results w.r.t the heuristic.
-  * How using parameters found from tuning based on just the heuristic effect the 
+    * How rollout and improvement effect the results w.r.t the heuristic.
+    * How using parameters found from tuning based on just the heuristic effect the 
   results of the rollout and improvement phases.
-    * Is it necessary? and how much improvement can you expect?
-  * Comparison with multiple parameter tuning methods
-  * Do these reports and results differ if we choose a different heuristic?
+        * Is it necessary? and how much improvement can you expect?
+    * Comparison with multiple parameter tuning methods
+    * Do these reports and results differ if we choose a different heuristic?
 
 # Hyperparameters
 Approach hyperparameter optimization from two directions:
@@ -32,6 +32,7 @@ refactor much of the dispatch code.  Lots of it has become entirely too complica
 and can be greatly simplified. I believe I also prematurely optimized for readability.
 
 At each stable point:
+
 * Profile the code and address biggest weaknesses
 * Repair unittests
 * Refactor

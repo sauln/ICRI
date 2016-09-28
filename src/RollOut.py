@@ -63,6 +63,8 @@ class RollOut:
             dispatch.addCustomer(best.vehicle, best.customer)
            
         dispatch.finish()
+
+        logger.debug("Solution to rollout: {}, {}".format(len(dispatch.vehicles), dispatch.total_dist())) 
         return dispatch
 
 def run_roll_out(ps):

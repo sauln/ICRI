@@ -6,6 +6,7 @@ class Solution:
         self.params = params
         self.solution = solution
         self.name = name
+        self.pre_solution = None
 
 
     def __repr__(self):

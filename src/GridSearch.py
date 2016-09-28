@@ -37,14 +37,18 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def find_costs(self, sp, count=5, trunc=0, fname=None):
+    def find_costs_from_sp(self, sp, count=5, trunc=0, fname=None):
         if trunc:
             num_customers = 5 
         else:
             num_customers = len(sp.customers)
-        num_diff_lambdas = count
         
         dispatch = Dispatch(sp.customers[:num_customers+2])
+        
+        return self.find_costs(dispatch, count=count, trunc=trunc, fname=fname) 
+
+    def find_costs(self, dispatch, count=5, trunc=0, fname=None):
+        num_diff_lambdas = count
         
         results = []
         for lambdas in self.generator(num_diff_lambdas): 
@@ -86,18 +90,32 @@ class Shadow_search(Tuning):
 switch = {"grid_search": Grid_search, \
           "shadow_search":Shadow_search, \
           "random_search":Random_search}
-    
-def run_search(fname, search_type="random_search", save=1, trunc=0, count=5):
+   
+def search(dispatch, trunc=0, count=5, fname=None, search_type="random_search"):
+    costs = switch[search_type]().find_costs(dispatch, trunc=trunc, fname=fname, count=count)
+    crit = lambda x: (x.num_vehicles, x.total_distance)
+    bestFound = min(costs, key=crit)
+    return bestFound, costs
+
+
+def run_search(fname, search_type="random_search", save=0, trunc=0, count=5):
     sp = open_sp(fname)
     Parameters().build(sp, 10, 10)
 
-    costs = switch[search_type]().find_costs(sp, trunc=trunc, fname=fname, count=count)
-    if(save):
-        save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
-    
+
+    costs = switch[search_type]().find_costs_from_sp(sp, trunc=trunc, fname=fname, count=count)
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
 
+
+
+
+    #costs = switch[search_type]().find_costs(sp, trunc=trunc, fname=fname, count=count)
+    #crit = lambda x: (x.num_vehicles, x.total_distance)
+    #bestFound = min(costs, key=crit)
+    if(save):
+        save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
+    
     LOGGER.info("Found best for {}: {}".format(fname, bestFound))
     return bestFound 
 

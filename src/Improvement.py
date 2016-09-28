@@ -9,9 +9,11 @@ import copy
 
 import sortedcontainers
 import numpy as np
+from math import ceil
 
 from .baseobjects import Parameters, Dispatch, Plotter
 from .RollOut import RollOut
+from .GridSearch import search
 
 LOGGER = logging.getLogger(__name__)
 
@@ -64,10 +66,11 @@ def summarize_solution(dispatch, dispatch_backup):
         old_num_veh - new_num_veh,\
         old_dist - new_dist))
 
-def chose_candidates(dispatch, worst):
+def chose_candidates(dispatch, worst, count=5):
     """ method for choosing the vehicles for improvement"""
     criterion = geographic_similarity
-    return criterion(dispatch, worst)[:10]
+    all_cands =  criterion(dispatch, worst)
+    return all_cands[: ceil(len(all_cands)/3)]
 
 def flatten_vehicles(vehicles):
     """ Get all customers from many vehicles """
@@ -95,7 +98,7 @@ class Improvement:
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        iterations = 100
+        iterations = 10
         for i in range(iterations):
             if not i%5:
                 LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
@@ -108,14 +111,17 @@ class Improvement:
     def improve(self, dispatch):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
+        #import pdb
+        #pdb.set_trace()
+        #solution = RollOut().run(tmp_dispatch)
+        #solution = run_search(f, trunc=0, count=10)
+        solution, costs = search(tmp_dispatch, count=10)
 
-        solution = RollOut().run(tmp_dispatch)
-
-        if should_replace_with(old_vehicles, solution.vehicles):
-            replace_vehicles(dispatch, old_vehicles, solution.vehicles)
+        if should_replace_with(old_vehicles, solution.solution.vehicles):
+            replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
         else:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
-                by_vehicles_dist(solution.vehicles),\
+                by_vehicles_dist(solution.solution.vehicles),\
                 by_vehicles_dist(old_vehicles)))
 
             #Plotter().compareRouteSets(solution.vehicles, similar_vehicles).show()
@@ -136,8 +142,9 @@ class Improvement:
         sorted_vehicles.update(solution.vehicles)
 
         rbest = sorted_vehicles.pop(0)
-        if rbest in self.previous_candidates and sorted_vehicles:
-            rbest = random.choice(sorted_vehicles)
+        #if rbest in self.previous_candidates and sorted_vehicles:
+        rbestR = random.choice(sorted_vehicles)
+        rbest = random.choice([rbest, rbestR])
 
         self.previous_candidates.append(rbest)
         return rbest

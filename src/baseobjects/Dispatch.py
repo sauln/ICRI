@@ -54,6 +54,9 @@ class Dispatch():
         vehstr = "\n".join([str(v) for v in self.vehicles])
         return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)
 
+    def total_dist(self):
+        return sum([v.totalDist for v in self.vehicles])
+
 
     ##############################################################
     #####     These should probably not be there

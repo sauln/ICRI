@@ -4,5 +4,6 @@ pages:
 - About: about/index.md
 - Objects: about/objects.md
 - TODO: todo.md
+- Results: results.md
 markdown_extensions:
     - pymdownx.tasklist

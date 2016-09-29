@@ -21,8 +21,8 @@ def save_sp(solution, fname, root="data/solutions/"):
 
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
-    random.seed(999)
-    solution = run_search(f, trunc=0, count=10)
+    random.seed(0)
+    solution = run_search(f, trunc=0, count=100)
     solution.pre_solution = solution.solution
     solution.solution = Improvement().run(solution.pre_solution)
     save_sp(solution, f)
@@ -32,7 +32,7 @@ def build_all(data_root, files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
     
 def run_on_all_problems(files):
-    rfiles = sorted(list(filter(lambda x: "r104" in x, files)))
+    rfiles = sorted(list(filter(lambda x: "r1" in x, files)))
     
     LOGGER.info("Run for r type files: {}".format(rfiles))
     from multiprocessing import Pool

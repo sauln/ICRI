@@ -16,6 +16,17 @@ To facilitate these, and for my own edification, run these experiments on AWS.
     * Comparison with multiple parameter tuning methods
     * Do these reports and results differ if we choose a different heuristic?
 
+# Improvement bounds
+From initial experiments it looks like the `improvement` algorithm will often not actually
+improve anything.  Very often, the new partial solution is worse than the original input.
+I want to explore why this happens. 
+
+* Is there a bug in the code?
+* Are there any theoretical results that could determine when the new solution
+will be an improvement
+* Can I prove any new theoretical results about this `improvement` algorithm?
+
+
 # Hyperparameters
 Approach hyperparameter optimization from two directions:
 

@@ -98,7 +98,7 @@ class Improvement:
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        iterations = 10
+        iterations = 50
         for i in range(iterations):
             if not i%5:
                 LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
@@ -115,7 +115,7 @@ class Improvement:
         #pdb.set_trace()
         #solution = RollOut().run(tmp_dispatch)
         #solution = run_search(f, trunc=0, count=10)
-        solution, costs = search(tmp_dispatch, count=10)
+        solution, costs = search(tmp_dispatch, count=20)
 
         if should_replace_with(old_vehicles, solution.solution.vehicles):
             replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
@@ -141,10 +141,11 @@ class Improvement:
         sorted_vehicles = sortedcontainers.SortedListWithKey(key=criterion)
         sorted_vehicles.update(solution.vehicles)
 
+        
         rbest = sorted_vehicles.pop(0)
-        #if rbest in self.previous_candidates and sorted_vehicles:
-        rbestR = random.choice(sorted_vehicles)
-        rbest = random.choice([rbest, rbestR])
+        if(len(sorted_vehicles)):
+            rbestR = random.choice(sorted_vehicles)
+            rbest = random.choice([rbest, rbestR])
 
         self.previous_candidates.append(rbest)
         return rbest

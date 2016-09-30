@@ -77,27 +77,15 @@ def search(dispatch, trunc=0, count=5, fname=None, search_type="random_search"):
 
 def run_search(fname, search_type="random_search", save=0, trunc=0, count=5):
     sp = Utils.open_sp(fname)
-    Parameters().build(sp, 10, 10)
+    Parameters().build(sp)
 
     bestFound, costs = search(sp, fname=fname, trunc=trunc, count=count)
     if(save):
         self.save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
     
-    LOGGER.info("Found best for {}: {}".format(fname, bestFound))
+    LOGGER.debug("Found best for {}: {}".format(fname, bestFound))
     return bestFound 
 
 if __name__ == "__main__":
     best = run_search("r101.p")
     print("Best solution: {}".format(best))
-
-    #grid_search_costs = Grid_search().find_costs(sp)
-    #random_costs = Random_search().find_costs(sp)
-    #random_costs = find_random_costs(sp)
-    # save_as_csv(random_costs, "data/processed/random_costs.csv")
-    #gs_costs = find_gs_costs(sp)
-    #save_as_csv(gs_costs, "data/processed/gs_costs.csv")
-    #shadow_costs = find_shadow_costs(sp)
-    #shadow_plot(shadow_costs)
-    #end = time.gmtime()
-    #print("Ending at {}".format(end))
-

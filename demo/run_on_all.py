@@ -75,7 +75,7 @@ def summarize_on_all(files):
         LOGGER.info("({}, {}) => ({}, {})".format(*sums))
 
 def run():
-    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
     data_root = "data/raw"
     files, outfiles = load_files(data_root)
     build_all(data_root, files, outfiles)

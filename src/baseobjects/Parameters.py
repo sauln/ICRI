@@ -14,7 +14,7 @@ class Parameters:
         def __str__(self):
             return str(self.params) + str(self.distMatrix) + str(self.timeMatrix)
         
-        def build(self, problemSet, topNodes, searchDepth):
+        def build(self, problemSet):
             self.depot = problemSet.customers[0]
 
             self.params = problemSet

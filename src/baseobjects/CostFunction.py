@@ -6,10 +6,6 @@ class Cost:
         return (len(vehicles), sum([v.totalDist for v in vehicles]))
 
     @staticmethod
-    def ofRoutes(routes):
-        return len(routes) 
-
-    @staticmethod
     def gnnh(delta, vehicle, end): #s:start, e:end customers
         # Infeasible nodes would be filtered before here -
         nextArrivalTime = vehicle.totalTime + vehicle.travelTime(end)

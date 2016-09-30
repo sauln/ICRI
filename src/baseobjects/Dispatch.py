@@ -17,7 +17,7 @@ class Dispatch():
             self.depot = dispatch.depot
             self.visitedCustomers = list(dispatch.visitedCustomers)
             self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
-            self.feasibleGraph = dispatch.feasibleGraph
+            # self.feasibleGraph = dispatch.feasibleGraph
             self.delta = dispatch.delta
         else:
             if depot is None:
@@ -28,7 +28,7 @@ class Dispatch():
             self.depot = depot
             self.visitedCustomers = [] 
             self.vehicles = []
-            self.feasibleGraph = self.buildFeasibleGraph()
+            # self.feasibleGraph = self.buildFeasibleGraph()
 
             self.delta = [1]*5
     
@@ -71,33 +71,36 @@ class Dispatch():
         return [c for c in self.customers  if self.isFeasible(customer, c) 
             and c is not customer]
     
-    def buildFeasibleGraph(self):
-        graph = {}
-        for customer in self.customers:
-            graph[customer] = self.feasibleList(customer)
-        graph[self.depot] = self.feasibleList(self.depot)
-        return graph
+    #def buildFeasibleGraph(self):
+    #    graph = {}
+    #    for customer in self.customers:
+    #        graph[customer] = self.feasibleList(customer)
+    #    graph[self.depot] = self.feasibleList(self.depot)
+    #    return graph
 
     def getNextVehicles(self):
         nexts = [vehicle for vehicle in self.vehicles]
         nexts.append(self._onDeck())
         return nexts
 
+
+
     def getFeasibles(self, vehicles):
         # usually only needs 1 of these, if that's the case,
         # we can do this in O(n) time instead of O(n*log(n)).
-        nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
-            for vehicle in vehicles]
+        #nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
+        #    for vehicle in vehicles]
       
         # This is broken out to get better profile information
         # `customer in self.customers` takes a lot of time.
-        fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
-                        for vehicle, cs in nextPairs \
-                        for customer in cs \
-                        if vehicle.isFeasible(customer) and customer in self.customers]
+        
+        nextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+                        for vehicle in vehicles \
+                        for customer in self.customers \
+                        if vehicle.isFeasible(customer)]
         
         cs = SortedListWithKey(key = lambda x: x[2])
-        cs.update(fNextPairs)
+        cs.update(nextPairs)
 
         return cs 
 

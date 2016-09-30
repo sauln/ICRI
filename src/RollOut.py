@@ -15,6 +15,7 @@ class Best:
         
 class RollOut:
     def duplicateEnv(self, dispatch, vehicle):
+        ''' Copy environment so we can modify dispatch at will for experimentation '''
         tmpDispatch = Dispatch(dispatch)
         tmpVehicle = Vehicle(vehicle)
         tmpDispatch.vehicles = [v if v != tmpVehicle else tmpVehicle \
@@ -25,6 +26,7 @@ class RollOut:
         return tmpDispatch, tmpVehicle
 
     def run(self, dispatch):
+        ''' Run rollout algorithm '''
         dispatch = copy.deepcopy(dispatch)
 
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
@@ -54,7 +56,7 @@ class RollOut:
 
 def run_roll_out(ps):
     sp = Utils.load_sp(ps)
-    Parameters().build(sp, 10, 10)
+    Parameters().build(sp)
 
     dispatch = Dispatch(sp.customers)
 

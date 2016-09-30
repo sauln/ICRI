@@ -53,7 +53,7 @@ if __name__ == "__main__":
     #with open(input_filepath, "rb") as f:
     #    sp = pickle.load(f)
    
-    Parameters().build(sp, 10, 10)
+    Parameters().build(sp)
     dispatch = Dispatch(sp.customers)
     solution = Heuristic().run(dispatch)
     print(solution.solutionStr())

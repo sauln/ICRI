@@ -17,7 +17,6 @@ class Dispatch():
             self.depot = dispatch.depot
             self.visitedCustomers = list(dispatch.visitedCustomers)
             self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
-            # self.feasibleGraph = dispatch.feasibleGraph
             self.delta = dispatch.delta
         else:
             if depot is None:
@@ -28,9 +27,7 @@ class Dispatch():
             self.depot = depot
             self.visitedCustomers = [] 
             self.vehicles = []
-            # self.feasibleGraph = self.buildFeasibleGraph()
-
-            self.delta = [1]*5
+            self.delta = None
     
     def set_delta(self, delta):
         self.delta = delta
@@ -70,13 +67,6 @@ class Dispatch():
     def feasibleList(self, customer):
         return [c for c in self.customers  if self.isFeasible(customer, c) 
             and c is not customer]
-    
-    #def buildFeasibleGraph(self):
-    #    graph = {}
-    #    for customer in self.customers:
-    #        graph[customer] = self.feasibleList(customer)
-    #    graph[self.depot] = self.feasibleList(self.depot)
-    #    return graph
 
     def getNextVehicles(self):
         nexts = [vehicle for vehicle in self.vehicles]

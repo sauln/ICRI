@@ -8,8 +8,8 @@ import numpy as np
 
 import random
 
-from src import DataBuilder, run_search, Improvement
-from src.baseobjects import Utils, Cost
+from src import DataBuilder, search, Improvement
+from src.baseobjects import Utils, Cost, Validator
 LOGGER = logging.getLogger(__name__)
 
 def run_on_all_problems(files):
@@ -32,15 +32,19 @@ def load_files(data_root):
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
-    solution = run_search(f, trunc=1, count=10)
+    solution = search(f, trunc=1, count=10)
     solution.pre_solution = solution.solution
     solution.solution = Improvement().run(solution.pre_solution)
+    Validator(solution.solution).validate()
     Utils.save_sp(solution, f)
 
 def build_all(data_root, files, outfiles):
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
+
+
+''' This are for summarization and display '''
 def group_results(results):
     problemtypes = ["rc1", "rc2", "r1", "r2", "c1", "c2"]
     problemdict = defaultdict(list)
@@ -73,6 +77,9 @@ def summarize_on_all(files):
         LOGGER.info("Results of all {} problems:".format(key))
         sums = np.mean(np.array([x[1:] for x in value]), axis=0)
         LOGGER.info("({}, {}) => ({}, {})".format(*sums))
+
+
+
 
 def run():
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)

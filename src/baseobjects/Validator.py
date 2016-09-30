@@ -1,45 +1,46 @@
 from .Parameters import Parameters
 
 class Validator():
-    def __init__(self, routes):
-        self.routes = routes
+    def __init__(self, dispatch):
+        self.vehicles = dispatch.vehicles
         self.timeMatrix = Parameters().timeMatrix
         self.maxCapacity = Parameters().params.capacity
         self.customers = Parameters().customers
-
-
+        self.used_customers = [c.custNo for vehicle in self.vehicles \
+            for c in vehicle.customerHistory]
+ 
     def allCustomersAreUsed(self):
-        usedCustomers = set([c.custNo for route in self.routes for c in route])
         for c in self.customers:
-            assert c.custNo in usedCustomers, "{} not in {}".format(c, usedCustomers)
-        return 1
+            assert c.custNo in self.used_customers, "{} not in {}".format(\
+                c, self.used_customers)
 
     def allCustomersAreUsedOnlyOnce(self):
-        usedCustomers = [c.custNo for route in self.routes for c in route]
-        usedCustomers = list(filter((0).__ne__, usedCustomers))
-        assert len(usedCustomers) == len(set(usedCustomers))
-        return 1
+        used_customers = list(filter((0).__ne__, self.used_customers))
+        assert len(used_customers) == len(set(used_customers))
+
+    def vehicles_return_home_in_time(self):
+        for vehicle in self.vehicles:
+            assert vehicle.totalTime < vehicle.depot.dueDate, "{} > {}".format(\
+                vehicle.totalTime, vehicle.depot.dueDate)
 
     def serviceTimesWithinWindow(self):
         success = 1
-        for r in self.routes:
+        for vehicle in self.vehicles:
             total = 0
-            for i in range(0,len(r)-1):
-                td = self.timeMatrix[r[i].custNo,r[i+1].custNo]
-                srv = max(total + td, r[i+1].readyTime)
-                total = srv + r[i+1].serviceLen
+            cs = vehicle.customerHistory
+            for i in range(0,len(cs)-1):
+                td = self.timeMatrix[cs[i].custNo,cs[i+1].custNo]
+                srv = max(total + td, cs[i+1].readyTime)
+                total = srv + cs[i+1].serviceLen
                 assert 1, "Unsure what to assert here"
-        return success
 
     def capacityRespected(self):
-        success = 1
-        for route in self.routes:
-            s = sum(c.demand for c in route)
+        for vehicle in self.vehicles:
+            s = sum(c.demand for c in vehicle.customerHistory)
             assert s <= self.maxCapacity
-        return success
 
     def validate(self):
-        assert self.capacityRespected()
-        assert self.serviceTimesWithinWindow()
-        assert self.allCustomersAreUsed()
-        assert self.allCustomersAreUsedOnlyOnce()
+        self.capacityRespected()
+        self.serviceTimesWithinWindow()
+        self.vehicles_return_home_in_time()
+        self.allCustomersAreUsedOnlyOnce()

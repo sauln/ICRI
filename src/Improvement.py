@@ -49,6 +49,31 @@ class Improvement:
     def __init__(self):
         """ Setup very simple memoization"""
         self.previous_candidates = []
+    
+    def run(self, dispatch, iterations = 5, count=20):
+        """ Master function for this class - initiates optimization """
+        dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
+
+        for i in range(iterations):
+            if not i%5: LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
+            self.improve(dispatch, count)
+
+        log_solution(dispatch, dispatch_backup)
+
+        return dispatch
+
+    def improve(self, dispatch, count=20):
+        """ Workhorse of Improvement. Manages the improve phase"""
+        tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
+        solution = search(tmp_dispatch, count=count)
+
+        if self.should_replace_with(old_vehicles, solution.solution.vehicles):
+            self.replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
+        else:
+            LOGGER.debug("Wont replace because {} is worse than {}".format( \
+                Cost.of_vehicles(solution.solution.vehicles),\
+                Cost.of_vehicles(old_vehicles)))
+
 
     def replace_vehicles(self, dispatch, old_vehicles, new_vehicles):
         """ Replace the old vehicles in a dispatch object with new vehicles """
@@ -72,36 +97,12 @@ class Improvement:
         replace = 1 if new_num < old_num else \
             0 if new_num > old_num else new_dist < old_dist
 
-    def run(self, dispatch, iterations = 5, count=20):
-        """ Master function for this class - initiates optimization """
-        dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
-
-        for i in range(iterations):
-            if not i%5: LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
-            self.improve(dispatch, count)
-
-        log_solution(dispatch, dispatch_backup)
-
-        return dispatch
-
     def chose_candidates(self, dispatch, worst, count=5):
         """ method for choosing the vehicles for improvement"""
         criterion = geographic_similarity
         all_cands =  criterion(dispatch, worst)
         return all_cands[: ceil(len(all_cands)/3)]
 
-
-    def improve(self, dispatch, count=20):
-        """ Workhorse of Improvement. Manages the improve phase"""
-        tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
-        solution, costs = search(tmp_dispatch, count=count)
-
-        if self.should_replace_with(old_vehicles, solution.solution.vehicles):
-            self.replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
-        else:
-            LOGGER.debug("Wont replace because {} is worse than {}".format( \
-                Cost.of_vehicles(solution.solution.vehicles),\
-                Cost.of_vehicles(old_vehicles)))
 
     def candidate_vehicles(self, dispatch):
         """ Find next vehicles to improve """

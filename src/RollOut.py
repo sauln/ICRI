@@ -31,6 +31,9 @@ class RollOut:
 
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
         while dispatch.customers:
+
+            ### Rollout should not be using _onDeck vehicle to add new vehicle
+            ###
             vehicles = dispatch.getNextVehicles()
             rankedCustomers = dispatch.getFeasibles(vehicles) 
             topCustomers = rankedCustomers[:10]

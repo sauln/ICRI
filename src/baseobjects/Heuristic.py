@@ -10,7 +10,6 @@ class Heuristic:
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
 
         for customer in cs:
-            # pdb.set_trace()
             lowestCost = float("inf")
             nexts = None
             for vehicle in dispatch.vehicles:
@@ -49,10 +48,6 @@ class Heuristic:
 if __name__ == "__main__":
     import Utils
     sp = Utils.load_sp(input_filepath, "")
-    #input_filepath = "data/interim/r101.p"
-    #with open(input_filepath, "rb") as f:
-    #    sp = pickle.load(f)
-   
     Parameters().build(sp)
     dispatch = Dispatch(sp.customers)
     solution = Heuristic().run(dispatch)

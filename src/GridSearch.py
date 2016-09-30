@@ -16,19 +16,7 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def make_dispatch(self, sp, trunc=0):
-        if trunc:
-            num_customers = 5 
-        else:
-            num_customers = len(sp.customers)
-        
-        dispatch = Dispatch(sp.customers[:num_customers+2])
-        
-        return dispatch 
-
-    def find_costs(self, dispatch, count=5, trunc=0, fname=None):
-        if type(dispatch) is not Dispatch:
-            dispatch = self.make_dispatch(dispatch, trunc)
+    def find_costs(self, dispatch, count=5, trunc=0):
 
         num_diff_lambdas = count
         
@@ -38,7 +26,7 @@ class Tuning:
                 dispatch.set_delta(lam)
                 solution = RollOut().run(dispatch)
                 num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
-                res = Solution(num_veh, t_dist, lam, solution, fname)  
+                res = Solution(num_veh, t_dist, lam, solution)  
                 results.append(res)
 
         return results
@@ -67,24 +55,30 @@ class Shadow_search(Tuning):
 switch = {"grid_search": Grid_search, \
           "shadow_search":Shadow_search, \
           "random_search":Random_search}
+
+def make_dispatch(sp, trunc=0):
+    num_customers = 5 if trunc else len(sp.customers)
+
+    dispatch = Dispatch(sp.customers[:num_customers+2])
+    return dispatch 
    
-def search(dispatch, trunc=0, count=5, fname=None, search_type="random_search"):
+def search(feed, trunc=0, count=5, search_type="random_search"):
+    if type(feed) is str:
+        fname = feed
+        sp = Utils.open_sp(fname)
+        Parameters().build(sp)
+        dispatch = make_dispatch(sp, trunc)
+    else:
+        dispatch = feed
+
     costs = switch[search_type]().find_costs(\
-        dispatch, trunc=trunc, fname=fname, count=count)
+        dispatch, trunc=trunc, count=count)
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
-    return bestFound, costs
+    LOGGER.debug("Found best {}".format(bestFound))
 
-def run_search(fname, search_type="random_search", save=0, trunc=0, count=5):
-    sp = Utils.open_sp(fname)
-    Parameters().build(sp)
+    return bestFound
 
-    bestFound, costs = search(sp, fname=fname, trunc=trunc, count=count)
-    if(save):
-        self.save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
-    
-    LOGGER.debug("Found best for {}: {}".format(fname, bestFound))
-    return bestFound 
 
 if __name__ == "__main__":
     best = run_search("r101.p")

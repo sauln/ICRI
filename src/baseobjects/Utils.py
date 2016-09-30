@@ -7,7 +7,7 @@ def open_sp(fname, root = "data/interim/"):
         sp = pickle.load(f)
     return sp
 
-def save_sp(solution, fname, root="data/solution/"):
+def save_sp(solution, fname, root="data/solutions/"):
     output_filepath = root + fname 
     with open(output_filepath, "wb") as f:
         pickle.dump(solution, f)

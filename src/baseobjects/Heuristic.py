@@ -1,13 +1,11 @@
 """ Base for H_g  """
-import pickle
-import sortedcontainers
-
 from .Dispatch import Dispatch
 from .Parameters import Parameters
 from .Vehicle import Vehicle
 from .CostFunction import Cost
 
-class Heuristic_new:
+
+class Heuristic:
     def run(self, dispatch):
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
 
@@ -49,11 +47,13 @@ class Heuristic:
 '''
 
 if __name__ == "__main__":
-    input_filepath = "data/interim/r101.p"
-    with open(input_filepath, "rb") as f:
-        sp = pickle.load(f)
+    import Utils
+    sp = Utils.load_sp(input_filepath, "")
+    #input_filepath = "data/interim/r101.p"
+    #with open(input_filepath, "rb") as f:
+    #    sp = pickle.load(f)
    
     Parameters().build(sp, 10, 10)
     dispatch = Dispatch(sp.customers)
-    solution = Heuristic_new().run(dispatch)
+    solution = Heuristic().run(dispatch)
     print(solution.solutionStr())

@@ -1,14 +1,9 @@
 import pickle
-import time
-import sys
-import random
 import logging
-import sortedcontainers
-from copy import copy, deepcopy
+import copy
 
 from .baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic, Utils
 
-import pdb
 logger = logging.getLogger(__name__)
 
 class Best:
@@ -30,7 +25,7 @@ class RollOut:
         return tmpDispatch, tmpVehicle
 
     def run(self, dispatch):
-        dispatch = deepcopy(dispatch)
+        dispatch = copy.deepcopy(dispatch)
 
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
         while dispatch.customers:
@@ -43,9 +38,9 @@ class RollOut:
                 tmpDispatch, tmpVehicle = self.duplicateEnv(dispatch, vehicle)
 
                 tmpDispatch.addCustomer(tmpVehicle, customer)
-                potentialSolution = Heuristic.Heuristic_new().run(tmpDispatch)
+                potentialSolution = Heuristic().run(tmpDispatch)
                 
-                cost = Cost.ofSolution(potentialSolution)
+                cost = Cost.of_vehicles(potentialSolution.vehicles)
                 if(cost < best.cost):
                     best = Best(cost, customer, vehicle, potentialSolution)
             

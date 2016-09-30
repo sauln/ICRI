@@ -1,18 +1,10 @@
 import numpy as np
-
-from sortedcontainers import SortedListWithKey 
+from sortedcontainers import SortedListWithKey
 
 from .Vehicle import Vehicle
 from .Parameters import Parameters
 from .Customer import Customer
 from .CostFunction import Cost
-
-#import Vehicle
-#import Parameters
-#import Customer
-#import Cost
-
-
 
 class Dispatch():
     def __init__(self, customers, depot=None):
@@ -70,6 +62,8 @@ class Dispatch():
 
     ##############################################################
 
+
+
     def isFeasible(self, a, b):
         return a.readyTime + self.dist(a.location, b.location) <= b.dueDate
 
@@ -97,18 +91,10 @@ class Dispatch():
       
         # This is broken out to get better profile information
         # `customer in self.customers` takes a lot of time.
-        # `
-        fNextPairs = []
-        for vehicle, cs in nextPairs:
-            for customer in cs:
-                if vehicle.isFeasible(customer) and customer in self.customers:
-                    cost = Cost.gnnh(self.delta, vehicle, customer)
-                    fNextPairs.append( (vehicle, customer, cost))
-        
-        #fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
-        #                for vehicle, cs in nextPairs \
-        #                for customer in cs \
-        #                if vehicle.isFeasible(customer) and customer in self.customers]
+        fNextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+                        for vehicle, cs in nextPairs \
+                        for customer in cs \
+                        if vehicle.isFeasible(customer) and customer in self.customers]
         
         cs = SortedListWithKey(key = lambda x: x[2])
         cs.update(fNextPairs)

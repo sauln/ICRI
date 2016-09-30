@@ -75,13 +75,11 @@ def search(dispatch, trunc=0, count=5, fname=None, search_type="random_search"):
     bestFound = min(costs, key=crit)
     return bestFound, costs
 
-
 def run_search(fname, search_type="random_search", save=0, trunc=0, count=5):
     sp = Utils.open_sp(fname)
     Parameters().build(sp, 10, 10)
 
-    bestFound, costs = search(sp)
-
+    bestFound, costs = search(sp, fname=fname, trunc=trunc, count=count)
     if(save):
         self.save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
     

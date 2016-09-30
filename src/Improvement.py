@@ -11,7 +11,7 @@ import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Parameters, Dispatch, Plotter
+from .baseobjects import Parameters, Dispatch, Plotter, Cost
 from .RollOut import RollOut
 from .GridSearch import search
 
@@ -27,17 +27,13 @@ def geographic_similarity(dispatch, vehicle):
 
     return dist
 
-def by_vehicles_dist(vehicles):
-    """ Determines how a set of vehicles should be compared """
-    return (len(vehicles), sum(v.totalDist for v in vehicles))
-
 def by_customers_dist(vehicle):
     """ Determines how vehicles should be compared """
     return (len(vehicle.customerHistory), vehicle.totalDist)
 
 def summarize_solution(dispatch, dispatch_backup):
-    new_num_veh, new_dist = by_vehicles_dist(dispatch.vehicles)
-    old_num_veh, old_dist = by_vehicles_dist(dispatch_backup.vehicles)
+    new_num_veh, new_dist = Cost.of_vehicles(dispatch.vehicles)
+    old_num_veh, old_dist = Cost.of_vehicles(dispatch_backup.vehicles)
     LOGGER.info("Before Improvement: {}: {}"\
         .format(old_num_veh, old_dist))
     LOGGER.info("After Improvement: {}: {}"\
@@ -67,11 +63,11 @@ class Improvement:
     def should_replace_with(self, old_vehicles, new_vehicles):
         """ Criterion for replacing vehicle sets for improvement """
         less_vehs = len(new_vehicles) < len(old_vehicles)  
-        new_num, new_dist = by_vehicles_dist(new_vehicles)
-        old_num, old_dist = by_vehicles_dist(old_vehicles)
+        new_num, new_dist = Cost.of_vehicles(new_vehicles)
+        old_num, old_dist = Cost.of_vehicles(old_vehicles)
 
-        LOGGER.debug("New solution: {}".format(by_vehicles_dist(new_vehicles)))
-        LOGGER.debug("Original solution: {}".format(by_vehicles_dist(old_vehicles)))
+        LOGGER.debug("New solution: {}".format((new_num, new_dist)))
+        LOGGER.debug("Original solution: {}".format((old_num, old_dist)))
         if less_vehs: 
             return less_vehs
         else:
@@ -85,10 +81,9 @@ class Improvement:
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        iterations = 50
+        iterations = 5
         for i in range(iterations):
-            if not i%5:
-                LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
+            if not i%5: LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
             self.improve(dispatch)
 
         summarize_solution(dispatch, dispatch_backup)
@@ -115,8 +110,8 @@ class Improvement:
             self.replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
         else:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
-                by_vehicles_dist(solution.solution.vehicles),\
-                by_vehicles_dist(old_vehicles)))
+                Cost.of_vehicles(solution.solution.vehicles),\
+                Cost.of_vehicles(old_vehicles)))
 
             #Plotter().compareRouteSets(solution.vehicles, similar_vehicles).show()
 
@@ -125,8 +120,7 @@ class Improvement:
         worst = self.worst_vehicle(dispatch)
         candidate_vehicles = self.chose_candidates(dispatch, worst)
         LOGGER.debug("Improvement candidates around {}: {} vehicles with distance {}"\
-            .format(worst, \
-            len(candidate_vehicles), sum([v.totalDist for v in candidate_vehicles])))
+            .format(worst, *Cost.of_vehicles(candidate_vehicles)))
         return candidate_vehicles
 
     def worst_vehicle(self, solution):

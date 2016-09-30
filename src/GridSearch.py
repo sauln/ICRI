@@ -5,31 +5,10 @@ from pyDOE import *
 from abc import ABCMeta, abstractmethod
 import numpy as np
 
-from .baseobjects import Dispatch, Parameters, Solution, Plotter
+from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils, Cost
 from .RollOut import RollOut
 
 LOGGER = logging.getLogger(__name__)
-
-
-''' These 3 functions can be used elsewhere '''
-def open_sp(fname, root = "data/interim/"):
-    input_filepath = root + fname
-    with open(input_filepath, "rb") as f:
-        sp = pickle.load(f)
-    return sp
-
-def save_sp(fname, root="data/solution/"):
-    output_filepath = root + fname 
-    with open(output_filepath, "wb") as f:
-        pickle.dump(solution, f)
-
-def save_as_csv(costs, filename, root="data/processed/"):
-    print("Saving grid search results as {}".format(root+filename))
-    with open(root + filename, "w") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(["Num Vehicles", "Distance"] + ["lam"]*5)
-        for row in costs:
-            writer.writerow([row.num_vehicles, row.total_distance] + list(row.params))
 
 class Tuning:
     __metaclass__ = ABCMeta
@@ -37,7 +16,7 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def find_costs_from_sp(self, sp, count=5, trunc=0, fname=None):
+    def make_dispatch(self, sp, trunc=0):
         if trunc:
             num_customers = 5 
         else:
@@ -45,9 +24,12 @@ class Tuning:
         
         dispatch = Dispatch(sp.customers[:num_customers+2])
         
-        return self.find_costs(dispatch, count=count, trunc=trunc, fname=fname) 
+        return dispatch 
 
     def find_costs(self, dispatch, count=5, trunc=0, fname=None):
+        if type(dispatch) is not Dispatch:
+            dispatch = self.make_dispatch(dispatch, trunc)
+
         num_diff_lambdas = count
         
         results = []
@@ -55,16 +37,11 @@ class Tuning:
             for lam in lambdas:
                 dispatch.set_delta(lam)
                 solution = RollOut().run(dispatch)
-                num_veh, t_dist = self.evaluate(solution)
+                num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
                 res = Solution(num_veh, t_dist, lam, solution, fname)  
                 results.append(res)
 
         return results
-
-    def evaluate(self, solution):
-        num_vehicles = len(solution.vehicles)
-        total_distance = sum(v.totalDist for v in solution.vehicles)
-        return [num_vehicles, total_distance]
 
 class Random_search(Tuning):
     def generator(self, count):
@@ -92,29 +69,21 @@ switch = {"grid_search": Grid_search, \
           "random_search":Random_search}
    
 def search(dispatch, trunc=0, count=5, fname=None, search_type="random_search"):
-    costs = switch[search_type]().find_costs(dispatch, trunc=trunc, fname=fname, count=count)
+    costs = switch[search_type]().find_costs(\
+        dispatch, trunc=trunc, fname=fname, count=count)
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
     return bestFound, costs
 
 
 def run_search(fname, search_type="random_search", save=0, trunc=0, count=5):
-    sp = open_sp(fname)
+    sp = Utils.open_sp(fname)
     Parameters().build(sp, 10, 10)
 
+    bestFound, costs = search(sp)
 
-    costs = switch[search_type]().find_costs_from_sp(sp, trunc=trunc, fname=fname, count=count)
-    crit = lambda x: (x.num_vehicles, x.total_distance)
-    bestFound = min(costs, key=crit)
-
-
-
-
-    #costs = switch[search_type]().find_costs(sp, trunc=trunc, fname=fname, count=count)
-    #crit = lambda x: (x.num_vehicles, x.total_distance)
-    #bestFound = min(costs, key=crit)
     if(save):
-        save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
+        self.save_as_csv(costs, search_type+"_"+ fname.replace(".p","") + ".csv")
     
     LOGGER.info("Found best for {}: {}".format(fname, bestFound))
     return bestFound 

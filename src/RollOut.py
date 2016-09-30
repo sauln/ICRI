@@ -6,21 +6,10 @@ import logging
 import sortedcontainers
 from copy import copy, deepcopy
 
-from .baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic
+from .baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic, Utils
 
 import pdb
 logger = logging.getLogger(__name__)
-
-def load_sp(fname, root="data/interim/"):
-    input_filepath = root + fname
-    with open(input_filepath, "rb") as f:
-        sp = pickle.load(f)
-    return sp
-
-def save_sp(solution, fname, root="data/solution/"):
-    output_filepath = root + fname 
-    with open(output_filepath, "wb") as f:
-        pickle.dump(solution, f)
 
 class Best:
     def __init__(self, cost, customer, vehicle, solution):
@@ -64,11 +53,12 @@ class RollOut:
            
         dispatch.finish()
 
-        logger.debug("Solution to rollout: {}, {}".format(len(dispatch.vehicles), dispatch.total_dist())) 
+        logger.debug("Solution to rollout: {}, {}".format(\
+            len(dispatch.vehicles), dispatch.total_dist())) 
         return dispatch
 
 def run_roll_out(ps):
-    sp = load_sp(ps)
+    sp = Utils.load_sp(ps)
     Parameters().build(sp, 10, 10)
 
     dispatch = Dispatch(sp.customers)

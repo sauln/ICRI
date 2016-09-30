@@ -5,7 +5,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import pickle
 
-from .baseobjects import Customer, Point, SolomonProblem
+from .baseobjects import Customer, Point, SolomonProblem, Utils
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,8 +16,7 @@ class DataBuilder:
    
         self.lines = self.loadLines()
         self.problem = self.getProblemDefinition()
-        self.saveSP()
-
+        Utils.save_sp(self.problem, self.output_filepath, "")
 
     def getProblemDefinition(self):
         LOGGER.debug('Extract problem definition.')
@@ -44,11 +43,6 @@ class DataBuilder:
             lines = f.readlines()
         return lines
 
-    def saveSP(self):
-        LOGGER.debug('Saving problem definition to {}'.format(self.output_filepath))
-        with open(self.output_filepath, "wb") as f:
-            pickle.dump(self.problem, f)
-
 def load_files(data_root):
     files = os.listdir(data_root)
     outfiles = [f.replace(".txt", ".p") for f in files] 
@@ -63,7 +57,6 @@ def convert_all():
     files, outfiles = load_files(data_root)
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
-    
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

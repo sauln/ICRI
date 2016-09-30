@@ -14,7 +14,11 @@ class Cost:
 
     @staticmethod
     def ofSolution(solution):
-        return (len(solution.vehicles), Cost.totalDistance(solution)) 
+        return Cost.of_vehicles(solution.vehicles)
+
+    @staticmethod
+    def of_vehicles(vehicles):
+        return (len(vehicles), sum([v.totalDist for v in vehicles]))
 
     @staticmethod
     def ofRoutes(routes):

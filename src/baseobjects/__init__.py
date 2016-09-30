@@ -7,3 +7,4 @@ from .Parameters import *
 from .SolomonProblem import *
 from .Vehicle import *
 from .Plotter import *
+from .Utils import *

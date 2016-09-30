@@ -17,6 +17,7 @@ from .GridSearch import search
 
 LOGGER = logging.getLogger(__name__)
 
+
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
     dist_f = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
@@ -34,27 +35,6 @@ def by_customers_dist(vehicle):
     """ Determines how vehicles should be compared """
     return (len(vehicle.customerHistory), vehicle.totalDist)
 
-def vehicle_set_print(vehicles):
-    """ Nice print function for a vehicle set """
-    return "\n".join(str(v) for v in vehicles)
-
-def should_replace_with(old_vehicles, new_vehicles):
-    """ Criterion for replacing vehicle sets for improvement """
-    less_vehs = len(new_vehicles) < len(old_vehicles)  
-    new_num, new_dist = by_vehicles_dist(new_vehicles)
-    old_num, old_dist = by_vehicles_dist(old_vehicles)
-
-    LOGGER.debug("New solution: {}".format(by_vehicles_dist(new_vehicles)))
-    LOGGER.debug("Original solution: {}".format(by_vehicles_dist(old_vehicles)))
-    if less_vehs: 
-        return less_vehs
-    else:
-        if new_num > old_num:
-            return 0
-        else:
-            return new_dist < old_dist
-    #return 1
-
 def summarize_solution(dispatch, dispatch_backup):
     new_num_veh, new_dist = by_vehicles_dist(dispatch.vehicles)
     old_num_veh, old_dist = by_vehicles_dist(dispatch_backup.vehicles)
@@ -66,33 +46,40 @@ def summarize_solution(dispatch, dispatch_backup):
         old_num_veh - new_num_veh,\
         old_dist - new_dist))
 
-def chose_candidates(dispatch, worst, count=5):
-    """ method for choosing the vehicles for improvement"""
-    criterion = geographic_similarity
-    all_cands =  criterion(dispatch, worst)
-    return all_cands[: ceil(len(all_cands)/3)]
-
-def flatten_vehicles(vehicles):
-    """ Get all customers from many vehicles """
-    return list({c for v in vehicles for c in v.customerHistory})
-
-def replace_vehicles(dispatch, old_vehicles, new_vehicles):
-    """ Replace the old vehicles in a dispatch object with new vehicles """
-    LOGGER.debug("Replace routes")
-    LOGGER.debug("Are they the same? {}".format(\
-        set(old_vehicles) == set(new_vehicles)))
-
-    for v in old_vehicles:
-        dispatch.vehicles.remove(v)
-    for v in new_vehicles:
-        dispatch.vehicles.append(v)
-
 
 class Improvement:
     """ Encapslates the improvement algorithm """
     def __init__(self):
         """ Setup very simple memoization"""
         self.previous_candidates = []
+
+    def replace_vehicles(self, dispatch, old_vehicles, new_vehicles):
+        """ Replace the old vehicles in a dispatch object with new vehicles """
+        LOGGER.debug("Replace routes")
+        LOGGER.debug("Are they the same? {}".format(\
+            set(old_vehicles) == set(new_vehicles)))
+
+        for v in old_vehicles:
+            dispatch.vehicles.remove(v)
+        for v in new_vehicles:
+            dispatch.vehicles.append(v)
+    
+    def should_replace_with(self, old_vehicles, new_vehicles):
+        """ Criterion for replacing vehicle sets for improvement """
+        less_vehs = len(new_vehicles) < len(old_vehicles)  
+        new_num, new_dist = by_vehicles_dist(new_vehicles)
+        old_num, old_dist = by_vehicles_dist(old_vehicles)
+
+        LOGGER.debug("New solution: {}".format(by_vehicles_dist(new_vehicles)))
+        LOGGER.debug("Original solution: {}".format(by_vehicles_dist(old_vehicles)))
+        if less_vehs: 
+            return less_vehs
+        else:
+            if new_num > old_num:
+                return 0
+            else:
+                return new_dist < old_dist
+        #return 1
 
     def run(self, dispatch):
         """ Master function for this class - initiates optimization """
@@ -108,6 +95,13 @@ class Improvement:
 
         return dispatch
 
+    def chose_candidates(self, dispatch, worst, count=5):
+        """ method for choosing the vehicles for improvement"""
+        criterion = geographic_similarity
+        all_cands =  criterion(dispatch, worst)
+        return all_cands[: ceil(len(all_cands)/3)]
+
+
     def improve(self, dispatch):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
@@ -117,8 +111,8 @@ class Improvement:
         #solution = run_search(f, trunc=0, count=10)
         solution, costs = search(tmp_dispatch, count=20)
 
-        if should_replace_with(old_vehicles, solution.solution.vehicles):
-            replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
+        if self.should_replace_with(old_vehicles, solution.solution.vehicles):
+            self.replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
         else:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
                 by_vehicles_dist(solution.solution.vehicles),\
@@ -129,7 +123,7 @@ class Improvement:
     def candidate_vehicles(self, dispatch):
         """ Find next vehicles to improve """
         worst = self.worst_vehicle(dispatch)
-        candidate_vehicles = chose_candidates(dispatch, worst)
+        candidate_vehicles = self.chose_candidates(dispatch, worst)
         LOGGER.debug("Improvement candidates around {}: {} vehicles with distance {}"\
             .format(worst, \
             len(candidate_vehicles), sum([v.totalDist for v in candidate_vehicles])))
@@ -153,10 +147,16 @@ class Improvement:
     def setup_next_round(self, dispatch):
         """ With the candidate vehicles, setup the rollout algorithm """
         similar_vehicles = self.candidate_vehicles(dispatch)
-        customers = flatten_vehicles(similar_vehicles)
+        customers = self.flatten_vehicles(similar_vehicles)
         new_dispatch = Dispatch(customers)
         new_dispatch.set_delta(dispatch.delta)
         return new_dispatch, similar_vehicles
+
+    def flatten_vehicles(self, vehicles):
+        """ Get all customers from many vehicles """
+        return list({c for v in vehicles for c in v.customerHistory})
+
+
 
 
 if __name__ == "__main__":

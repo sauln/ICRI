@@ -19,10 +19,9 @@ def run_on_all_problems(files):
 
     LOGGER.info("Run for r type files: {}".format(rfiles))
    
-    run_serial(rfiles)
-    #run_parallel(rfiles)
+    #run_serial(rfiles)
+    run_parallel(rfiles)
     
-
 def run_parallel(rfiles):
     pool = Pool()
     pool.map(run_on_file, rfiles)
@@ -41,9 +40,9 @@ def load_files(data_root):
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
-    solution = search(f, trunc=0, count=25)
+    solution = search(f, trunc=0, count=1)
     solution.pre_solution = solution.solution
-    solution.solution = Improvement().run(solution.pre_solution)
+    solution.solution = Improvement().run(solution.pre_solution, 5, 20)
     Validator(solution.solution).validate()
     Utils.save_sp(solution, f)
     LOGGER.info("Solution to {} is {}".format(f, \

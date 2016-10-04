@@ -18,8 +18,13 @@ class RollOut:
         ''' Copy environment so we can modify dispatch at will for experimentation '''
         tmp_dispatch = Dispatch(dispatch)
         tmp_vehicle = Vehicle(vehicle)
-        tmp_dispatch.vehicles = [v if v != tmp_vehicle else tmp_vehicle \
-            for v in tmp_dispatch.vehicles]
+
+
+        # this line has been the biggest pain in the rear.
+        find = tmp_dispatch.vehicles.index(tmp_vehicle)
+        if find < 0:
+            tmp_dispatch.vehicles[find] = tmp_vehicle
+        
         if tmp_vehicle not in tmp_dispatch.vehicles:
             tmp_dispatch.vehicles.append(tmp_vehicle)
 
@@ -40,8 +45,6 @@ class RollOut:
 
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
        
-        import pdb
-        pdb.set_trace()
         customer_list = sorted(dispatch.customers, key=lambda x: x.dueDate)
 
         for c in customer_list:
@@ -79,16 +82,13 @@ class RollOut:
 
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
         while dispatch.customers:
-            ### Rollout should not be using _onDeck vehicle to add new vehicle
-                        
             vehicles = dispatch.get_available_vehicles()
             top_customers = dispatch.get_feasible_next_customers(vehicles, 10) 
 
             best = Best( (float('inf'), float('inf')), None, None, None)
-            for vehicle, customer, _ in top_customers:    
+            for vehicle, customer, _ in top_customers:
                 tmp_dispatch = self.setup_dispatch_env(dispatch, vehicle, customer)
                 potentialSolution = Heuristic().run(tmp_dispatch)
-                
                 cost = Cost.of_vehicles(potentialSolution.vehicles)
                 if(cost < best.cost):
                     best = Best(cost, customer, vehicle, potentialSolution)

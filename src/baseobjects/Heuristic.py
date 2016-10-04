@@ -7,6 +7,28 @@ from .CostFunction import Cost
 
 class Heuristic:
     def run(self, dispatch):
+        while dispatch.customers:
+            vehicles = dispatch.get_available_vehicles()
+            top_customers = dispatch.get_feasible_next_customers(vehicles) 
+            
+            lowestCost = float("inf")
+            nexts = None
+
+            for vehicle, customer, _ in top_customers:
+                cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                if cost < lowestCost:
+                    nexts = (vehicle, customer)
+                    lowestCost = cost
+            veh, cust = nexts
+            dispatch.addCustomer(veh, cust)
+           
+        dispatch.finish()
+        return dispatch
+
+
+class Heuristic_force:
+    '''  this heuristic forces adding to existing vehicle if feasible '''
+    def run(self, dispatch):
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
 
         for customer in cs:

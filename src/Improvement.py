@@ -43,14 +43,13 @@ def log_solution(dispatch, dispatch_backup):
         old_num_veh - new_num_veh,\
         old_dist - new_dist))
 
-
 class Improvement:
     """ Encapslates the improvement algorithm """
     def __init__(self):
         """ Setup very simple memoization"""
         self.previous_candidates = []
     
-    def run(self, dispatch, iterations = 5, count=20):
+    def run(self, dispatch, iterations, count):
         """ Master function for this class - initiates optimization """
         dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
@@ -62,7 +61,7 @@ class Improvement:
 
         return dispatch
 
-    def improve(self, dispatch, count=20):
+    def improve(self, dispatch, count):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
         solution = search(tmp_dispatch, count=count)
@@ -73,7 +72,6 @@ class Improvement:
             LOGGER.debug("Wont replace because {} is worse than {}".format( \
                 Cost.of_vehicles(solution.solution.vehicles),\
                 Cost.of_vehicles(old_vehicles)))
-
 
     def replace_vehicles(self, dispatch, old_vehicles, new_vehicles):
         """ Replace the old vehicles in a dispatch object with new vehicles """
@@ -93,9 +91,17 @@ class Improvement:
 
         LOGGER.debug("New solution: {}".format((new_num, new_dist)))
         LOGGER.debug("Original solution: {}".format((old_num, old_dist)))
-        
-        replace = 1 if new_num < old_num else \
-            0 if new_num > old_num else new_dist < old_dist
+       
+        if new_num < old_num:
+            replace = 1
+        else:
+            if new_num > old_num:
+                replace = 0
+            else:
+                replace = new_dist < old_dist
+
+        return replace
+
 
     def chose_candidates(self, dispatch, worst, count=5):
         """ method for choosing the vehicles for improvement"""

@@ -34,7 +34,8 @@ class Vehicle():
         return hash((str(self.customerHistory), self.totalDist, self.curCapacity))
 
     def __eq__(self, other):
-        return self.customerHistory == other.customerHistory and \
+        return other is not None and \
+               self.customerHistory == other.customerHistory and \
                self.totalDist       == other.totalDist and \
                self.curCapacity     == other.curCapacity
 
@@ -57,7 +58,8 @@ class Vehicle():
         self.totalDist += self.travelDist(customer)
         self.curCapacity += customer.demand
         self.customerHistory.append(customer)
-        self.servedCustomers += 1
+        if customer.custNo is not 0:
+            self.servedCustomers += 1
         self.lastCustomer = customer
 
     def isNotFull(self, end):

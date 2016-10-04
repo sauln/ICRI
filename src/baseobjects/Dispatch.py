@@ -10,6 +10,8 @@ class Dispatch():
     def __init__(self, customers, depot=None):
         ''' Dispatch will organize the vehicles '''
         ''' And organize the customers '''
+        
+        self.max_vehicles = 25
         if isinstance(customers, self.__class__):
             # copying from other dispatch
             dispatch = customers
@@ -26,18 +28,23 @@ class Dispatch():
             self.customers = list(customers)
             self.depot = depot
             self.visitedCustomers = [] 
-            self.vehicles = []
+            self.vehicles = [self.new_vehicle() \
+                for _ in range(self.max_vehicles)] 
+            
             self.delta = None
     
     def set_delta(self, delta):
         self.delta = delta
 
     def finish(self):
+        self.vehicles = [v for v in self.vehicles \
+            if len(v.customerHistory) > 1]
+
         for vehicle in self.vehicles:
             vehicle.serveCustomer(self.depot)
 
-    def _onDeck(self):
-        return Vehicle(self.depot)
+    def new_vehicle(self):
+         return Vehicle(self.depot)
 
     def solutionStr(self):
         vehstr = "\n".join([str(v) for v in self.vehicles])
@@ -59,7 +66,12 @@ class Dispatch():
 
     ##############################################################
 
-
+    def get_available_vehicles(self):
+        ''' Return set of vehicles that have not reached the depot 
+             if no vehicles yet, return an empty vehicle
+        '''
+        vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
+        return vehicles 
 
     def isFeasible(self, a, b):
         return a.readyTime + self.dist(a.location, b.location) <= b.dueDate
@@ -68,31 +80,28 @@ class Dispatch():
         return [c for c in self.customers  if self.isFeasible(customer, c) 
             and c is not customer]
 
-    def getNextVehicles(self):
-        nexts = [vehicle for vehicle in self.vehicles]
-        nexts.append(self._onDeck())
-        return nexts
-
-
-
+    def get_feasible_next_customers(self, vehicles, count=None):
+        next_pairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+                        for vehicle in vehicles \
+                        for customer in self.customers \
+                        if vehicle.isFeasible(customer) ]
+        cs = SortedListWithKey(key = lambda x: x[2])
+        cs.update(next_pairs)
+        return cs[:count]
+    '''
     def getFeasibles(self, vehicles):
         # usually only needs 1 of these, if that's the case,
         # we can do this in O(n) time instead of O(n*log(n)).
-        #nextPairs = [(vehicle, self.feasibleGraph[vehicle.lastCustomer]) \
-        #    for vehicle in vehicles]
-      
-        # This is broken out to get better profile information
-        # `customer in self.customers` takes a lot of time.
-        
-        nextPairs = [(vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+        nextPairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
                         for vehicle in vehicles \
                         for customer in self.customers \
-                        if vehicle.isFeasible(customer)]
+                        if vehicle.isFeasible(customer) ]
         
         cs = SortedListWithKey(key = lambda x: x[2])
         cs.update(nextPairs)
 
         return cs 
+    '''
 
     def addCustomer(self, vehicle, customer):
         if vehicle not in self.vehicles:

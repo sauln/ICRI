@@ -7,6 +7,7 @@ from collections import defaultdict
 import numpy as np
 
 import random
+from multiprocessing import Pool
 
 from src import DataBuilder, search, Improvement
 from src.baseobjects import Utils, Cost, Validator
@@ -17,31 +18,40 @@ def run_on_all_problems(files):
     rfiles = sorted(files)
 
     LOGGER.info("Run for r type files: {}".format(rfiles))
+   
+    run_serial(rfiles)
+    #run_parallel(rfiles)
     
-    #from multiprocessing import Pool
-    #pool = Pool()
-    #pool.map(run_on_file, rfiles)
+
+def run_parallel(rfiles):
+    pool = Pool()
+    pool.map(run_on_file, rfiles)
+   
+def run_serial(rfiles):
     for f in rfiles:
         run_on_file(f)
 
 def load_files(data_root):
     files = os.listdir(data_root)
+    files = [f for f in files if 'r1' in f]
+
     outfiles = [f.replace(".txt", ".p") for f in files] 
     return (files, outfiles)
 
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
-    solution = search(f, trunc=1, count=10)
+    solution = search(f, trunc=0, count=25)
     solution.pre_solution = solution.solution
     solution.solution = Improvement().run(solution.pre_solution)
     Validator(solution.solution).validate()
     Utils.save_sp(solution, f)
+    LOGGER.info("Solution to {} is {}".format(f, \
+        (solution.num_vehicles, solution.total_distance)))
 
 def build_all(data_root, files, outfiles):
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
-
 
 
 ''' This are for summarization and display '''
@@ -78,11 +88,8 @@ def summarize_on_all(files):
         sums = np.mean(np.array([x[1:] for x in value]), axis=0)
         LOGGER.info("({}, {}) => ({}, {})".format(*sums))
 
-
-
-
 def run():
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     data_root = "data/raw"
     files, outfiles = load_files(data_root)
     build_all(data_root, files, outfiles)

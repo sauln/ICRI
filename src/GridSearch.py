@@ -16,7 +16,7 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def find_costs(self, dispatch, count=5, trunc=0):
+    def find_costs(self, dispatch, count=5, trunc=0, depth=10, width=10):
 
         num_diff_lambdas = count
         
@@ -24,7 +24,7 @@ class Tuning:
         for lambdas in self.generator(num_diff_lambdas): 
             for lam in lambdas:
                 dispatch.set_delta(lam)
-                solution = RollOut().run(dispatch)
+                solution = RollOut().run(dispatch, depth, width)
                 num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
                 res = Solution(num_veh, t_dist, lam, solution)  
                 results.append(res)

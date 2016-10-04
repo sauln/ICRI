@@ -72,28 +72,36 @@ class RollOut:
             len(dispatch.vehicles), dispatch.total_dist())) 
         return dispatch
 
-    def run(self, dispatch):
+    def run(self, dispatch, depth, width):
         #return self.rollout_like_heuristic(dispatch)
-        return self.rollout_typical(dispatch)
+        return self.rollout_typical(dispatch, depth, width)
 
-    def rollout_typical(self, dispatch):
+    def rollout_typical(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
         dispatch = copy.deepcopy(dispatch)
 
-        logger.debug("Run rollout with deltas {}".format(dispatch.delta))
+        logger.debug("Run rollout with ({}, {}) and deltas {}".format(\
+            depth, width, dispatch.delta))
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
-            top_customers = dispatch.get_feasible_next_customers(vehicles, 10) 
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
+
 
             best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in top_customers:
                 tmp_dispatch = self.setup_dispatch_env(dispatch, vehicle, customer)
-                potentialSolution = Heuristic().run(tmp_dispatch)
+                potentialSolution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
                 cost = Cost.of_vehicles(potentialSolution.vehicles)
+                logger.debug("Heuristic result {} from {},{}".format(\
+                    cost, customer, vehicle))
                 if(cost < best.cost):
                     best = Best(cost, customer, vehicle, potentialSolution)
 
-            dispatch.addCustomer(best.vehicle, best.customer)
+            if(best.vehicle is None or best.customer is None):
+                v = Vehicle(dispatch.depot)
+                dispatch.vehicles.append(v)
+            else: 
+                dispatch.addCustomer(best.vehicle, best.customer)
            
         dispatch.finish()
 

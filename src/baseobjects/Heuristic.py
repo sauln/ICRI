@@ -6,10 +6,10 @@ from .CostFunction import Cost
 
 
 class Heuristic:
-    def run(self, dispatch):
+    def run(self, dispatch, width=10, depth=10):
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
-            top_customers = dispatch.get_feasible_next_customers(vehicles) 
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
             
             lowestCost = float("inf")
             nexts = None
@@ -19,8 +19,13 @@ class Heuristic:
                 if cost < lowestCost:
                     nexts = (vehicle, customer)
                     lowestCost = cost
-            veh, cust = nexts
-            dispatch.addCustomer(veh, cust)
+
+            if nexts == None:
+                newV = Vehicle(dispatch.depot)
+                dispatch.vehicles.append(newV)
+            else:
+                veh, cust = nexts
+                dispatch.addCustomer(veh, cust)
            
         dispatch.finish()
         return dispatch

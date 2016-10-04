@@ -70,8 +70,11 @@ class Dispatch():
         ''' Return set of vehicles that have not reached the depot 
              if no vehicles yet, return an empty vehicle
         '''
-        vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
-        return vehicles 
+        return list(set(self.vehicles))
+
+        #vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
+        # if they are all the empty
+        #return vehicles 
 
     def isFeasible(self, a, b):
         return a.readyTime + self.dist(a.location, b.location) <= b.dueDate

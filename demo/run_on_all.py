@@ -19,7 +19,7 @@ def run_on_all_problems(files):
 
     LOGGER.info("Run for r type files: {}".format(rfiles))
    
-    #run_serial(rfiles)
+    run_serial(rfiles)
     run_parallel(rfiles)
     
 def run_parallel(rfiles):

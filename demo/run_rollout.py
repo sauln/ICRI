@@ -1,5 +1,4 @@
-# short script to just run rollout algorithm on all problems 
-
+''' short script to run rollout algorithm on all problems '''
 import logging 
 import sys 
 from demo.demo_util import *
@@ -18,16 +17,18 @@ def run_rollout(ps):
     dispatch = Dispatch(sp.customers)
     delta = [1]*5
     dispatch.set_delta(delta)
-   
+
     solution = RollOut().run(dispatch, 5, 5)
+
+    save_sp(solution, "rollout_"+ps)
+
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for rollout: {}".format(solution.solutionStr()))
 
 outfiles = setup()
 
-for f in outfiles[:2]:
+for f in outfiles:
     run_rollout(f)
 
-summarize_on_all(outfiles)
-
+summarize_on_all(outfiles, prefix="rollout_")
 

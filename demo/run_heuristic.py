@@ -10,7 +10,6 @@ from src.baseobjects import *
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
-
 def run_heuristic(ps):
     LOGGER.info("Run on {}".format(f))
     sp = open_sp(ps)

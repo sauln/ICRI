@@ -7,6 +7,8 @@ from demo.demo_util import *
 from src import RollOut 
 from src.baseobjects import *
 
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 def run_rollout(ps):
     LOGGER.info("Run on {}".format(f))
@@ -21,9 +23,6 @@ def run_rollout(ps):
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for rollout: {}".format(solution.solutionStr()))
 
-LOGGER = logging.getLogger(__name__)
-
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 outfiles = setup()
 
 for f in outfiles[:2]:

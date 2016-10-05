@@ -8,17 +8,10 @@ from demo.demo_util import *
 
 from src import search, Improvement
 from src.baseobjects import Utils, Validator
+
 LOGGER = logging.getLogger(__name__)
-
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
     
-def run_parallel(rfiles):
-    pool = Pool()
-    pool.map(run_on_file, rfiles)
-   
-def run_serial(rfiles):
-    for f in rfiles:
-        run_on_file(f)
-
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
@@ -30,14 +23,13 @@ def run_on_file(f):
     LOGGER.info("Solution to {} is {}".format(f, \
         (solution.num_vehicles, solution.total_distance)))
 
-def run():
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-    outfiles = setup()
-    #run_on_all_problems(outfiles)
-    run_serial(outfiles)
-    #run_parallel(rfiles)
-    summarize_on_all(outfiles)
+outfiles = setup()
 
-if __name__ == "__main__":
-    run()
+for f in outfiles:
+    run_on_file(f)
+
+pool = Pool()
+pool.map(run_on_file, rfiles)
+
+summarize_on_all(outfiles)
 

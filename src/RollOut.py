@@ -19,7 +19,6 @@ class RollOut:
         tmp_dispatch = Dispatch(dispatch)
         tmp_vehicle = Vehicle(vehicle)
 
-
         # this line has been the biggest pain in the rear.
         find = tmp_dispatch.vehicles.index(tmp_vehicle)
         if find < 0:
@@ -35,16 +34,13 @@ class RollOut:
         tmp_dispatch.addCustomer(tmp_vehicle, customer)
         return tmp_dispatch
 
-
     ''' Have rollout be identical to the heuristic? just have 
          the cost function be an application of the heuristic?
     ''' 
 
     def rollout_like_heuristic(self, dispatch):
         dispatch = copy.deepcopy(dispatch)
-
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
-       
         customer_list = sorted(dispatch.customers, key=lambda x: x.dueDate)
 
         for c in customer_list:
@@ -111,21 +107,7 @@ class RollOut:
 
         return dispatch
 
-def run_roll_out(ps):
-    sp = Utils.load_sp(ps)
-    Parameters().build(sp)
-
-    dispatch = Dispatch(sp.customers)
-
-    delta = [1]*7
-    dispatch.set_delta(delta)
-   
-    print(dispatch.delta)
-    solution = RollOut().run(dispatch)
-    print(solution.solutionStr())
-    return solution
-    #save_sp(solution, ps)
 
 if __name__ == "__main__":
-    run_roll_out("r101.p")
+    run_rollout("r101.p")
 

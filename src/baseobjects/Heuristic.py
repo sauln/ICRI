@@ -5,7 +5,7 @@ from .Vehicle import Vehicle
 from .CostFunction import Cost
 
 
-class Heuristic:
+class Heuristic_greed:
     def run(self, dispatch, width=10, depth=10):
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
@@ -31,9 +31,9 @@ class Heuristic:
         return dispatch
 
 
-class Heuristic_force:
+class Heuristic:
     '''  this heuristic forces adding to existing vehicle if feasible '''
-    def run(self, dispatch):
+    def run(self, dispatch, width=5, depth=5):
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
 
         for customer in cs:

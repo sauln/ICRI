@@ -25,7 +25,7 @@ class Heuristic_greed:
                 dispatch.vehicles.append(newV)
             else:
                 veh, cust = nexts
-                dispatch.addCustomer(veh, cust)
+                dispatch.add_customer(veh, cust)
            
         dispatch.finish()
         return dispatch
@@ -66,7 +66,7 @@ class Heuristic:
             vehicles = dispatch.getNextVehicles()
             nextFeas = dispatch.getFeasibles(vehicles) # ordered by g
             vehicle, customer, cost = nextFeas[0]
-            dispatch.addCustomer(vehicle, customer)
+            dispatch.add_customer(vehicle, customer)
 
         dispatch.finish()
         return dispatch

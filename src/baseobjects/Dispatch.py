@@ -1,5 +1,6 @@
 import numpy as np
 from sortedcontainers import SortedListWithKey
+from operator import itemgetter
 
 from .Vehicle import Vehicle
 from .Parameters import Parameters
@@ -28,10 +29,41 @@ class Dispatch():
             self.customers = list(customers)
             self.depot = depot
             self.visitedCustomers = [] 
-            self.vehicles = [self.new_vehicle() \
-                for _ in range(self.max_vehicles)] 
+            self.vehicles = []
+            #self.vehicles = [self.new_vehicle() \
+            #    for _ in range(self.max_vehicles)] 
             
             self.delta = None
+
+    def get_available_vehicles(self):
+        ''' Return set of vehicles that have not reached the depot 
+             if no vehicles yet, return an empty vehicle
+        '''
+        vehicles = list(set(self.vehicles))
+        if not vehicles:
+            vehicles = [self.new_vehicle()]
+        
+        return vehicles 
+
+        #vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
+        # if they are all the empty
+        #return vehicles 
+
+    def get_feasible_next_customers(self, vehicles, count=None):
+        next_pairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
+                        for vehicle in vehicles \
+                        for customer in self.customers \
+                        if vehicle.isFeasible(customer) ]
+        cs = SortedListWithKey(key=itemgetter(2))
+        cs.update(next_pairs)
+        return cs[:count]
+
+    def add_customer(self, vehicle, customer):
+        if vehicle not in self.vehicles:
+            self.vehicles.append(vehicle)
+        vehicle.serveCustomer(customer)
+
+        self.customers.remove(customer)
     
     def set_delta(self, delta):
         self.delta = delta
@@ -56,60 +88,20 @@ class Dispatch():
 
     ##############################################################
     #####     These should probably not be there
-    def dist(self, a,b):
-        # all of the cost objects should be dynamics
-        return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
+    #def dist(self, a,b):
+    #    # all of the cost objects should be dynamics
+    #    return np.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
 
-    def cost(self, start, c):
-        # travel dist, measure of how much time remaining.
-        return self.dist(start,c) + (c.end)
+    #def cost(self, start, c):
+    #    # travel dist, measure of how much time remaining.
+    #    return self.dist(start,c) + (c.end)
 
     ##############################################################
 
-    def get_available_vehicles(self):
-        ''' Return set of vehicles that have not reached the depot 
-             if no vehicles yet, return an empty vehicle
-        '''
-        return list(set(self.vehicles))
+    #def isFeasible(self, a, b):
+    #    import pdb; pdb.set_trace()
+    #    return a.readyTime + self.dist(a.location, b.location) <= b.dueDate
 
-        #vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
-        # if they are all the empty
-        #return vehicles 
-
-    def isFeasible(self, a, b):
-        return a.readyTime + self.dist(a.location, b.location) <= b.dueDate
-
-    def feasibleList(self, customer):
-        return [c for c in self.customers  if self.isFeasible(customer, c) 
-            and c is not customer]
-
-    def get_feasible_next_customers(self, vehicles, count=None):
-        next_pairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
-                        for vehicle in vehicles \
-                        for customer in self.customers \
-                        if vehicle.isFeasible(customer) ]
-        cs = SortedListWithKey(key = lambda x: x[2])
-        cs.update(next_pairs)
-        return cs[:count]
-    '''
-    def getFeasibles(self, vehicles):
-        # usually only needs 1 of these, if that's the case,
-        # we can do this in O(n) time instead of O(n*log(n)).
-        nextPairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
-                        for vehicle in vehicles \
-                        for customer in self.customers \
-                        if vehicle.isFeasible(customer) ]
-        
-        cs = SortedListWithKey(key = lambda x: x[2])
-        cs.update(nextPairs)
-
-        return cs 
-    '''
-
-    def addCustomer(self, vehicle, customer):
-        if vehicle not in self.vehicles:
-            self.vehicles.append(vehicle)
-        vehicle.serveCustomer(customer)
-
-        self.customers.remove(customer)
-
+    #def feasibleList(self, customer):
+    #    return [c for c in self.customers  if self.isFeasible(customer, c) 
+    #        and c is not customer]

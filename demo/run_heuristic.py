@@ -20,16 +20,18 @@ def run_heuristic(ps):
     dispatch.set_delta(delta)
     
     solution = Heuristic().run(dispatch)
-   
+    
+    save_sp(solution, "heuristic_"+ps)
+
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for heuristic: {}".format(solution.solutionStr()))
 
 outfiles = setup()
 
-for f in outfiles[:2]:
+for f in outfiles:
     run_heuristic(f)
 
-summarize_on_all(outfiles)
+summarize_on_all(outfiles, prefix="heuristic_")
 
 
 

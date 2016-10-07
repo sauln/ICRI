@@ -31,7 +31,7 @@ class Heuristic_greed:
         return dispatch
 
 
-class Heuristic:
+class Heuristic_sorted:
     '''  this heuristic forces adding to existing vehicle if feasible '''
     def run(self, dispatch, width=5, depth=5):
         cs = sorted(dispatch.customers, key=lambda x: x.readyTime)
@@ -71,6 +71,11 @@ class Heuristic:
         dispatch.finish()
         return dispatch
 '''
+
+class Heuristic(Heuristic_greed):
+    pass
+
+
 
 if __name__ == "__main__":
     import Utils

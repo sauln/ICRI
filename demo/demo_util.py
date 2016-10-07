@@ -15,7 +15,7 @@ def build_all(data_root, files, outfiles):
 
 def load_files(data_root):
     files = os.listdir(data_root)
-    files = [f for f in files if 'r1' in f]
+    #files = [f for f in files if 'r1' in f]
 
     outfiles = [f.replace(".txt", ".p") for f in files] 
     return (files, outfiles)

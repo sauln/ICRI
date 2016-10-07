@@ -15,9 +15,10 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
-    solution = search(f, trunc=0, count=1)
+    solution = search(f, trunc=0, count=20)
     solution.pre_solution = solution.solution
-    solution.solution = Improvement().run(solution.pre_solution, 5, 1)
+    LOGGER.info("begin improvement on {}".format(f))
+    solution.solution = Improvement().run(solution.pre_solution, 25, 25)
     Validator(solution.solution).validate()
     Utils.save_sp(solution, f)
     LOGGER.info("Solution to {} is {}".format(f, \
@@ -25,11 +26,11 @@ def run_on_file(f):
 
 outfiles = setup()
 
-for f in outfiles:
-    run_on_file(f)
+#for f in outfiles:
+#    run_on_file(f)
 
 pool = Pool()
-pool.map(run_on_file, rfiles)
+pool.map(run_on_file, outfiles)
 
 summarize_on_all(outfiles)
 

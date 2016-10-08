@@ -13,6 +13,11 @@ class Best:
         self.customer = customer
         self.vehicle = vehicle
         self.solution = solution
+
+    def __str__(self):
+        return "{}, {}, {}".format(\
+            self.cost, self.customer, self.vehicle)
+
 class RollOutBase:
     __metaclass__ = ABCMeta
 
@@ -52,6 +57,34 @@ class RollOutBase:
         
         return dispatch 
 
+
+
+class RollOutWOnDeck(RollOutBase):
+    def rollout(self, dispatch, depth, width):
+        ''' Run rollout algorithm '''
+       
+        while dispatch.customers:
+            vehicles = dispatch.get_available_vehicles(1)
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
+
+            best = Best( (float('inf'), float('inf')), None, None, None)
+            for vehicle, customer, _ in top_customers:
+                tmp_dispatch = self.setup_dispatch_env(dispatch, vehicle, customer)
+                potentialSolution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
+                cost = Cost.of_vehicles(potentialSolution.vehicles)
+                logger.debug("Heuristic result {} from {},{}".format(\
+                    cost, customer, vehicle))
+                if(cost < best.cost):
+                    best = Best(cost, customer, vehicle, potentialSolution)
+
+            dispatch.add_customer(best.vehicle, best.customer)
+
+            print(best)
+
+        return dispatch
+
+
+
 class RollOutTypical(RollOutBase):
     def rollout(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
@@ -70,12 +103,14 @@ class RollOutTypical(RollOutBase):
                 if(cost < best.cost):
                     best = Best(cost, customer, vehicle, potentialSolution)
 
+            # need to add the vehicle even if 
+
             if(best.vehicle is None or best.customer is None):
                 v = dispatch.new_vehicle()
                 dispatch.vehicles.append(v)
             else: 
                 dispatch.add_customer(best.vehicle, best.customer)
-           
+
         return dispatch
 
 class RollOutLikeHeuristic(RollOutBase):
@@ -103,7 +138,9 @@ class RollOutLikeHeuristic(RollOutBase):
         return dispatch
 
 
-class RollOut(RollOutTypical):
+#RollOutTypical
+#RollOutWOnDeck
+class RollOut(RollOutWOnDeck):
     pass
        
 

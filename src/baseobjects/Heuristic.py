@@ -4,6 +4,25 @@ from .Parameters import Parameters
 from .Vehicle import Vehicle
 from .CostFunction import Cost
 
+class Heuristic_wOnDeck:
+    def run(self, dispatch, width=10, depth=10):
+        while dispatch.customers:
+            vehicles = dispatch.get_available_vehicles(1)
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
+            
+            lowestCost, nexts = float("inf"), None
+            for vehicle, customer, _ in top_customers:
+                cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                if cost < lowestCost:
+                    nexts = (vehicle, customer)
+                    lowestCost = cost
+
+            veh, cust = nexts
+            dispatch.add_customer(veh, cust)
+           
+        dispatch.finish()
+        return dispatch
+
 
 class Heuristic_greed:
     def run(self, dispatch, width=10, depth=10):
@@ -11,9 +30,7 @@ class Heuristic_greed:
             vehicles = dispatch.get_available_vehicles()
             top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
             
-            lowestCost = float("inf")
-            nexts = None
-
+            lowestCost, nexts = float("inf"), None
             for vehicle, customer, _ in top_customers:
                 cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
                 if cost < lowestCost:
@@ -72,7 +89,11 @@ class Heuristic:
         return dispatch
 '''
 
-class Heuristic(Heuristic_greed):
+#class Heuristic(Heuristic_sorted):
+#    pass
+#class Heuristic(Heuristic_greed):
+#    pass
+class Heuristic(Heuristic_wOnDeck):
     pass
 
 

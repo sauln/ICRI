@@ -32,13 +32,15 @@ class Dispatch():
             self.vehicles = []
             self.delta = None
 
-    def get_available_vehicles(self):
+    def get_available_vehicles(self, clean_veh=0):
         ''' Return set of vehicles that have not reached the depot 
              if no vehicles yet, return an empty vehicle
         '''
         vehicles = list(set(self.vehicles))
-        if not vehicles:
-            vehicles = [self.new_vehicle()]
+
+        if clean_veh:
+            if self.new_vehicle() not in vehicles:
+                vehicles.append(self.new_vehicle())
         
         return vehicles 
 

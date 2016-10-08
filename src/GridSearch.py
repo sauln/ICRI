@@ -4,6 +4,7 @@ import csv
 from pyDOE import *
 from abc import ABCMeta, abstractmethod
 import numpy as np
+import time
 
 from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils, Cost
 from .RollOut import RollOut
@@ -19,15 +20,21 @@ class Tuning:
     def find_costs(self, dispatch, count=5, trunc=0, depth=10, width=10):
 
         num_diff_lambdas = count
-        
+
+        c = 0
         results = []
         for lambdas in self.generator(num_diff_lambdas): 
             for lam in lambdas:
+                #print("{} run grid search on {}".format(c, lam))
+                start = time.time()
+                c+=1
                 dispatch.set_delta(lam)
                 solution = RollOut().run(dispatch, depth, width)
                 num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
                 res = Solution(num_veh, t_dist, lam, solution)  
                 results.append(res)
+                end = time.time()
+                print("{}/{} grid search took {} seconds.".format(c, count, end-start))
 
         return results
 
@@ -70,6 +77,8 @@ def search(feed, trunc=0, count=5, search_type="random_search"):
         dispatch = make_dispatch(sp, trunc)
     else:
         dispatch = feed
+
+
 
     costs = switch[search_type]().find_costs(\
         dispatch, trunc=trunc, count=count)

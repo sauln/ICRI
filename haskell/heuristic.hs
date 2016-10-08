@@ -24,8 +24,19 @@ minarg f a b
     | otherwise  = b
 
 closest xs x = foldr1 (minarg $ dist x) xs
-bz = closest cs a
 
+
+
+
+
+
+
+
+
+
+
+
+bz = closest cs a
 
 main = do putStrLn "Distance between two customers"
           print bz

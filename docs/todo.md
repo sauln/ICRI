@@ -40,7 +40,8 @@ Approach hyperparameter optimization from two directions:
 # Software
 The unittests have fallen to ruin.  Need to update the unittests.  Also need to 
 refactor much of the dispatch code.  Lots of it has become entirely too complicated
-and can be greatly simplified. I believe I also prematurely optimized for readability.
+and can be greatly simplified. I believe I also prematurely optimized for readability 
+and there is some very silly code.
 
 At each stable point:
 

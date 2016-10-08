@@ -18,6 +18,8 @@ def run_rollout(ps):
     delta = [1]*5
     dispatch.set_delta(delta)
 
+    #import pdb; pdb.set_trace()
+
     solution = RollOut().run(dispatch, 5, 5)
 
     save_sp(solution, "rollout_"+ps)

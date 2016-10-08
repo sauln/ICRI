@@ -3,7 +3,7 @@ import logging
 import copy
 from abc import ABCMeta, abstractmethod
 
-from .baseobjects import Dispatch, Cost, Parameters, Vehicle, Heuristic, Utils
+from .baseobjects import Dispatch, Cost, Heuristic, Utils
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class RollOutBase:
     def duplicateEnv(self, dispatch, vehicle):
         ''' Copy environment so we can modify dispatch at will for experimentation '''
         tmp_dispatch = Dispatch(dispatch)
-        tmp_vehicle = Vehicle(vehicle)
+        tmp_vehicle = dispatch.new_vehicle() #Vehicle(vehicle)
 
         # this line has been the biggest pain in the rear.
         if tmp_vehicle in tmp_dispatch.vehicles:
@@ -55,6 +55,7 @@ class RollOutBase:
 class RollOutTypical(RollOutBase):
     def rollout(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
+       
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
             top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
@@ -70,7 +71,7 @@ class RollOutTypical(RollOutBase):
                     best = Best(cost, customer, vehicle, potentialSolution)
 
             if(best.vehicle is None or best.customer is None):
-                v = Vehicle(dispatch.depot)
+                v = dispatch.new_vehicle()
                 dispatch.vehicles.append(v)
             else: 
                 dispatch.add_customer(best.vehicle, best.customer)
@@ -93,7 +94,7 @@ class RollOutLikeHeuristic(RollOutBase):
                     best = Best(cost, c, v, tmp_solution)
                     
             if best.vehicle == None:
-                v = Vehicle(dispatch.depot)
+                v = dispatch.new_vehicle() #Vehicle(dispatch.depot)
                 dispatch.vehicles.append(v)
                 best = Best(None, c, v, None)
             

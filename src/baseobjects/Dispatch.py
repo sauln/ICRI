@@ -30,9 +30,6 @@ class Dispatch():
             self.depot = depot
             self.visitedCustomers = [] 
             self.vehicles = []
-            #self.vehicles = [self.new_vehicle() \
-            #    for _ in range(self.max_vehicles)] 
-            
             self.delta = None
 
     def get_available_vehicles(self):
@@ -44,10 +41,6 @@ class Dispatch():
             vehicles = [self.new_vehicle()]
         
         return vehicles 
-
-        #vehicles = self.vehicles if self.vehicles else [self.new_vehicle()]
-        # if they are all the empty
-        #return vehicles 
 
     def get_feasible_next_customers(self, vehicles, count=None):
         next_pairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \

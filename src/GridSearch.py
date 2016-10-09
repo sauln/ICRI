@@ -5,6 +5,9 @@ from pyDOE import *
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import time
+from multiprocessing import Pool, Value
+from functools import partial
+
 
 from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils, Cost
 from .RollOut import RollOut
@@ -17,25 +20,32 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
+    def rollout(self, lam, dispatch, count, trunc, depth, width):
+        Utils.increment()
+        c = Utils.value()
+        LOGGER.info("{}/{} run grid search on {}".format(c, count, lam))
+        start = time.time()
+        dispatch.set_delta(lam)
+        solution = RollOut().run(dispatch, depth, width)
+        num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
+        res = Solution(num_veh, t_dist, lam, solution)  
+        end = time.time()
+        LOGGER.info("{}/{}: ({}, {}) grid search took {} seconds".format(\
+            c, count, num_veh, t_dist,  end-start))
+        return res
+
     def find_costs(self, dispatch, count=5, trunc=0, depth=10, width=10):
-
-        num_diff_lambdas = count
-
-        c = 0
         results = []
-        for lambdas in self.generator(num_diff_lambdas): 
-            for lam in lambdas:
-                #print("{} run grid search on {}".format(c, lam))
-                start = time.time()
-                c+=1
-                dispatch.set_delta(lam)
-                solution = RollOut().run(dispatch, depth, width)
-                num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
-                res = Solution(num_veh, t_dist, lam, solution)  
-                results.append(res)
-                end = time.time()
-                print("{}/{} grid search took {} seconds: ({},{})".format(\
-                    c, count, end-start, num_veh, t_dist ))
+        lambdas = self.generator(count)
+        
+        rollout_partial = partial(self.rollout, 
+                                  dispatch=dispatch, 
+                                  count=count, trunc=trunc, 
+                                  depth=depth, width=width)
+      
+        counter = Value('i', 0)
+        pool = Pool(initializer=Utils.init, initargs=(counter,))
+        results = pool.map(rollout_partial, lambdas)
 
         return results
 
@@ -43,13 +53,13 @@ class Random_search(Tuning):
     def generator(self, count):
         np.random.seed(0)
         lambdas = np.random.random_sample((count, 5))
-        return [lambdas]
+        return lambdas
 
 class Grid_search(Tuning):
     def generator(self, count):
         width = 5
         lambdas = lhs(width, samples=count, criterion='cm')
-        return [lambdas]
+        return lambdas
 
 class Shadow_search(Tuning):
     def generator(self, count):
@@ -78,8 +88,6 @@ def search(feed, trunc=0, count=5, search_type="random_search"):
         dispatch = make_dispatch(sp, trunc)
     else:
         dispatch = feed
-
-
 
     costs = switch[search_type]().find_costs(\
         dispatch, trunc=trunc, count=count)

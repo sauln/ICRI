@@ -1,5 +1,24 @@
 import pickle
 
+
+counter = None
+def increment():
+    global counter
+    with counter.get_lock():
+        counter.value += 1
+
+def value():
+    global counter
+    with counter.get_lock():
+        return counter.value
+
+def init(args):
+    global counter
+    counter = args
+
+
+
+
 ''' These 3 functions can be used elsewhere '''
 def open_sp(fname, root = "data/interim/"):
     input_filepath = root + fname

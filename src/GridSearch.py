@@ -34,7 +34,8 @@ class Tuning:
                 res = Solution(num_veh, t_dist, lam, solution)  
                 results.append(res)
                 end = time.time()
-                print("{}/{} grid search took {} seconds.".format(c, count, end-start))
+                print("{}/{} grid search took {} seconds: ({},{})".format(\
+                    c, count, end-start, num_veh, t_dist ))
 
         return results
 

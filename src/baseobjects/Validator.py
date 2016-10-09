@@ -7,7 +7,7 @@ class Validator():
         self.maxCapacity = Parameters().params.capacity
         self.customers = Parameters().customers
         self.used_customers = [c.custNo for vehicle in self.vehicles \
-            for c in vehicle.customerHistory]
+            for c in vehicle.customer_history]
  
     def allCustomersAreUsed(self):
         for c in self.customers:
@@ -20,14 +20,14 @@ class Validator():
 
     def vehicles_return_home_in_time(self):
         for vehicle in self.vehicles:
-            assert vehicle.totalTime < vehicle.depot.dueDate, "{} > {}".format(\
-                vehicle.totalTime, vehicle.depot.dueDate)
+            assert vehicle.total_time < vehicle.depot.dueDate, "{} > {}".format(\
+                vehicle.total_time, vehicle.depot.dueDate)
 
     def serviceTimesWithinWindow(self):
         success = 1
         for vehicle in self.vehicles:
             total = 0
-            cs = vehicle.customerHistory
+            cs = vehicle.customer_history
             for i in range(0,len(cs)-1):
                 td = self.timeMatrix[cs[i].custNo,cs[i+1].custNo]
                 srv = max(total + td, cs[i+1].readyTime)
@@ -36,7 +36,7 @@ class Validator():
 
     def capacityRespected(self):
         for vehicle in self.vehicles:
-            s = sum(c.demand for c in vehicle.customerHistory)
+            s = sum(c.demand for c in vehicle.customer_history)
             assert s <= self.maxCapacity
 
     def validate(self):

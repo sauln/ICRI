@@ -15,7 +15,7 @@ def build_all(data_root, files, outfiles):
 
 def load_files(data_root):
     files = os.listdir(data_root)
-    files = [f for f in files if 'rc101' in f]
+    files = [f for f in files if 'rc' in f]
     print(files)
     outfiles = [f.replace(".txt", ".p") for f in files] 
     return (files, outfiles)
@@ -50,8 +50,12 @@ def load_test_result(filename, root):
         return (name, num_veh, dist)
     elif isinstance(solution, Solution):
         new_veh, new_dist = solution.num_vehicles, solution.total_distance
-        old_veh, old_dist = Cost.of_vehicles(solution.pre_solution.vehicles)
-        return (name, new_veh, new_dist, old_veh, old_dist)
+
+        if solution.pre_solution is not None:
+            old_veh, old_dist = Cost.of_vehicles(solution.pre_solution.vehicles)
+            return (name, new_veh, new_dist, old_veh, old_dist)
+        else:
+            return (name, new_veh, new_dist) 
 
 
 def summarize_on_all(files, prefix=''):

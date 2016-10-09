@@ -76,11 +76,18 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
                and self.is_not_full(customer) \
                and self.canMakeItHomeInTime(customer)
     
-    def feasibilityStr(self, item):
-        return "isFeasible:{} ".format(self.isFeasible(item)) +\
-               "is_not_full:{} ".format(self.is_not_full(item)) +\
-               "isValidTime:{} ".format(self.isValidTime(item)) +\
-               "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
+    def serve(self, customer):
+        self.total_dist += self.travel_dist(customer)
+        self.update_time(customer)
+        self.update_capacity(customer)
+        self.update_history(customer)
+
+    def geographicCenter(self):
+        custs = set(self.customer_history)
+        custs.remove(self.depot)
+        coords = [[c.location.x, c.location.y] for c in custs]
+        center = np.mean(coords, axis=0)
+        return center
 
     def __hash__(self):
         return hash((str(self.customer_history), self.total_dist, self.cur_capacity))
@@ -100,18 +107,11 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def __repr__(self):
         return self.__str__()
 
-    def serve(self, customer):
-        self.total_dist += self.travel_dist(customer)
-        self.update_time(customer)
-        self.update_capacity(customer)
-        self.update_history(customer)
-
-    def geographicCenter(self):
-        custs = set(self.customer_history)
-        custs.remove(self.depot)
-        coords = [[c.location.x, c.location.y] for c in custs]
-        center = np.mean(coords, axis=0)
-        return center
+    def feasibilityStr(self, item):
+        return "isFeasible:{} ".format(self.isFeasible(item)) +\
+               "is_not_full:{} ".format(self.is_not_full(item)) +\
+               "isValidTime:{} ".format(self.isValidTime(item)) +\
+               "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
 
     def debugStr(self, item):
         return "\n\t\tItem {} is being added to \n\t\t{}; \n\t\t{}\n\
@@ -121,3 +121,4 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
                 self.total_time, self.travel_time(item), item.dueDate, \
                 self.max_capacity, item.demand, self.cur_capacity)
             
+

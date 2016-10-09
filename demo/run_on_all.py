@@ -40,9 +40,5 @@ outfiles = setup()
 pool = Pool()
 pool.map(run_on_file, outfiles)
 
-
-
-
-
 summarize_on_all(outfiles)
 

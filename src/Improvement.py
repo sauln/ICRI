@@ -29,7 +29,7 @@ def geographic_similarity(dispatch, vehicle):
 
 def by_customers_dist(vehicle):
     """ Determines how vehicles should be compared """
-    return (len(vehicle.customerHistory), vehicle.total_dist)
+    return (vehicle.served_customers(), vehicle.total_dist)
 
 def log_solution(dispatch, dispatch_backup):
     new_num_veh, new_dist = Cost.of_vehicles(dispatch.vehicles)

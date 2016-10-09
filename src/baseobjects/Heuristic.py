@@ -23,7 +23,6 @@ class Heuristic_wOnDeck:
         dispatch.finish()
         return dispatch
 
-
 class Heuristic_greed:
     def run(self, dispatch, width=10, depth=10):
         while dispatch.customers:
@@ -69,7 +68,7 @@ class Heuristic_sorted:
                 nexts = (newV, customer)
 
             veh, cust = nexts
-            veh.serveCustomer(cust)
+            veh.serve(cust)
         dispatch.finish()
         return dispatch
 
@@ -104,4 +103,4 @@ if __name__ == "__main__":
     Parameters().build(sp)
     dispatch = Dispatch(sp.customers)
     solution = Heuristic().run(dispatch)
-    print(solution.solutionStr())
+    print(solution.pretty_print())

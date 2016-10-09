@@ -29,10 +29,10 @@ class Parameters:
         def buildTimeMatrix(self, customers):
             return self.distMatrix
 
-        def travelTime(self, start, end):
+        def travel_time(self, start, end):
             return self.timeMatrix[start.custNo, end.custNo]
 
-        def travelDist(self, start, end):
+        def travel_dist(self, start, end):
             return self.distMatrix[start.custNo, end.custNo]
 
     instance = None

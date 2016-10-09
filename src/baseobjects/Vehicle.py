@@ -2,48 +2,51 @@ import numpy as np
 
 from .Customer import Customer
 from .Parameters import Parameters
-#import Customer
-#import Parameters
-
 
 class TimeWindows(object):
-    def __init__(self):
-        super(TimeWindows, self).__init__()
+    def __init__(self, params):
+        super(TimeWindows, self).__init__(params)
         self.total_time = 0
 
-    def isValidTime(self, end):
-        return self.total_time + self.travel_time(end) <= end.dueDate
+    def isValidTime(self, customer):
+        return self.total_time + self.travel_time(customer) <= customer.dueDate
+
+    def travel_dist(self, customer):
+        return Parameters().travel_dist(self.last(), customer) 
+
+    def travel_time(self, customer):
+        return Parameters().travel_time(self.last(), customer) 
     
-    def canMakeItHomeInTime(self, end):
-        return end.dueDate + Parameters().travel_time(end, self.depot) <= self.depot.dueDate
+    def canMakeItHomeInTime(self, customer):
+        return self.total_time + self.travel_time(customer) + \
+               Parameters().travel_time(customer, self.depot) <= \
+               self.depot.dueDate
         
     def update_time(self, customer):
         arrivalTime = self.total_time + self.travel_time(customer)
         servedTime = max(arrivalTime, customer.readyTime)
-        #self.total_slack += servedTime - arrivalTime
         self.total_time = servedTime + customer.serviceLen
 
-
-
 class Capacity(object):
-    def __init__(self):
-        super(Capacity, self).__init__()
-        self.max_capacity = Parameters().params.capacity
+    def __init__(self, params):
+        super(Capacity, self).__init__(params)
+        self.max_capacity = params.capacity
         self.cur_capacity = 0
 
     def update_capacity(self, customer):
         self.cur_capacity += customer.demand
 
-    def is_not_full(self, end):
-        return self.max_capacity >= end.demand + self.cur_capacity
+    def is_not_full(self, customer):
+        return self.max_capacity >= customer.demand + self.cur_capacity
     
     def remaining_slack(self):
         return self.max_capacity - self.cur_capacity
 
 class CustomerHistory(object):
-    def __init__(self):
+    def __init__(self, params):
         super(CustomerHistory, self).__init__()
         self.customer_history = []
+        self.depot = params.depot
 
     def update_history(self, customer):
         self.customer_history.append(customer)
@@ -54,12 +57,10 @@ class CustomerHistory(object):
     def last(self):
         return self.customer_history[-1]
 
-
 class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def __init__(self, depot):
-        super(Vehicle, self).__init__()
+        super(Vehicle, self).__init__(Parameters())
 
-        # constructing with seed != depot is deprecated
         if isinstance(depot, self.__class__):
             vehicle = depot
             self.total_dist = vehicle.total_dist
@@ -69,21 +70,11 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
         else:
             self.update_history(depot)
             self.total_dist = 0
-            #self.total_time, self.cur_capacity = 0,0 
-            #self.served_customers() = 0
-            
-            #self.customer_history = [depot]
-            #self.last_cust = depot
-        
-        self.timeMatrix = Parameters().timeMatrix
-        self.distMatrix = Parameters().distMatrix
-        self.depot = Parameters().depot
     
-    
-    def isFeasible(self, end):
-        return self.isValidTime(end) and \
-               self.is_not_full(end) #and \
-               #self.canMakeItHomeInTime(end)
+    def isFeasible(self, customer):
+        return self.isValidTime(customer) \
+               and self.is_not_full(customer) \
+               and self.canMakeItHomeInTime(customer)
     
     def feasibilityStr(self, item):
         return "isFeasible:{} ".format(self.isFeasible(item)) +\
@@ -115,15 +106,9 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
         self.update_capacity(customer)
         self.update_history(customer)
 
-    def travel_dist(self, end):
-        return Parameters().travel_dist(self.last(), end) 
-
-    def travel_time(self, end):
-        return Parameters().travel_time(self.last(), end) 
-
     def geographicCenter(self):
         custs = set(self.customer_history)
-        custs.remove(Parameters().depot)
+        custs.remove(self.depot)
         coords = [[c.location.x, c.location.y] for c in custs]
         center = np.mean(coords, axis=0)
         return center
@@ -131,8 +116,8 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def debugStr(self, item):
         return "\n\t\tItem {} is being added to \n\t\t{}; \n\t\t{}\n\
                 totaltime: {}  travel_time:{:3g}  duedate:{}\n\
-                maxCap: {}     demand:{}      curCap: {}"\
-            .format(item, self, self.feasibilityStr(item), \
-                    self.total_time, self.travel_time(item), item.dueDate, \
-                    self.max_capacity, item.demand, self.cur_capacity)
+                maxCap: {}     demand:{}      curCap: {}".format(\
+                item, self, self.feasibilityStr(item), \
+                self.total_time, self.travel_time(item), item.dueDate, \
+                self.max_capacity, item.demand, self.cur_capacity)
             

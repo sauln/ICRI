@@ -25,7 +25,7 @@ def run_rollout(ps):
     save_sp(solution, "rollout_"+ps)
 
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
-    LOGGER.debug("Solution for rollout: {}".format(solution.solutionStr()))
+    LOGGER.debug("Solution for rollout: {}".format(solution.pretty_print()))
 
 outfiles = setup()
 

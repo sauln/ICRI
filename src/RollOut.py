@@ -3,7 +3,7 @@ import logging
 import copy
 from abc import ABCMeta, abstractmethod
 
-from .baseobjects import Dispatch, Cost, Heuristic, Utils
+from .baseobjects import Dispatch, Cost, Heuristic, Utils, Vehicle
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +24,11 @@ class RollOutBase:
     @abstractmethod
     def rollout(self, count): pass
    
-    def duplicateEnv(self, dispatch, vehicle):
+    def duplicate_env(self, dispatch, vehicle):
         ''' Copy environment so we can modify dispatch at will for experimentation '''
         tmp_dispatch = Dispatch(dispatch)
-        tmp_vehicle = dispatch.new_vehicle() #Vehicle(vehicle)
+        tmp_vehicle = Vehicle(vehicle)
 
-        # this line has been the biggest pain in the rear.
         if tmp_vehicle in tmp_dispatch.vehicles:
             find = tmp_dispatch.vehicles.index(tmp_vehicle)
             tmp_dispatch.vehicles[find] = tmp_vehicle
@@ -40,7 +39,11 @@ class RollOutBase:
         return tmp_dispatch, tmp_vehicle
 
     def setup_dispatch_env(self, dispatch, vehicle, customer):
-        tmp_dispatch, tmp_vehicle = self.duplicateEnv(dispatch, vehicle)
+        ''' This function is intended to create a copy of the dispatch
+            and the vehicle so that we can modify them without modifying the
+            original copy.
+        '''
+        tmp_dispatch, tmp_vehicle = self.duplicate_env(dispatch, vehicle)
         tmp_dispatch.add_customer(tmp_vehicle, customer)
         return tmp_dispatch
 
@@ -57,12 +60,9 @@ class RollOutBase:
         
         return dispatch 
 
-
-
 class RollOutWOnDeck(RollOutBase):
     def rollout(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
-       
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles(1)
             top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
@@ -70,20 +70,16 @@ class RollOutWOnDeck(RollOutBase):
             best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in top_customers:
                 tmp_dispatch = self.setup_dispatch_env(dispatch, vehicle, customer)
-                potentialSolution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
-                cost = Cost.of_vehicles(potentialSolution.vehicles)
+                tmp_solution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
+                cost = Cost.of_vehicles(tmp_solution.vehicles)
                 logger.debug("Heuristic result {} from {},{}".format(\
                     cost, customer, vehicle))
                 if(cost < best.cost):
-                    best = Best(cost, customer, vehicle, potentialSolution)
+                    best = Best(cost, customer, vehicle, tmp_solution)
 
             dispatch.add_customer(best.vehicle, best.customer)
 
-            print(best)
-
         return dispatch
-
-
 
 class RollOutTypical(RollOutBase):
     def rollout(self, dispatch, depth, width):
@@ -96,12 +92,12 @@ class RollOutTypical(RollOutBase):
             best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in top_customers:
                 tmp_dispatch = self.setup_dispatch_env(dispatch, vehicle, customer)
-                potentialSolution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
-                cost = Cost.of_vehicles(potentialSolution.vehicles)
+                tmp_solution = Heuristic().run(tmp_dispatch, width=width, depth=depth)
+                cost = Cost.of_vehicles(tmp_solution.vehicles)
                 logger.debug("Heuristic result {} from {},{}".format(\
                     cost, customer, vehicle))
                 if(cost < best.cost):
-                    best = Best(cost, customer, vehicle, potentialSolution)
+                    best = Best(cost, customer, vehicle, tmp_solution)
 
             # need to add the vehicle even if 
 

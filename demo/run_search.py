@@ -24,7 +24,7 @@ def run_on_file(f):
     Validator(solution.solution).validate()
     end = time.time()
     
-    Utils.save_sp(solution, f)
+    Utils.save_sp(solution, "search/" +f)
     LOGGER.info("Solution to {} is {}".format(f, \
         (solution.num_vehicles, solution.total_distance)))
     LOGGER.info("Time elapsed for {}: {}".format(f, end-start))
@@ -37,5 +37,5 @@ for f in outfiles:
 #pool = Pool()
 #pool.map(run_on_file, outfiles)
 
-summarize_on_all(outfiles)
+summarize_on_all(outfiles, prefix="search/")
 

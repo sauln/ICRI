@@ -21,7 +21,7 @@ def run_heuristic(ps):
     
     solution = Heuristic().run(dispatch)
     
-    save_sp(solution, "heuristic_"+ps)
+    save_sp(solution, "heuristic/"+ps)
 
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for heuristic: {}".format(solution.pretty_print()))
@@ -31,7 +31,7 @@ outfiles = setup()
 for f in outfiles:
     run_heuristic(f)
 
-summarize_on_all(outfiles, prefix="heuristic_")
+summarize_on_all(outfiles, prefix="heuristic/")
 
 
 

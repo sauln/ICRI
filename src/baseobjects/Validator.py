@@ -1,13 +1,17 @@
-from .Parameters import Parameters
+#from .Parameters import Parameters
+
+import numpy as np
+from .Utils import *
 
 class Validator():
-    def __init__(self, dispatch):
+    def __init__(self, dispatch, source):
         self.vehicles = dispatch.vehicles
-        self.timeMatrix = Parameters().timeMatrix
-        self.maxCapacity = Parameters().params.capacity
-        self.customers = Parameters().customers
         self.used_customers = [c.custNo for vehicle in self.vehicles \
             for c in vehicle.customer_history]
+        
+        sp =  open_sp(source)
+        self.customers = sp.customers
+        self.maxCapacity = sp.capacity
  
     def allCustomersAreUsed(self):
         for c in self.customers:
@@ -29,7 +33,9 @@ class Validator():
             total = 0
             cs = vehicle.customer_history
             for i in range(0,len(cs)-1):
-                td = self.timeMatrix[cs[i].custNo,cs[i+1].custNo]
+                #td = self.timeMatrix[cs[i].custNo,cs[i+1].custNo]
+                td = np.sqrt( (cs[i].location.x - cs[i+1].location.x)**2 + \
+                           (cs[i].location.y - cs[i+1].location.y)**2)
                 srv = max(total + td, cs[i+1].readyTime)
                 total = srv + cs[i+1].serviceLen
                 assert 1, "Unsure what to assert here"

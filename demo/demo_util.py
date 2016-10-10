@@ -14,9 +14,9 @@ def build_all(data_root, files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)
 
 def load_files(data_root):
-    files = os.listdir(data_root)
-    files = [f for f in files if 'rc' in f]
-    print(files)
+    files = sorted(os.listdir(data_root))
+    #files = [f for f in files if 'rc' in f]
+    LOGGER.debug("Loaded files {}".format(files))
     outfiles = [f.replace(".txt", ".p") for f in files] 
     return (files, outfiles)
 
@@ -39,9 +39,14 @@ def group_results(results, prefix=''):
 
     return problemdict
 
-def load_test_result(filename, root):
+def load_solution(filename, root):
     with open(root + filename, "rb") as f:
         solution = pickle.load(f)
+    return solution 
+
+
+def load_test_result(filename, root):
+    solution = load_solution(filename, root)
     
     name = filename
     

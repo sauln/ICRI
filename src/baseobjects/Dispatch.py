@@ -74,7 +74,7 @@ class Dispatch():
 
     def pretty_print(self):
         vehstr = "\n".join([str(v) for v in self.vehicles])
-        return "Vehicles: {} => \n{} ".format(len(self.vehicles), vehstr)
+        return "Vehicles: {}=> \n{} ".format(Cost.of_vehicles(self.vehicles), vehstr)
 
     def total_dist(self):
         return sum([v.total_dist for v in self.vehicles])

@@ -80,7 +80,7 @@ def make_dispatch(sp, trunc=0):
     dispatch = Dispatch(sp.customers[:num_customers+2])
     return dispatch 
    
-def search(feed, trunc=0, count=5, search_type="random_search"):
+def search(feed, trunc=0, count=5, search_type="random_search", width=10, depth=10):
     if type(feed) is str:
         fname = feed
         sp = Utils.open_sp(fname)
@@ -90,7 +90,8 @@ def search(feed, trunc=0, count=5, search_type="random_search"):
         dispatch = feed
 
     costs = switch[search_type]().find_costs(\
-        dispatch, trunc=trunc, count=count)
+        dispatch, trunc=trunc, count=count, depth=depth, width=width)
+    
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
     LOGGER.debug("Found best {}".format(bestFound))

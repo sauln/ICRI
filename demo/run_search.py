@@ -20,7 +20,7 @@ def run_on_file(f):
     random.seed(0)
     
     start = time.time()
-    solution = search(f, trunc=0, count=10)
+    solution = search(f, trunc=0, count=10, width=10, depth=10)
     Validator(solution.solution).validate()
     end = time.time()
     

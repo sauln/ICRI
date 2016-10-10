@@ -40,10 +40,15 @@ class Validator():
                 total = srv + cs[i+1].serviceLen
                 assert 1, "Unsure what to assert here"
 
+
+
+
     def capacityRespected(self):
         for vehicle in self.vehicles:
             s = sum(c.demand for c in vehicle.customer_history)
             assert s <= self.maxCapacity
+        print("Each vehicle has total capacity less than {}".format(self.maxCapacity))
+
 
     def validate(self):
         self.capacityRespected()

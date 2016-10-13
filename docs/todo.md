@@ -19,7 +19,9 @@ To facilitate these, and for my own edification, run these experiments on AWS.
 # Improvement bounds
 From initial experiments it looks like the `improvement` algorithm will often not actually
 improve anything.  Very often, the new partial solution is worse than the original input.
-I want to explore why this happens. 
+I want to explore why this happens.  This is counter-intuitive.  Figliozzi proposed
+viewing this problem as there being less competition in the improvement case, while the 
+original solution was developed in the context of lots of competition.  
 
 * Is there a bug in the code?
 * Are there any theoretical results that could determine when the new solution

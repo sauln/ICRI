@@ -1,9 +1,18 @@
 site_name: blinevrp
 pages:
-- Home: index.md
-- About: about/index.md
-- Objects: about/objects.md
-- TODO: todo.md
-- Results: results.md
+    - Home: index.md
+    - About: about/index.md
+    - Objects: about/objects.md
+    - Algorithms: about/Algorithms.md
+    - TODO: todo.md
+    - Results: results.md
+    - LaTest: output.md
 markdown_extensions:
+    - extra
+    - tables
+    - fenced_code
     - pymdownx.tasklist
+    - mdx_math
+theme: readthedocs
+extra_javascript:
+    - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

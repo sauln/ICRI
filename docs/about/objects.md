@@ -55,9 +55,6 @@ Algorithm for building part 1 of the ICRI paper.
 The rollout uses this heuristic algorithm for the `rolling out` aspect of the algorithm.
 This should have a very uniform interface so that switching heuristics is very simple.
 
-(*TODO  Should there be two different cost functions, one for the bestSequence in 
-the roll out, and another for the heursistic?*)
-
 
 ### RollOut
 Algorithm for building part 2 of the ICRI paper. 

@@ -3,7 +3,8 @@ import logging
 import copy
 from abc import ABCMeta, abstractmethod
 
-from .baseobjects import Dispatch, Cost, Heuristic, Utils, Vehicle
+from .baseobjects import Dispatch, dispatch_copy, Cost
+from .baseobjects import Heuristic, Utils, Vehicle, vehicle_copy
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,8 @@ class RollOutBase:
    
     def duplicate_env(self, dispatch, vehicle):
         ''' Copy environment so we can modify dispatch at will for experimentation '''
-        tmp_dispatch = Dispatch(dispatch)
-        tmp_vehicle = Vehicle(vehicle)
+        tmp_dispatch = dispatch_copy(dispatch)
+        tmp_vehicle = vehicle_copy(vehicle)
 
         if tmp_vehicle in tmp_dispatch.vehicles:
             find = tmp_dispatch.vehicles.index(tmp_vehicle)

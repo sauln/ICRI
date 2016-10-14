@@ -44,8 +44,12 @@ class Tuning:
                                   depth=depth, width=width)
       
         counter = Value('i', 0)
-        pool = Pool(initializer=Utils.init, initargs=(counter,))
-        results = pool.map(rollout_partial, lambdas)
+        
+        #pool = Pool(initializer=Utils.init, initargs=(counter,))
+        # results = pool.map(rollout_partial, lambdas)
+
+        Utils.init(counter)        
+        results = [rollout_partial(lam) for lam in lambdas]
 
         return results
 
@@ -97,7 +101,6 @@ def search(feed, trunc=0, count=5, search_type="random_search", width=10, depth=
     LOGGER.debug("Found best {}".format(bestFound))
 
     return bestFound
-
 
 if __name__ == "__main__":
     best = run_search("r101.p")

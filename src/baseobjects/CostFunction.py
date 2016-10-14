@@ -6,8 +6,16 @@ class Cost:
         return (len(vehicles), sum([v.total_dist for v in vehicles]))
 
     @staticmethod
+    def euclidean_cust(c1, c2):
+        return np.sqrt((c1.x - c2.x)**2 + (c1.y - c2.y)**2)
+
+
+    @staticmethod
     def gnnh(delta, vehicle, customer): #s:start, e:customer customers
-        # Infeasible nodes would be filtered before here -
+        # vehicle.travel_time, vehicle.travel_dist, 
+
+        # refactor to not use parameters
+
         nextArrivalTime = vehicle.total_time + vehicle.travel_time(customer)
         earliestService = max(nextArrivalTime, customer.readyTime)
 

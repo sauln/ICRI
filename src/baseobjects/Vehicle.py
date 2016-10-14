@@ -1,25 +1,28 @@
 import numpy as np
-
-from .Customer import Customer
-from .Parameters import Parameters
+from .CostFunction import Cost
 
 class TimeWindows(object):
-    def __init__(self, params):
-        super(TimeWindows, self).__init__(params)
+    def __init__(self, depot, capacity):
+        super(TimeWindows, self).__init__(depot, capacity)
         self.total_time = 0
 
     def isValidTime(self, customer):
         return self.total_time + self.travel_time(customer) <= customer.dueDate
 
     def travel_dist(self, customer):
-        return Parameters().travel_dist(self.last(), customer) 
+        return Cost.euclidean_cust(self.last().location, customer.location)
 
     def travel_time(self, customer):
-        return Parameters().travel_time(self.last(), customer) 
+        return self.travel_dist(customer) 
     
     def canMakeItHomeInTime(self, customer):
+        # import pdb; pdb.set_trace()
+        if(isinstance(customer, Vehicle)):
+            import pdb; pdb.set_trace()
+        if(isinstance(self.depot, Vehicle)):
+            import pdb; pdb.set_trace()
         return self.total_time + self.travel_time(customer) + \
-               Parameters().travel_time(customer, self.depot) <= \
+               Cost.euclidean_cust(customer.location, self.depot.location) <= \
                self.depot.dueDate
         
     def update_time(self, customer):
@@ -27,10 +30,11 @@ class TimeWindows(object):
         servedTime = max(arrivalTime, customer.readyTime)
         self.total_time = servedTime + customer.serviceLen
 
+
 class Capacity(object):
-    def __init__(self, params):
-        super(Capacity, self).__init__(params)
-        self.max_capacity = params.capacity
+    def __init__(self, depot, capacity):
+        super(Capacity, self).__init__(depot, capacity)
+        self.max_capacity = capacity
         self.cur_capacity = 0
 
     def update_capacity(self, customer):
@@ -43,10 +47,10 @@ class Capacity(object):
         return self.max_capacity - self.cur_capacity
 
 class CustomerHistory(object):
-    def __init__(self, params):
+    def __init__(self, depot, capacity):
         super(CustomerHistory, self).__init__()
         self.customer_history = []
-        self.depot = params.depot
+        self.depot = depot
 
     def update_history(self, customer):
         self.customer_history.append(customer)
@@ -57,19 +61,27 @@ class CustomerHistory(object):
     def last(self):
         return self.customer_history[-1]
 
-class Vehicle(TimeWindows, Capacity, CustomerHistory):
-    def __init__(self, depot):
-        super(Vehicle, self).__init__(Parameters())
+    def geographicCenter(self):
+        custs = set(self.customer_history)
+        custs.remove(self.depot)
+        coords = [[c.location.x, c.location.y] for c in custs]
+        center = np.mean(coords, axis=0)
+        return center
 
-        if isinstance(depot, self.__class__):
-            vehicle = depot
-            self.total_dist = vehicle.total_dist
-            self.total_time = vehicle.total_time
-            self.cur_capacity = vehicle.cur_capacity
-            self.customer_history = list(vehicle.customer_history)
-        else:
-            self.update_history(depot)
-            self.total_dist = 0
+def vehicle_copy(vehicle):
+    tmp = Vehicle(vehicle.depot, vehicle.max_capacity)
+    tmp.total_dist = vehicle.total_dist
+    tmp.total_time = vehicle.total_time
+    tmp.cur_capacity = vehicle.cur_capacity
+    tmp.customer_history = list(vehicle.customer_history)
+    return tmp
+
+
+class Vehicle(TimeWindows, Capacity, CustomerHistory):
+    def __init__(self, depot, capacity):
+        super(Vehicle, self).__init__(depot, capacity)            
+        self.update_history(depot)
+        self.total_dist = 0
     
     def isFeasible(self, customer):
         return self.isValidTime(customer) \
@@ -81,13 +93,6 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
         self.update_time(customer)
         self.update_capacity(customer)
         self.update_history(customer)
-
-    def geographicCenter(self):
-        custs = set(self.customer_history)
-        custs.remove(self.depot)
-        coords = [[c.location.x, c.location.y] for c in custs]
-        center = np.mean(coords, axis=0)
-        return center
 
     def __hash__(self):
         return hash((str(self.customer_history), self.total_dist, self.cur_capacity))
@@ -121,4 +126,3 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
                 self.total_time, self.travel_time(item), item.dueDate, \
                 self.max_capacity, item.demand, self.cur_capacity)
             
-

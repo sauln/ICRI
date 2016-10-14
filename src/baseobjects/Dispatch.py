@@ -2,34 +2,38 @@ import numpy as np
 from sortedcontainers import SortedListWithKey
 from operator import itemgetter
 
-from .Vehicle import Vehicle
+from .Vehicle import Vehicle, vehicle_copy
 from .Parameters import Parameters
 from .Customer import Customer
 from .CostFunction import Cost
 
+
+def dispatch_copy(dispatch):
+    ''' copying from other dispatch '''
+    tmp = Dispatch(dispatch.customers)
+    tmp.customers = list(dispatch.customers)
+    tmp.depot = dispatch.depot
+    tmp.visitedCustomers = list(dispatch.visitedCustomers)
+    tmp.vehicles = [vehicle_copy(v) for v in dispatch.vehicles]
+    tmp.delta = dispatch.delta
+    tmp.capacity = dispatch.capacity
+    return tmp
+
+
 class Dispatch():
     def __init__(self, customers, depot=None):
         ''' Dispatch will organize the vehicles and customers'''
-        
         self.max_vehicles = 25
-        if isinstance(customers, self.__class__):
-            ''' copying from other dispatch '''
-            dispatch = customers
-            self.customers = list(dispatch.customers)
-            self.depot = dispatch.depot
-            self.visitedCustomers = list(dispatch.visitedCustomers)
-            self.vehicles = [Vehicle(v) for v in dispatch.vehicles]
-            self.delta = dispatch.delta
-        else:
-            if depot is None:
-                depot = customers[0]
-                customers = customers[1:]
+        if depot is None:
+            depot = customers[0]
+            customers = customers[1:]
 
-            self.customers = list(customers)
-            self.depot = depot
-            self.visitedCustomers = [] 
-            self.vehicles = []
-            self.delta = None
+        self.customers = list(customers)
+        self.depot = depot
+        self.visitedCustomers = [] 
+        self.vehicles = []
+        self.capacity = Parameters().params.capacity
+        self.delta = None
 
     def get_available_vehicles(self, clean_veh=0):
         ''' Return set of vehicles that have not reached the depot 
@@ -70,7 +74,7 @@ class Dispatch():
             vehicle.serve(self.depot)
 
     def new_vehicle(self):
-         return Vehicle(self.depot)
+         return Vehicle(self.depot, self.capacity)
 
     def pretty_print(self):
         vehstr = "\n".join([str(v) for v in self.vehicles])

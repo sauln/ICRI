@@ -28,6 +28,11 @@ class Validator():
                 vehicle.total_time, vehicle.depot.dueDate)
 
     def serviceTimesWithinWindow(self):
+        ''' Rebuilt the route and assert it works the whole way''' 
+        
+         
+
+
         success = 1
         for vehicle in self.vehicles:
             total = 0
@@ -38,10 +43,9 @@ class Validator():
                            (cs[i].location.y - cs[i+1].location.y)**2)
                 srv = max(total + td, cs[i+1].readyTime)
                 total = srv + cs[i+1].serviceLen
+        
+
                 assert 1, "Unsure what to assert here"
-
-
-
 
     def capacityRespected(self):
         for vehicle in self.vehicles:
@@ -49,9 +53,9 @@ class Validator():
             assert s <= self.maxCapacity
         print("Each vehicle has total capacity less than {}".format(self.maxCapacity))
 
-
     def validate(self):
         self.capacityRespected()
         self.serviceTimesWithinWindow()
         self.vehicles_return_home_in_time()
         self.allCustomersAreUsedOnlyOnce()
+

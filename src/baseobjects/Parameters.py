@@ -45,5 +45,3 @@ class Parameters:
     def __setattr(self, name):
         return setattr(self.instance, name)
     
-
-

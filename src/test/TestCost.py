@@ -3,18 +3,7 @@ from random import randint
 import numpy as np
 
 from src import Cost, Vehicle, Customer, Point
-
-
-
-class CustomerStub():
-    def __init__(self, readyTime, dueDate, demand):
-        self.readyTime = readyTime
-        self.dueDate = dueDate
-        self.demand = demand 
-
-class VehicleStub():
-    def __init__(self, total_dist):
-        self.total_dist = total_dist
+import Stub
 
 class TestCost(unittest.TestCase):
     def setUp(self):
@@ -22,7 +11,7 @@ class TestCost(unittest.TestCase):
         self.vehicle = Vehicle(self.depot, 100)
 
     def test_cost_of_vehicles(self):
-        vehicles = [VehicleStub(10), VehicleStub(15), VehicleStub(20)]
+        vehicles = [Stub.Vehicle(10), Stub.Vehicle(15), Stub.Vehicle(20)]
         cost = Cost.of_vehicles(vehicles)
         self.assertEqual(cost, (3, 45))
     

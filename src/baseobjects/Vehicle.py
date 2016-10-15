@@ -16,11 +16,6 @@ class TimeWindows(object):
         return self.travel_dist(customer) 
     
     def canMakeItHomeInTime(self, customer):
-        # import pdb; pdb.set_trace()
-        if(isinstance(customer, Vehicle)):
-            import pdb; pdb.set_trace()
-        if(isinstance(self.depot, Vehicle)):
-            import pdb; pdb.set_trace()
         return self.total_time + self.travel_time(customer) + \
                Cost.euclidean_cust(customer.location, self.depot.location) <= \
                self.depot.dueDate

@@ -13,9 +13,6 @@ class Cost:
     @staticmethod
     def gnnh(delta, vehicle, customer): #s:start, e:customer customers
         # vehicle.travel_time, vehicle.travel_dist, 
-
-        # refactor to not use parameters
-
         nextArrivalTime = vehicle.total_time + vehicle.travel_time(customer)
         earliestService = max(nextArrivalTime, customer.readyTime)
 
@@ -25,7 +22,6 @@ class Cost:
         timeSlack = customer.dueDate - (vehicle.total_time + vehicle.travel_time(customer))
         capSlack = vehicle.remaining_slack() - customer.demand # slack
         c = np.array( [isDepot, travel_dist, remaining, timeSlack, capSlack] )
-        
         cost = np.dot(delta, c)    
         return cost
 

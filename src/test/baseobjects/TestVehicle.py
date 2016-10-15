@@ -1,81 +1,67 @@
 import unittest
 import pickle
 
-from src.main.BaseObjects.SolomonProblem import SolomonProblem
-from src.main.BaseObjects.Customer import Customer
-from src.main.BaseObjects.Vehicle import Vehicle
-from src.main.BaseObjects.Customer import Customer
-from src.main.BaseObjects.Parameters import Parameters
-
+from src import Cost, Vehicle, Customer, Point, Parameters, SolomonProblem
+import src.test.Stub
 
 class TestVehicle(unittest.TestCase):
     def setUp(self):
-        self.depot   = Customer(0, 0,  0,  0, 0, 1000, 0)
-        self.earlyC  = Customer(1, 0,  0,  5, 0, 10, 3)
-        self.lateC   = Customer(2, 5,  5, 35, 99, 200, 4)
-        self.middleC = Customer(3, 10,10, 60, 45,75, 9)
-        customers = [self.depot, self.earlyC, self.lateC, self.middleC]
-        param =  SolomonProblem("test", 5, 1000, customers)
-
-        self.sp = Parameters()
-        self.sp.build(param, 10, 10)
+        self.depot   = Customer(0, Point(0, 0),  0, 0, 1000, 0)
+        self.earlyC  = Customer(1, Point(0, 0),  5, 0, 10, 3)
+        self.middleC = Customer(3, Point(10,10), 60, 45,75, 9)
+        self.lateC   = Customer(2, Point(5, 5),  35, 99, 200, 4)
+        self.customers = [self.depot, self.earlyC, self.lateC, self.middleC]
+    
+    def testNoCapacityFirstCustomer(self):
+        for c in self.customers:
+            r = Vehicle(c, 100)
+            self.assertEqual(r.cur_capacity, 0)
 
     def testNotFull(self):
-        vehicle = Vehicle(self.middleC)
-        t = vehicle.isNotFull(self.lateC)
-        self.assertTrue(t, "There is plenty of room left")
-
-        vehicle.maxCapacity = 25
-        f = vehicle.isNotFull(self.lateC)
-        self.assertFalse(f, "There is not enough room left")
+        vehicle = Vehicle(self.middleC, 100)
+        self.assertTrue(vehicle.is_not_full(self.lateC), "There is plenty of room left")
+        vehicle.max_capacity = 3
+        self.assertFalse(vehicle.is_not_full(self.lateC), "There is enough room left")
+        
+    def testEqualCapacityIsOkay(self):
+        vehicle = Vehicle(self.middleC, 100)
+        vehicle.max_capacity = self.lateC.demand 
+        self.assertTrue(vehicle.is_not_full(self.lateC), \
+            "There is equal demand and not valid")
 
     def testTimeAfter(self):
-        r = Vehicle(self.middleC)
-        t = r.isValidTime(self.lateC)
+        r = Vehicle(self.middleC, 100)
+        t = r.is_valid_time(self.lateC)
         self.assertTrue(t, "Later time is valid after an early time")
         
-        r.append(self.lateC)
-        f = r.isValidTime(self.middleC)
+        r.serve(self.lateC)
+        f = r.is_valid_time(self.middleC)
         self.assertFalse(f, "Early time is not valid after a late time")
 
     def testIsFeasible(self):
-        r = Vehicle(self.middleC) 
+        r = Vehicle(self.middleC, 100) 
         self.assertTrue(r.isFeasible(self.lateC))
         self.assertFalse(r.isFeasible(self.earlyC))
 
     def testAppendIncreasesCapacity(self):
-        r = Vehicle(self.earlyC)
-        self.assertEqual(r.curCapacity, self.earlyC.demand)
-
-        r = Vehicle(self.earlyC)
-        r.append(self.middleC)
-        self.assertEqual(r.curCapacity, \
-            self.middleC.demand + self.earlyC.demand)
-
-        r.append(self.lateC)
-        self.assertEqual(r.curCapacity, \
-            self.middleC.demand + self.lateC.demand + self.earlyC.demand)
+        r = Vehicle(self.depot, 100)
+        self.assertEqual(r.cur_capacity, 0, "doesn't start at zero")
+        r.serve(self.middleC)
+        self.assertEqual(r.cur_capacity, self.middleC.demand)
+        r.serve(self.lateC)
+        self.assertEqual(r.cur_capacity, self.middleC.demand + self.lateC.demand)
   
     def testAppendOnlyIfRoom(self):
-        self.sp.params.capacity = 25
-        r = Vehicle(self.earlyC)
-        self.assertRaises(AssertionError, r.append, self.lateC)
-        self.assertRaises(AssertionError, Vehicle, self.lateC, self.middleC) 
+        r = Vehicle(self.earlyC, 25)
+        self.assertRaises(AssertionError, r.serve, self.lateC)
 
     def testConstructorAddsAllElements(self):
-        r = Vehicle(self.earlyC, self.middleC, self.lateC)
+        r = Vehicle(self.depot, 100)
+        r.serve(self.middleC)
+        r.serve(self.lateC)
         self.assertEqual(len(r), 3)
-        r = Vehicle(self.earlyC)
+        r = Vehicle(self.earlyC, 100)
         self.assertEqual(len(r), 1)
-
-    @unittest.skip("Instead asserting that __setitem__ is never called")
-    def testFixCapacityOnReplace(self):
-        r = Vehicle(self.earlyC, self.middleC)
-        self.assertEqual(r.curCapacity, self.earlyC.demand + self.middleC.demand)
-        r[0] = self.lateC
-        self.assertEqual(r.curCapacity, self.lateC.demand + self.middleC.demand)
-        r[1] = self.earlyC
-        self.assertEqual(r.curCapacity, self.lateC.demand + self.earlyC.demand)
 
 if __name__ == "__main__":
     unittest.main()

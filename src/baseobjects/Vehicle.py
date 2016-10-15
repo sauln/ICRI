@@ -6,7 +6,7 @@ class TimeWindows(object):
         super(TimeWindows, self).__init__(depot, capacity)
         self.total_time = 0
 
-    def isValidTime(self, customer):
+    def is_valid_time(self, customer):
         return self.total_time + self.travel_time(customer) <= customer.dueDate
 
     def travel_dist(self, customer):
@@ -50,6 +50,9 @@ class CustomerHistory(object):
     def update_history(self, customer):
         self.customer_history.append(customer)
     
+    def __len__(self):
+        return len(self.customer_history)
+
     def served_customers(self):
         return len([c for c in self.customer_history if c.custNo is not 0])
 
@@ -79,11 +82,13 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
         self.total_dist = 0
     
     def isFeasible(self, customer):
-        return self.isValidTime(customer) \
+        return self.is_valid_time(customer) \
                and self.is_not_full(customer) \
                and self.canMakeItHomeInTime(customer)
     
     def serve(self, customer):
+        assert self.isFeasible(customer), self.feasibilityStr(customer) 
+
         self.total_dist += self.travel_dist(customer)
         self.update_time(customer)
         self.update_capacity(customer)
@@ -110,7 +115,7 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def feasibilityStr(self, item):
         return "isFeasible:{} ".format(self.isFeasible(item)) +\
                "is_not_full:{} ".format(self.is_not_full(item)) +\
-               "isValidTime:{} ".format(self.isValidTime(item)) +\
+               "is_valid_time:{} ".format(self.is_valid_time(item)) +\
                "canMakeItHome:{} ".format(self.canMakeItHomeInTime(item))
 
     def debugStr(self, item):

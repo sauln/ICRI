@@ -19,7 +19,7 @@ def run_rollout(ps):
     dispatch.set_delta(delta)
 
     solution = RollOut().run(dispatch, 5, 5)
-
+    Validator(solution, ps).validate()
     save_sp(solution, "rollout_"+ps)
 
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))

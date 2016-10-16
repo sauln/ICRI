@@ -59,8 +59,8 @@ class Dispatch():
     def add_customer(self, vehicle, customer):
         if vehicle not in self.vehicles:
             self.vehicles.append(vehicle)
+        
         vehicle.serve(customer)
-
         self.customers.remove(customer)
     
     def set_delta(self, delta):
@@ -68,7 +68,7 @@ class Dispatch():
 
     def finish(self):
         self.vehicles = [v for v in self.vehicles \
-            if v.served_customers() > 1]
+            if v.served_customers() > 0]
 
         for vehicle in self.vehicles:
             vehicle.serve(self.depot)

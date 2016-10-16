@@ -20,6 +20,7 @@ def run_heuristic(ps):
     dispatch.set_delta(delta)
     
     solution = Heuristic().run(dispatch)
+    Validator(solution, ps).validate()
     
     save_sp(solution, "heuristic/"+ps)
 

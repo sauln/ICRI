@@ -19,7 +19,7 @@ class Heuristic_wOnDeck:
 
             veh, cust = nexts
             dispatch.add_customer(veh, cust)
-           
+
         dispatch.finish()
         return dispatch
 

@@ -13,7 +13,7 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 @Utils.timeit
 def run_heuristic(ps):
-    LOGGER.info("Run on {}".format(f))
+    LOGGER.info("Run on {}".format(ps))
     sp = Utils.open_sp(ps)
     Parameters().build(sp)
 
@@ -32,7 +32,7 @@ def run_heuristic(ps):
 
 @Utils.timeit
 def run_rollout(ps):
-    LOGGER.info("Run on {}".format(f))
+    LOGGER.info("Run on {}".format(ps))
     sp = Utils.open_sp(ps)
     Parameters().build(sp)
 
@@ -42,7 +42,7 @@ def run_rollout(ps):
 
     solution = RollOut().run(dispatch, 5, 5)
     Validator(solution, ps).validate()
-    Utils.save_sp(solution, "rollout_"+ps)
+    Utils.save_sp(solution, "rollout/"+ps)
 
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for rollout: {}".format(solution.pretty_print()))
@@ -58,16 +58,24 @@ def run_search(f):
     LOGGER.info("Solution to {} is {}".format(f, \
         (solution.num_vehicles, solution.total_distance)))
 
-outfiles = setup()
-for key in ["heuristic", "rollout", "search"]:
-    switch = {"search":run_search, "rollout":run_rollout, "heuristic":run_heuristic}
-    t, src = switch[key], key+"/"
+switch = {"search":run_search, "rollout":run_rollout, "heuristic":run_heuristic}
 
-    for f in outfiles:
-        t(f)
+def main(argv):
+    outfiles = setup()
 
-    summarize_on_all(outfiles, prefix=src)
+    for key in argv:
+        demo, src = switch[key], key+"/"
 
-#pool = Pool()
-#pool.map(run_on_file, outfiles)
+        print(demo, src)
+        for filename in outfiles:
+            print(filename)
+            demo(filename)
+    
+        #pool = Pool()
+        #pool.map(run_on_file, outfiles)
+
+        summarize_on_all(outfiles, prefix=src)
+    
+if __name__ == "__main__":
+    main(sys.argv[1:])
 

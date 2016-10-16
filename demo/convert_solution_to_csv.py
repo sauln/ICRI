@@ -11,6 +11,7 @@ def visual_confirmation(f, s):
     print(s.pretty_print())
 
 
+
 if __name__ == "__main__":
     root = "data/solutions/search/"
     files, _ = util.load_files(root)

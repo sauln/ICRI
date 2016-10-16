@@ -80,6 +80,8 @@ class RollOutWOnDeck(RollOutBase):
 
             dispatch.add_customer(best.vehicle, best.customer)
 
+            
+
         return dispatch
 
 class RollOutTypical(RollOutBase):

@@ -20,8 +20,8 @@ LOGGER = logging.getLogger(__name__)
 
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
-    dist_f = lambda x: np.linalg.norm(np.asarray(vehicle.geographicCenter()) \
-                                   - np.asarray(x.geographicCenter()))
+    dist_f = lambda x: np.linalg.norm(np.asarray(vehicle.geographic_center()) \
+                                   - np.asarray(x.geographic_center()))
     dist = sortedcontainers.SortedListWithKey(key=dist_f)
     dist.update(dispatch.vehicles)
 

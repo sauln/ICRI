@@ -14,9 +14,9 @@ class Validator():
         self.maxCapacity = sp.capacity
  
     def allCustomersAreUsed(self):
-        for c in self.customers:
-            assert c.custNo in self.used_customers, "{} not in {}".format(\
-                c, self.used_customers)
+        unused_customers = [c for c in self.customers if c.custNo not in self.used_customers]
+        assert not unused_customers, "There are unused customers: {}".format(\
+            unused_customers)
 
     def allCustomersAreUsedOnlyOnce(self):
         used_customers = list(filter((0).__ne__, self.used_customers))
@@ -29,10 +29,6 @@ class Validator():
 
     def serviceTimesWithinWindow(self):
         ''' Rebuilt the route and assert it works the whole way''' 
-        
-         
-
-
         success = 1
         for vehicle in self.vehicles:
             total = 0
@@ -43,8 +39,6 @@ class Validator():
                            (cs[i].location.y - cs[i+1].location.y)**2)
                 srv = max(total + td, cs[i+1].readyTime)
                 total = srv + cs[i+1].serviceLen
-        
-
                 assert 1, "Unsure what to assert here"
 
     def capacityRespected(self):
@@ -54,8 +48,9 @@ class Validator():
         print("Each vehicle has total capacity less than {}".format(self.maxCapacity))
 
     def validate(self):
+        self.allCustomersAreUsed()
+        self.allCustomersAreUsedOnlyOnce()
         self.capacityRespected()
         self.serviceTimesWithinWindow()
         self.vehicles_return_home_in_time()
-        self.allCustomersAreUsedOnlyOnce()
-
+        print("Validation passed")

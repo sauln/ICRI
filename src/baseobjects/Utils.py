@@ -1,6 +1,22 @@
 import pickle
+import time
+import logging 
+
+LOGGER = logging.getLogger(__name__)
+
+''' timing decorator '''
+def timeit(f):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = f(*args, **kw)
+        te = time.time()
+        LOGGER.info('func:%r args:[%r, %r] took: %2.4f sec' % \
+            (f.__name__, args, kw, te-ts))
+        return result
+    return timed
 
 
+''' Counter for logging grid search information that is multiprocessing safe '''
 counter = None
 def increment():
     global counter
@@ -16,10 +32,7 @@ def init(args):
     global counter
     counter = args
 
-
-
-
-''' These 3 functions can be used elsewhere '''
+''' Slightly generalized IO functions '''
 def open_sp(fname, root = "data/interim/"):
     input_filepath = root + fname
     with open(input_filepath, "rb") as f:

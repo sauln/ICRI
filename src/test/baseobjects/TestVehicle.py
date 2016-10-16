@@ -11,6 +11,30 @@ class TestVehicle(unittest.TestCase):
         self.middleC = Customer(3, Point(10,10), 60, 45,75, 9)
         self.lateC   = Customer(2, Point(5, 5),  35, 99, 200, 4)
         self.customers = [self.depot, self.earlyC, self.lateC, self.middleC]
+
+    def testTravelTime(self):
+        r = Vehicle(self.depot, 100)
+        
+        xyd = [ ([0,0], 0), ([1,0], 1), ([0,1], 1), ([3,4], 5) ]
+        for xy, d in xyd:
+            c = Customer(1, Point(xy[0], xy[1]),  5, 0, 10, 3) 
+            self.assertEqual(r.travel_time(c), d)
+    
+    def testUpdateTime(self):
+        r = Vehicle(self.depot, 100)
+        self.middleC = Customer(3, Point(10,10), 60, 45,75, 9)
+        r.update_time(self.middleC)
+        
+        
+
+
+class TestVehicleFeasibility(unittest.TestCase):
+    def setUp(self):
+        self.depot   = Customer(0, Point(0, 0),  0, 0, 1000, 0)
+        self.earlyC  = Customer(1, Point(0, 0),  5, 0, 10, 3)
+        self.middleC = Customer(3, Point(10,10), 60, 45,75, 9)
+        self.lateC   = Customer(2, Point(5, 5),  35, 99, 200, 4)
+        self.customers = [self.depot, self.earlyC, self.lateC, self.middleC]
     
     def testNoCapacityFirstCustomer(self):
         for c in self.customers:

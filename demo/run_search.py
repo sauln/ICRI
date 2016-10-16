@@ -14,20 +14,16 @@ logging.basicConfig(stream=sys.stderr,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
                     level=logging.INFO)
-    
+@Utils.timeit
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))
     random.seed(0)
-    
-    start = time.time()
     solution = search(f, trunc=0, count=10, width=10, depth=10)
-    Validator(solution.solution).validate()
-    end = time.time()
+    Validator(solution.solution, f).validate()
     
     Utils.save_sp(solution, "search/" +f)
     LOGGER.info("Solution to {} is {}".format(f, \
         (solution.num_vehicles, solution.total_distance)))
-    LOGGER.info("Time elapsed for {}: {}".format(f, end-start))
 
 outfiles = setup()
 

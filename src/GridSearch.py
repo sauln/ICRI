@@ -8,8 +8,8 @@ import time
 from multiprocessing import Pool, Value
 from functools import partial
 
-
-from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils, Cost
+from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils
+from .baseobjects import Cost, Validator
 from .RollOut import RollOut
 
 LOGGER = logging.getLogger(__name__)
@@ -20,31 +20,30 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def rollout(self, lam, dispatch, count, trunc, depth, width):
+    @Utils.timeit
+    def rollout(self, lam, filename, dispatch, count, trunc, depth, width):
         Utils.increment()
         c = Utils.value()
-        LOGGER.info("{}/{} run grid search on {}".format(c, count, lam))
-        start = time.time()
+        
         dispatch.set_delta(lam)
         solution = RollOut().run(dispatch, depth, width)
         num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
         res = Solution(num_veh, t_dist, lam, solution)  
-        end = time.time()
-        LOGGER.info("{}/{}: ({}, {}) grid search took {} seconds".format(\
-            c, count, num_veh, t_dist,  end-start))
+        Validator(res.solution, filename).validate()
+       
+        LOGGER.info("{}/{}: ({}, {}) grid search on {}".format(\
+            c, count, num_veh, t_dist, lam))
         return res
 
-    def find_costs(self, dispatch, count=5, trunc=0, depth=10, width=10):
+    def find_costs(self, filename, dispatch, count=5, trunc=0, depth=10, width=10):
         results = []
         lambdas = self.generator(count)
         
-        rollout_partial = partial(self.rollout, 
+        rollout_partial = partial(self.rollout, filename=filename,
                                   dispatch=dispatch, 
-                                  count=count, trunc=trunc, 
-                                  depth=depth, width=width)
-      
+                                  count=count,  trunc=trunc, 
+                                  depth=depth,  width=width)
         counter = Value('i', 0)
-        
         #pool = Pool(initializer=Utils.init, initargs=(counter,))
         # results = pool.map(rollout_partial, lambdas)
 
@@ -94,7 +93,7 @@ def search(feed, trunc=0, count=5, search_type="random_search", width=10, depth=
         dispatch = feed
 
     costs = switch[search_type]().find_costs(\
-        dispatch, trunc=trunc, count=count, depth=depth, width=width)
+        feed, dispatch, trunc=trunc, count=count, depth=depth, width=width)
     
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)

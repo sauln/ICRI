@@ -21,10 +21,9 @@ class TimeWindows(object):
                self.depot.dueDate
         
     def update_time(self, customer):
-        arrivalTime = self.total_time + self.travel_time(customer)
-        servedTime = max(arrivalTime, customer.readyTime)
-        self.total_time = servedTime + customer.serviceLen
-
+        arrival_time = self.total_time + self.travel_time(customer)
+        served_time = max(arrival_time, customer.readyTime)
+        self.total_time = served_time + customer.serviceLen
 
 class Capacity(object):
     def __init__(self, depot, capacity):
@@ -36,7 +35,7 @@ class Capacity(object):
         self.cur_capacity += customer.demand
 
     def is_not_full(self, customer):
-        return self.max_capacity >= customer.demand + self.cur_capacity
+        return self.remaining_slack() >= customer.demand
     
     def remaining_slack(self):
         return self.max_capacity - self.cur_capacity
@@ -59,7 +58,7 @@ class CustomerHistory(object):
     def last(self):
         return self.customer_history[-1]
 
-    def geographicCenter(self):
+    def geographic_center(self):
         custs = set(self.customer_history)
         custs.remove(self.depot)
         coords = [[c.location.x, c.location.y] for c in custs]
@@ -73,7 +72,6 @@ def vehicle_copy(vehicle):
     tmp.cur_capacity = vehicle.cur_capacity
     tmp.customer_history = list(vehicle.customer_history)
     return tmp
-
 
 class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def __init__(self, depot, capacity):

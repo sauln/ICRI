@@ -1,12 +1,14 @@
 
 import unittest
 
-from src.test.Algorithms.TestCostFunction import TestCostFunction
-from src.test.Algorithms.TestNextFinder import TestNextFinder
-from src.test.Algorithms.TestImprovement import TestImprovement
-from src.test.Algorithms.TestHeuristic import TestHeuristic
-from src.test.Algorithms.TestRollOut import TestRollOut
-from src.test.Algorithms.TestValidator import TestValidator
+import src.test.Stub
+
+# from src.test.TestCostFunction import TestCostFunction
+# from src.test.TestNextFinder import TestNextFinder
+# from src.test.TestImprovement import TestImprovement
+# from src.test.TestHeuristic import TestHeuristic
+# from src.test.TestRollOut import TestRollOut
+# from src.test.TestValidator import TestValidator
 
 ''' Stub for new tests
 import unittest

@@ -63,18 +63,22 @@ switch = {"search":run_search, "rollout":run_rollout, "heuristic":run_heuristic}
 def main(argv):
     outfiles = setup()
 
-    for key in argv:
-        demo, src = switch[key], key+"/"
+    if(argv[0] == "summarize"):
+        argv.pop(0)
+        print(argv)
+        for key in argv:
+            summarize_on_all(outfiles, prefix=key+"/")
+    else:
+        for key in argv:
+            demo, src = switch[key], key+"/"
 
-        print(demo, src)
-        for filename in outfiles:
-            print(filename)
-            demo(filename)
-    
-        #pool = Pool()
-        #pool.map(run_on_file, outfiles)
+            for filename in outfiles:
+                demo(filename)
+        
+            #pool = Pool()
+            #pool.map(demo, outfiles)
 
-        summarize_on_all(outfiles, prefix=src)
+            summarize_on_all(outfiles, prefix=src)
     
 if __name__ == "__main__":
     main(sys.argv[1:])

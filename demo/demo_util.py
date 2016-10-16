@@ -46,27 +46,38 @@ def load_solution(filename, root):
 
 
 def load_test_result(filename, root):
-    solution = load_solution(filename, root)
     
-    name = filename
+    try:
+        print(filename)
+        solution = load_solution(filename, root)
     
-    if isinstance(solution, Dispatch):
-        num_veh, dist = Cost.of_vehicles(solution.vehicles)
-        return (name, num_veh, dist)
-    elif isinstance(solution, Solution):
-        new_veh, new_dist = solution.num_vehicles, solution.total_distance
+        name = filename
+        
+        if isinstance(solution, Dispatch):
+            num_veh, dist = Cost.of_vehicles(solution.vehicles)
+            return (name, num_veh, dist)
+        elif isinstance(solution, Solution):
+            new_veh, new_dist = solution.num_vehicles, solution.total_distance
 
-        if solution.pre_solution is not None:
-            old_veh, old_dist = Cost.of_vehicles(solution.pre_solution.vehicles)
-            return (name, new_veh, new_dist, old_veh, old_dist)
-        else:
-            return (name, new_veh, new_dist) 
+            if solution.pre_solution is not None:
+                old_veh, old_dist = Cost.of_vehicles(solution.pre_solution.vehicles)
+                return (name, new_veh, new_dist, old_veh, old_dist)
+            else:
+                return (name, new_veh, new_dist) 
 
+    except:
+        return 0
 
 def summarize_on_all(files, prefix=''):
     root = "data/solutions/"
    
-    results = [load_test_result(prefix+f, root) for f in files] 
+     
+    loaded_results = [load_test_result(prefix+f, root) for f in files] 
+    print(loaded_results)
+    results = [res for res in loaded_results if res is not 0]
+    if(len(results) is not len(loaded_results)):
+        LOGGER.info("Some files not loaded properly. Summarizing incomplete fileset")
+   
     problemdict = group_results(results, prefix)
 
     for key, value in problemdict.items():

@@ -80,8 +80,6 @@ class RollOutWOnDeck(RollOutBase):
 
             dispatch.add_customer(best.vehicle, best.customer)
 
-            
-
         return dispatch
 
 class RollOutTypical(RollOutBase):
@@ -101,8 +99,6 @@ class RollOutTypical(RollOutBase):
                     cost, customer, vehicle))
                 if(cost < best.cost):
                     best = Best(cost, customer, vehicle, tmp_solution)
-
-            # need to add the vehicle even if 
 
             if(best.vehicle is None or best.customer is None):
                 v = dispatch.new_vehicle()
@@ -136,12 +132,8 @@ class RollOutLikeHeuristic(RollOutBase):
 
         return dispatch
 
-
-#RollOutTypical
-#RollOutWOnDeck
 class RollOut(RollOutWOnDeck):
     pass
-       
 
 if __name__ == "__main__":
     run_rollout("r101.p")

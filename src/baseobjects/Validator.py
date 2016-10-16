@@ -52,4 +52,3 @@ class Validator():
         self.capacityRespected()
         self.serviceTimesWithinWindow()
         self.vehicles_return_home_in_time()
-        print("Validation passed")

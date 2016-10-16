@@ -14,6 +14,7 @@ logging.basicConfig(stream=sys.stderr,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
                     level=logging.INFO)
+
 @Utils.timeit
 def run_on_file(f):
     LOGGER.info("Run on {}".format(f))

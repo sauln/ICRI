@@ -1,4 +1,6 @@
 """ Base for H_g  """
+import copy
+
 from .Dispatch import Dispatch
 from .Parameters import Parameters
 from .Vehicle import Vehicle
@@ -6,6 +8,7 @@ from .CostFunction import Cost
 
 class Heuristic_wOnDeck:
     def run(self, dispatch, width=10, depth=10):
+        dispatch = copy.deepcopy(dispatch)
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles(1)
             top_customers = dispatch.get_feasible_next_customers(vehicles, width) 

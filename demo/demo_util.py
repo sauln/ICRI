@@ -24,6 +24,8 @@ def setup():
     data_root = "data/raw"
     files, outfiles = load_files(data_root)
     build_all(data_root, files, outfiles)
+
+    outfiles = [o for o in outfiles if "r20" in o]
     return sorted(outfiles)
 
 ''' This are for summarization and display '''
@@ -44,13 +46,9 @@ def load_solution(filename, root):
         solution = pickle.load(f)
     return solution 
 
-
 def load_test_result(filename, root):
-    
     try:
-        print(filename)
         solution = load_solution(filename, root)
-    
         name = filename
         
         if isinstance(solution, Dispatch):
@@ -64,16 +62,13 @@ def load_test_result(filename, root):
                 return (name, new_veh, new_dist, old_veh, old_dist)
             else:
                 return (name, new_veh, new_dist) 
-
     except:
         return 0
 
 def summarize_on_all(files, prefix=''):
     root = "data/solutions/"
-   
      
     loaded_results = [load_test_result(prefix+f, root) for f in files] 
-    print(loaded_results)
     results = [res for res in loaded_results if res is not 0]
     if(len(results) is not len(loaded_results)):
         LOGGER.info("Some files not loaded properly. Summarizing incomplete fileset")

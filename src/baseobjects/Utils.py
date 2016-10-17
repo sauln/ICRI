@@ -15,7 +15,6 @@ def timeit(f):
         return result
     return timed
 
-
 ''' Counter for logging grid search information that is multiprocessing safe '''
 counter = None
 def increment():

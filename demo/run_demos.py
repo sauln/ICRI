@@ -33,8 +33,8 @@ def write_line(search_type, solutions, filename):
             print("EQUAL:{}".format(solution.params))
             
         # why does solution.params != solution.solution.delta
-        lines.append([search_type, filename, solution.num_vehicles, solution.total_distance] \
-            + list(solution.params))
+        lines.append([search_type, filename, solution.num_vehicles, \
+            solution.total_distance] + list(solution.params))
     return lines
 
 def run_single(algo_type, filename):
@@ -64,7 +64,7 @@ def run_search(algo_type, filename):
     best_solution, all_solutions = search(algo_type, filename, trunc=0, count=10, \
                                           width=10, depth=10)
     
-    Utils.save_sp(best_solution, algo_type.__name__.lower()+"/" +filename)
+    Utils.save_sp(best_solution, "search/" +algo_type.__name__.lower()+ "_" +filename)
     LOGGER.info("Solution to {} is {}".format(filename, \
         (best_solution.num_vehicles, best_solution.total_distance)))
 
@@ -76,16 +76,20 @@ def main(argv):
     if argv[0] == "summarize":
         argv.pop(0)
         for key in argv:
-            DUtil.summarize_on_all(outfiles, prefix=key+"/")
+            
+            
+            DUtil.summarize_on_all(outfiles, prefix=key)
     else:
         if argv[0] == "search":
             argv.pop(0)
             run_type = run_search
+            src_lambda = lambda key: "search/" + key + "_"
         else:
             run_type = run_single
+            src_lambda = lambda key: key + "/"
         
         for key in argv:
-            algo, src = switch_algo[key], key + "/" 
+            algo, src= switch_algo[key], src_lambda(key)
             results = [run_type(algo, filename) for filename in outfiles]            
             
             write_solution(key, results)

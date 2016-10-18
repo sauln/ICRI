@@ -25,7 +25,7 @@ def setup():
     files, outfiles = load_files(data_root)
     build_all(data_root, files, outfiles)
 
-    outfiles = [o for o in outfiles if "r20" in o]
+    #outfiles = [o for o in outfiles if "r20" in o]
     return sorted(outfiles)
 
 ''' This are for summarization and display '''
@@ -67,7 +67,7 @@ def load_test_result(filename, root):
 
 def summarize_on_all(files, prefix=''):
     root = "data/solutions/"
-     
+    
     loaded_results = [load_test_result(prefix+f, root) for f in files] 
     results = [res for res in loaded_results if res is not 0]
     if(len(results) is not len(loaded_results)):

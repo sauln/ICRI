@@ -2,12 +2,22 @@ import os
 import pickle
 import logging 
 from collections import defaultdict
+import csv
 
 import numpy as np
 
 from src import DataBuilder, Cost, Dispatch, Solution
 
 LOGGER = logging.getLogger(__name__)
+
+def write_csv(labels, data_list, filename):
+    with open(filename, 'w', newline='') as f:
+        solution_writer = csv.writer(f)
+        solution_writer.writerow(labels)
+        
+        for line in data_list:
+            solution_writer.writerow(line)
+
 
 def build_all(data_root, files, outfiles):
     for f, of in zip(files, outfiles):

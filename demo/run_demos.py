@@ -5,8 +5,6 @@ import random
 from multiprocessing import Pool
 import demo_util as DUtil
 
-import csv
-
 from src import Heuristic, RollOut, search, Improvement, Dispatch, Cost 
 from src.baseobjects import Utils, Validator, Parameters, Solution
 
@@ -16,7 +14,14 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
 
 def write_solution(search_type, solutions):
+    filename = "data/" + search_type + "_trial.csv"
+    sol_lines = [write_line(search_type, sol, fil) for sol, fil in solutions]
+    lines = [line for solution in sol_lines for line in solution]
     labels = ["search_type", "filename", "num_veh", "dist", "d0", "d1", "d2", "d3", "d4"]
+
+    DUtil.write_csv(labels, lines, filename)
+
+    '''
     with open("data/"+search_type+"_trial.csv", 'w', newline='') as f:
         solution_writer = csv.writer(f)
         solution_writer.writerow(labels)
@@ -25,14 +30,11 @@ def write_solution(search_type, solutions):
         for lines in sol_lines:
             for line in lines:
                 solution_writer.writerow(line)
+    '''
 
 def write_line(search_type, solutions, filename):
     lines = []
     for solution in solutions:
-        if(solution.solution.delta is solution.params):
-            print("EQUAL:{}".format(solution.params))
-            
-        # why does solution.params != solution.solution.delta
         lines.append([search_type, filename, solution.num_vehicles, \
             solution.total_distance] + list(solution.params))
     return lines
@@ -76,8 +78,6 @@ def main(argv):
     if argv[0] == "summarize":
         argv.pop(0)
         for key in argv:
-            
-            
             DUtil.summarize_on_all(outfiles, prefix=key)
     else:
         if argv[0] == "search":

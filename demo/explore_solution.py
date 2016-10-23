@@ -29,7 +29,3 @@ print(len(solution.vehicles))
 print(num_cs)
 print(cs)
 
-# missing 46, 47, 48, 49, 51
-
-
-

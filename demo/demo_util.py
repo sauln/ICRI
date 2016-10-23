@@ -4,9 +4,10 @@ import logging
 from collections import defaultdict
 import csv
 
+import pandas as pd
 import numpy as np
 
-from src import DataBuilder, Cost, Dispatch, Solution
+from src import DataBuilder, Cost, Dispatch, Solution, Utils
 
 LOGGER = logging.getLogger(__name__)
 
@@ -89,3 +90,66 @@ def summarize_on_all(files, prefix=''):
         LOGGER.info("Results of all {} problems:".format(key))
         sums = np.mean(np.array([x[1:] for x in value]), axis=0)
         LOGGER.info("({})".format(sums))
+
+
+def make_line(problem):
+    basic_props = (problem.problemName, problem.numVehicles, \
+                   problem.capacity, len(problem.customers))
+    
+    total_demand = sum(c.demand for c in problem.customers)
+    min_vehicles_capacity = total_demand / problem.capacity
+    demand_props = (total_demand, min_vehicles_capacity)
+  
+    distance_props = ["minimum pairwise distance", "maximum pairwise distnace"]
+    distance_props += ["Sum closest neighbor", "Sum farthest neighbor"]
+    distance_props += ["Total complete graph", "Total distance from depot"]
+    timewindow_props = ["Total service time"]
+
+    return basic_props + demand_props
+
+def summarize_problems():
+    _, outfiles = load_files("data/raw")
+    problems = [Utils.open_sp(filename) for filename in outfiles]
+
+    labels = ["Problem name", "Number of vehicles", "Max capacity", "Customers"]
+    labels += ["total demand", "Minimum vehicles to satisfy capacity"]
+    lines = [make_line(p) for p in problems]
+
+    return (labels, lines)
+
+def merge_results_and_summary(summaryfile, resultsfile):
+    replace_p = lambda x: x.replace(".p", "")
+    a = pd.read_csv(summaryfile)
+    a['Problem name'] = a['Problem name'].str.lower()
+
+    b = pd.read_csv(resultsfile)
+    b['filename'] = b['filename'].map(replace_p)
+    c = pd.merge(b,a, how="left", left_on="filename", right_on="Problem name")
+    c = c.drop("Problem name", 1)
+    
+    return c
+
+def aggregate_results(result_type): 
+    labels, lines = summarize_problems()
+    summary_filename = "data/results/test_problem_summaries.csv"
+    
+    write_csv(labels, lines, summary_filename)
+    
+    results_filename = "data/results/" + result_type + "_trial.csv" 
+    out_filename = "data/results/" + result_type + "_w_summaries.csv"
+    
+    results = merge_results_and_summary(summary_filename, results_filename)
+    #results.to_csv(out_filename, index=False)
+
+
+    return results
+
+
+
+
+
+
+
+
+
+

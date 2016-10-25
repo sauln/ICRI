@@ -1,0 +1,328 @@
+         13723927 function calls (13630939 primitive calls) in 11.995 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   303489    1.109    0.000    4.807    0.000 CostFunction.py:13(gnnh)
+        1    0.000    0.000    0.000    0.000 CostFunction.py:3(Cost)
+       30    0.000    0.000    0.000    0.000 CostFunction.py:4(of_vehicles)
+       30    0.000    0.000    0.000    0.000 CostFunction.py:6(<listcomp>)
+  2221412    4.371    0.000    4.371    0.000 CostFunction.py:8(euclidean_cust)
+        1    0.000    0.000    0.000    0.000 Customer.py:1(<module>)
+        1    0.000    0.000    0.000    0.000 Customer.py:1(Point)
+    11312    0.005    0.000    0.005    0.000 Customer.py:11(__init__)
+    11312    0.003    0.000    0.003    0.000 Customer.py:2(__init__)
+   165481    0.044    0.000    0.082    0.000 Customer.py:26(__repr__)
+    70463    0.012    0.000    0.012    0.000 Customer.py:29(__eq__)
+        1    0.000    0.000    0.000    0.000 Customer.py:9(Customer)
+        1    0.000    0.000    0.000    0.000 DataBuilder.py:12(DataBuilder)
+      112    0.001    0.000    0.102    0.001 DataBuilder.py:13(__init__)
+        1    0.000    0.000    0.001    0.001 DataBuilder.py:2(<module>)
+      112    0.001    0.000    0.055    0.000 DataBuilder.py:21(getProblemDefinition)
+      112    0.000    0.000    0.000    0.000 DataBuilder.py:26(<listcomp>)
+      112    0.004    0.000    0.054    0.000 DataBuilder.py:29(<listcomp>)
+    11312    0.020    0.000    0.050    0.000 DataBuilder.py:32(extractCustomer)
+    11312    0.018    0.000    0.018    0.000 DataBuilder.py:33(<listcomp>)
+      112    0.001    0.000    0.008    0.000 DataBuilder.py:40(loadLines)
+     3000    0.027    0.000    0.215    0.000 Dispatch.py:38(get_available_vehicles)
+     3000    0.020    0.000   10.114    0.003 Dispatch.py:50(get_feasible_next_customers)
+     3000    0.418    0.000    9.926    0.003 Dispatch.py:51(<listcomp>)
+     3000    0.009    0.000    0.118    0.000 Dispatch.py:59(add_customer)
+     6000    0.006    0.000    0.036    0.000 Dispatch.py:76(new_vehicle)
+       30    0.001    0.000   11.247    0.375 GridSearch.py:24(run_algo)
+        3    0.000    0.000   11.252    3.751 GridSearch.py:38(find_costs)
+        3    0.000    0.000   11.248    3.749 GridSearch.py:49(<listcomp>)
+        3    0.000    0.000   11.255    3.752 GridSearch.py:78(search)
+       30    0.000    0.000    0.000    0.000 GridSearch.py:91(<lambda>)
+        1    0.000    0.000    0.046    0.046 Heuristic.py:1(<module>)
+       30    0.050    0.002   11.196    0.373 Heuristic.py:10(run)
+        1    0.000    0.000    0.002    0.002 Image.py:27(<module>)
+        1    0.000    0.000    0.003    0.003 Improvement.py:2(<module>)
+        1    0.000    0.000    0.042    0.042 Parameters.py:1(<module>)
+        3    0.000    0.000    0.001    0.000 Parameters.py:17(build)
+        3    0.000    0.000    0.001    0.000 Parameters.py:24(buildDistMatrix)
+        1    0.000    0.000    0.220    0.220 Plotter.py:2(<module>)
+        1    0.000    0.000    0.267    0.267 RollOut.py:1(<module>)
+        3    0.000    0.000    0.001    0.000 Solution.py:10(__repr__)
+       30    0.000    0.000    0.001    0.000 Utils.py:20(increment)
+       33    0.001    0.000    0.014    0.000 Utils.py:35(open_sp)
+      115    0.003    0.000    0.040    0.000 Utils.py:41(save_sp)
+       30    0.000    0.000    0.004    0.000 Validator.py:16(allCustomersAreUsed)
+       30    0.004    0.000    0.004    0.000 Validator.py:17(<listcomp>)
+       30    0.001    0.000    0.001    0.000 Validator.py:21(allCustomersAreUsedOnlyOnce)
+       30    0.000    0.000    0.000    0.000 Validator.py:25(vehicles_return_home_in_time)
+        1    0.000    0.000    0.000    0.000 Validator.py:3(<module>)
+       30    0.009    0.000    0.010    0.000 Validator.py:30(serviceTimesWithinWindow)
+       30    0.000    0.000    0.001    0.000 Validator.py:44(capacityRespected)
+     3993    0.001    0.000    0.001    0.000 Validator.py:46(<genexpr>)
+       30    0.000    0.000    0.016    0.001 Validator.py:49(validate)
+        1    0.000    0.000    0.000    0.000 Validator.py:6(Validator)
+       30    0.000    0.000    0.014    0.000 Validator.py:7(__init__)
+       30    0.000    0.000    0.000    0.000 Validator.py:9(<listcomp>)
+        1    0.000    0.000    0.000    0.000 Vehicle.py:1(<module>)
+  1943872    1.174    0.000    5.312    0.000 Vehicle.py:12(travel_dist)
+  1637052    0.494    0.000    4.978    0.000 Vehicle.py:15(travel_time)
+   277540    0.360    0.000    1.725    0.000 Vehicle.py:18(canMakeItHomeInTime)
+     3331    0.005    0.000    0.017    0.000 Vehicle.py:23(update_time)
+        1    0.000    0.000    0.000    0.000 Vehicle.py:28(Capacity)
+     6000    0.005    0.000    0.012    0.000 Vehicle.py:29(__init__)
+     3331    0.001    0.000    0.001    0.000 Vehicle.py:34(update_capacity)
+   339888    0.145    0.000    0.207    0.000 Vehicle.py:37(is_not_full)
+        1    0.000    0.000    0.000    0.000 Vehicle.py:4(TimeWindows)
+   643377    0.118    0.000    0.118    0.000 Vehicle.py:40(remaining_slack)
+        1    0.000    0.000    0.000    0.000 Vehicle.py:43(CustomerHistory)
+     6000    0.007    0.000    0.007    0.000 Vehicle.py:44(__init__)
+     9331    0.004    0.000    0.006    0.000 Vehicle.py:49(update_history)
+     6000    0.005    0.000    0.017    0.000 Vehicle.py:5(__init__)
+      331    0.000    0.000    0.001    0.000 Vehicle.py:55(served_customers)
+      331    0.000    0.000    0.000    0.000 Vehicle.py:56(<listcomp>)
+  2247361    0.351    0.000    0.351    0.000 Vehicle.py:58(last)
+        1    0.000    0.000    0.000    0.000 Vehicle.py:76(Vehicle)
+     6000    0.009    0.000    0.030    0.000 Vehicle.py:77(__init__)
+   749203    0.441    0.000    5.241    0.000 Vehicle.py:82(isFeasible)
+     3331    0.010    0.000    0.083    0.000 Vehicle.py:87(serve)
+   749203    0.524    0.000    2.868    0.000 Vehicle.py:9(is_valid_time)
+    16981    0.061    0.000    0.148    0.000 Vehicle.py:95(__hash__)
+    30860    0.007    0.000    0.007    0.000 Vehicle.py:98(__eq__)
+ 70235/31    0.077    0.000    0.192    0.006 copy.py:137(deepcopy)
+    51840    0.004    0.000    0.004    0.000 copy.py:192(_deepcopy_atomic)
+       90    0.002    0.000    0.187    0.002 copy.py:215(_deepcopy_list)
+     6090    0.012    0.000    0.022    0.000 copy.py:223(_deepcopy_tuple)
+  6095/31    0.019    0.000    0.191    0.006 copy.py:242(_deepcopy_dict)
+    12305    0.006    0.000    0.009    0.000 copy.py:256(_keep_alive)
+ 6626/566    0.024    0.000    0.195    0.000 copy.py:272(_reconstruct)
+      537    0.001    0.000    0.006    0.000 copy.py:67(copy)
+        1    0.000    0.000    0.000    0.000 copyreg.py:12(pickle)
+        1    0.000    0.000    0.000    0.000 copyreg.py:22(constructor)
+     6626    0.002    0.000    0.003    0.000 copyreg.py:87(__newobj__)
+        1    0.000    0.000    0.011    0.011 decomp_schur.py:1(<module>)
+        1    0.000    0.000    0.618    0.618 demo_util.py:1(<module>)
+        2    0.003    0.001    0.105    0.052 demo_util.py:23(build_all)
+        2    0.000    0.000    0.000    0.000 demo_util.py:27(load_files)
+        2    0.000    0.000    0.000    0.000 demo_util.py:31(<listcomp>)
+        2    0.000    0.000    0.105    0.053 demo_util.py:34(setup)
+        1    0.000    0.000    0.000    0.000 gzip.py:124(GzipFile)
+        1    0.000    0.000    0.000    0.000 parser.py:115(Option)
+        1    0.000    0.000    0.001    0.001 result.py:1(<module>)
+        3    0.000    0.000    0.000    0.000 result.py:12(failfast)
+        1    0.000    0.000   11.997   11.997 run_demos.py:1(<module>)
+        3    0.000    0.000   11.258    3.753 run_demos.py:61(run_search)
+        1    0.000    0.000   11.310   11.310 run_demos.py:75(profile)
+        1    0.000    0.000   11.258   11.258 run_demos.py:78(<listcomp>)
+        1    0.001    0.001   11.365   11.365 run_demos.py:84(main)
+     3000    0.009    0.000    0.009    0.000 sortedlist.py:1458(__init__)
+     3000    0.002    0.000    0.003    0.000 sortedlist.py:1492(__new__)
+     3000    0.019    0.000    0.139    0.000 sortedlist.py:1571(update)
+     6000    0.004    0.000    0.004    0.000 sortedlist.py:1590(<genexpr>)
+     6000    0.023    0.000    0.023    0.000 sortedlist.py:1592(<genexpr>)
+     6000    0.001    0.000    0.001    0.000 sortedlist.py:1593(<genexpr>)
+1864/1804    0.032    0.000    0.112    0.000 {built-in method __build_class__}
+   472/62    0.001    0.000    0.362    0.006 {built-in method __import__}
+    11293    0.003    0.000    0.003    0.000 {built-in method __new__ of type object at 0x97bda0}
+   303489    0.272    0.000    0.272    0.000 {built-in method dot}
+      115    0.034    0.000    0.034    0.000 {built-in method dump}
+       23    0.000    0.000    0.000    0.000 {built-in method empty}
+       11    0.000    0.000    0.000    0.000 {built-in method eval}
+    615/1    0.020    0.000   11.997   11.997 {built-in method exec}
+        1    0.000    0.000    0.000    0.000 {built-in method exp}
+        1    0.001    0.001    0.001    0.001 {built-in method fork_exec}
+     1064    0.000    0.000    0.000    0.000 {built-in method from_bytes}
+        4    0.000    0.000    0.000    0.000 {built-in method fromkeys}
+     3009    0.001    0.000    0.001    0.000 {built-in method get_ident}
+    23243    0.009    0.000    0.009    0.000 {built-in method getattr}
+      213    0.000    0.000    0.000    0.000 {built-in method getcwd}
+        1    0.000    0.000    0.000    0.000 {built-in method getdefaultencoding}
+     1070    0.000    0.000    0.000    0.000 {built-in method geterrobj}
+        1    0.000    0.000    0.000    0.000 {built-in method getfilesystemencoding}
+     1703    0.000    0.000    0.000    0.000 {built-in method getlower}
+       61    0.000    0.000    0.000    0.000 {built-in method getpid}
+      547    0.000    0.000    0.000    0.000 {built-in method globals}
+16603/16594    0.009    0.000    0.009    0.000 {built-in method hasattr}
+    16983    0.006    0.000    0.006    0.000 {built-in method hash}
+   101475    0.008    0.000    0.008    0.000 {built-in method id}
+       19    0.001    0.000    0.001    0.000 {built-in method init_builtin}
+        4    0.000    0.000    0.000    0.000 {built-in method insort}
+      123    0.000    0.000    0.000    0.000 {built-in method is_builtin}
+      726    0.000    0.000    0.000    0.000 {built-in method is_frozen}
+41981/41979    0.009    0.000    0.013    0.000 {built-in method isinstance}
+8557/8509    0.002    0.000    0.003    0.000 {built-in method issubclass}
+      227    0.000    0.000    0.000    0.000 {built-in method iter}
+87047/86357    0.007    0.000    0.007    0.000 {built-in method len}
+      310    0.005    0.000    0.005    0.000 {built-in method listdir}
+    59/56    0.030    0.001    0.046    0.001 {built-in method load_dynamic}
+      530    0.079    0.000    0.079    0.000 {built-in method loads}
+       34    0.014    0.000    0.014    0.000 {built-in method load}
+        5    0.000    0.000    0.000    0.000 {built-in method locals}
+        1    0.000    0.000    0.000    0.000 {built-in method localtime}
+        2    0.000    0.000    0.000    0.000 {built-in method log10}
+        4    0.000    0.000    0.000    0.000 {built-in method log}
+       30    0.000    0.000    0.000    0.000 {built-in method lstat}
+        2    0.000    0.000    0.000    0.000 {built-in method maketrans}
+   310797    0.149    0.000    0.149    0.000 {built-in method max}
+     3083    0.001    0.000    0.001    0.000 {built-in method min}
+        1    0.000    0.000    0.000    0.000 {built-in method mkdir}
+      150    0.000    0.000    0.010    0.000 {built-in method next}
+      113    0.000    0.000    0.000    0.000 {built-in method nl_langinfo}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_md5}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_sha1}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_sha224}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_sha256}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_sha384}
+        1    0.000    0.000    0.000    0.000 {built-in method openssl_sha512}
+      387    0.008    0.000    0.009    0.000 {built-in method open}
+     2689    0.000    0.000    0.000    0.000 {built-in method ord}
+      108    0.000    0.000    0.000    0.000 {built-in method pack}
+        3    0.000    0.000    0.000    0.000 {built-in method pdist_euclidean_wrap}
+        2    0.000    0.000    0.000    0.000 {built-in method pipe}
+        1    0.000    0.000    0.000    0.000 {built-in method pow}
+     1812    0.001    0.000    0.001    0.000 {built-in method proxy}
+        2    0.000    0.000    0.000    0.000 {built-in method putenv}
+        1    0.000    0.000    0.000    0.000 {built-in method readlink}
+        1    0.001    0.001    0.001    0.001 {built-in method read}
+      212    0.000    0.000    0.000    0.000 {built-in method reduce}
+        3    0.000    0.000    0.000    0.000 {built-in method register_dialect}
+        3    0.000    0.000    0.000    0.000 {built-in method register}
+     3935    0.001    0.000    0.001    0.000 {built-in method release_lock}
+      137    0.000    0.000    0.000    0.000 {built-in method repr}
+        6    0.000    0.000    0.000    0.000 {built-in method result_type}
+        9    0.000    0.000    0.000    0.000 {built-in method round}
+        2    0.000    0.000    0.000    0.000 {built-in method set_string_function}
+        1    0.000    0.000    0.000    0.000 {built-in method set_typeDict}
+     2606    0.001    0.000    0.001    0.000 {built-in method setattr}
+      535    0.000    0.000    0.000    0.000 {built-in method seterrobj}
+        2    0.000    0.000    0.000    0.000 {built-in method setlocale}
+       56    0.000    0.000    0.000    0.000 {built-in method sizeof}
+     3016    0.082    0.000    0.082    0.000 {built-in method sorted}
+        1    0.000    0.000    0.000    0.000 {built-in method sqrt}
+     3487    0.012    0.000    0.012    0.000 {built-in method stat}
+      361    0.000    0.000    0.001    0.000 {built-in method sum}
+        2    0.000    0.000    0.000    0.000 {built-in method sysconf}
+       37    0.000    0.000    0.000    0.000 {built-in method time}
+        3    0.000    0.000    0.000    0.000 {built-in method to_squareform_from_vector_wrap}
+        4    0.000    0.000    0.000    0.000 {built-in method txt2obj}
+        2    0.000    0.000    0.000    0.000 {built-in method uname}
+        5    0.000    0.000    0.000    0.000 {built-in method unlink}
+      112    0.000    0.000    0.000    0.000 {built-in method unpack}
+        2    0.000    0.000    0.000    0.000 {built-in method unsetenv}
+        5    0.001    0.000    0.001    0.000 {built-in method urandom}
+        2    0.000    0.000    0.000    0.000 {built-in method utcfromtimestamp}
+      299    0.000    0.000    0.000    0.000 {built-in method utf_8_decode}
+        5    0.000    0.000    0.000    0.000 {built-in method vars}
+        1    0.000    0.000    0.000    0.000 {built-in method waitpid}
+        1    0.000    0.000    0.000    0.000 {built-in method warn}
+        7    0.000    0.000    0.000    0.000 {built-in method zeros}
+        7    0.000    0.000    0.000    0.000 {function Random.seed at 0x7fa3f8513950}
+      255    0.000    0.000    0.000    0.000 {method '__contains__' of 'frozenset' objects}
+       30    0.000    0.000    0.000    0.000 {method '__deepcopy__' of 'numpy.ndarray' objects}
+       60    0.000    0.000    0.000    0.000 {method '__enter__' of '_multiprocessing.SemLock' objects}
+       60    0.000    0.000    0.000    0.000 {method '__exit__' of '_multiprocessing.SemLock' objects}
+     6626    0.006    0.000    0.006    0.000 {method '__reduce_ex__' of 'object' objects}
+       44    0.000    0.000    0.000    0.000 {method '__subclasses__' of 'type' objects}
+       16    0.000    0.000    0.000    0.000 {method '__subclasshook__' of 'object' objects}
+       90    0.000    0.000    0.000    0.000 {method 'acquire' of '_multiprocessing.SemLock' objects}
+       84    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.RLock' objects}
+       10    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+      644    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+       13    0.000    0.000    0.000    0.000 {method 'all' of 'numpy.ndarray' objects}
+     2123    0.001    0.000    0.005    0.000 {method 'any' of 'numpy.ndarray' objects}
+    56640    0.007    0.000    0.007    0.000 {method 'append' of 'list' objects}
+       12    0.000    0.000    0.000    0.000 {method 'astype' of 'numpy.ndarray' objects}
+       72    0.000    0.000    0.000    0.000 {method 'bit_length' of 'int' objects}
+       12    0.000    0.000    0.000    0.000 {method 'cast' of 'memoryview' objects}
+        6    0.000    0.000    0.000    0.000 {method 'clear' of 'dict' objects}
+        3    0.000    0.000    0.000    0.000 {method 'close' of '_io.BufferedRandom' objects}
+        1    0.000    0.000    0.000    0.000 {method 'close' of '_io.BufferedReader' objects}
+       99    0.000    0.000    0.000    0.000 {method 'compress' of 'numpy.ndarray' objects}
+       23    0.000    0.000    0.000    0.000 {method 'copy' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'copy' of 'mappingproxy' objects}
+        4    0.000    0.000    0.000    0.000 {method 'count' of 'list' objects}
+      136    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
+        2    0.000    0.000    0.000    0.000 {method 'deleter' of 'property' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {method 'discard' of 'set' objects}
+       67    0.000    0.000    0.000    0.000 {method 'encode' of 'str' objects}
+      204    0.000    0.000    0.000    0.000 {method 'end' of '_sre.SRE_Match' objects}
+     3545    0.001    0.000    0.001    0.000 {method 'endswith' of 'str' objects}
+       13    0.000    0.000    0.000    0.000 {method 'expandtabs' of 'str' objects}
+     9510    0.009    0.000    0.038    0.000 {method 'extend' of 'list' objects}
+     1516    0.000    0.000    0.000    0.000 {method 'find' of 'bytearray' objects}
+      184    0.000    0.000    0.000    0.000 {method 'find' of 'str' objects}
+      556    0.008    0.000    0.008    0.000 {method 'findall' of '_sre.SRE_Pattern' objects}
+       36    0.000    0.000    0.000    0.000 {method 'flush' of '_io.TextIOWrapper' objects}
+173538/173535    0.043    0.000    0.058    0.000 {method 'format' of 'str' objects}
+        3    0.000    0.000    0.000    0.000 {method 'from_buffer' of '_ctypes.PyCSimpleType' objects}
+   151026    0.016    0.000    0.016    0.000 {method 'get' of 'dict' objects}
+       73    0.000    0.000    0.000    0.000 {method 'get' of 'mappingproxy' objects}
+      124    0.000    0.000    0.000    0.000 {method 'getrandbits' of '_random.Random' objects}
+     4340    0.001    0.000    0.001    0.000 {method 'group' of '_sre.SRE_Match' objects}
+       24    0.000    0.000    0.000    0.000 {method 'groupdict' of '_sre.SRE_Match' objects}
+     3000    0.002    0.000    0.002    0.000 {method 'indices' of 'slice' objects}
+        6    0.000    0.000    0.000    0.000 {method 'insert' of 'list' objects}
+        4    0.000    0.000    0.000    0.000 {method 'isalnum' of 'str' objects}
+     1473    0.000    0.000    0.000    0.000 {method 'isidentifier' of 'str' objects}
+      649    0.000    0.000    0.000    0.000 {method 'isupper' of 'str' objects}
+     6995    0.001    0.000    0.001    0.000 {method 'items' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'items' of 'mappingproxy' objects}
+11655/11642    0.004    0.000    0.005    0.000 {method 'join' of 'str' objects}
+       81    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+      174    0.000    0.000    0.000    0.000 {method 'ljust' of 'str' objects}
+     2615    0.000    0.000    0.000    0.000 {method 'lower' of 'str' objects}
+       32    0.000    0.000    0.000    0.000 {method 'lstrip' of 'str' objects}
+      816    0.001    0.000    0.001    0.000 {method 'match' of '_sre.SRE_Pattern' objects}
+      412    0.000    0.000    0.000    0.000 {method 'mro' of 'type' objects}
+      218    0.000    0.000    0.000    0.000 {method 'partition' of 'str' objects}
+      290    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
+       71    0.000    0.000    0.000    0.000 {method 'pop' of 'list' objects}
+        3    0.000    0.000    0.000    0.000 {method 'random_sample' of 'mtrand.RandomState' objects}
+       33    0.000    0.000    0.000    0.000 {method 'ravel' of 'numpy.ndarray' objects}
+       79    0.001    0.000    0.001    0.000 {method 'read' of '_io.BufferedReader' objects}
+      530    0.005    0.000    0.005    0.000 {method 'read' of '_io.FileIO' objects}
+       40    0.000    0.000    0.000    0.000 {method 'read' of '_io.TextIOWrapper' objects}
+        2    0.000    0.000    0.000    0.000 {method 'readline' of '_io.BufferedReader' objects}
+      113    0.004    0.000    0.004    0.000 {method 'readlines' of '_io._IOBase' objects}
+     2334    0.004    0.000    0.004    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+       90    0.000    0.000    0.000    0.000 {method 'release' of '_multiprocessing.SemLock' objects}
+       84    0.000    0.000    0.000    0.000 {method 'release' of '_thread.RLock' objects}
+        8    0.000    0.000    0.000    0.000 {method 'release' of '_thread.lock' objects}
+     3250    0.018    0.000    0.030    0.000 {method 'remove' of 'list' objects}
+       46    0.000    0.000    0.000    0.000 {method 'remove' of 'set' objects}
+      879    0.000    0.000    0.000    0.000 {method 'replace' of 'str' objects}
+       50    0.000    0.000    0.000    0.000 {method 'reverse' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'rfind' of 'bytes' objects}
+      799    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
+     5396    0.002    0.000    0.002    0.000 {method 'rpartition' of 'str' objects}
+        7    0.000    0.000    0.000    0.000 {method 'rsplit' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'rstrip' of 'bytes' objects}
+    19269    0.003    0.000    0.003    0.000 {method 'rstrip' of 'str' objects}
+      780    0.003    0.000    0.003    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+        3    0.000    0.000    0.000    0.000 {method 'seed' of 'mtrand.RandomState' objects}
+        1    0.000    0.000    0.000    0.000 {method 'seek' of '_io.BufferedReader' objects}
+      653    0.000    0.000    0.000    0.000 {method 'setdefault' of 'dict' objects}
+       32    0.000    0.000    0.000    0.000 {method 'setter' of 'property' objects}
+       39    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+       28    0.000    0.000    0.000    0.000 {method 'split' of '_sre.SRE_Pattern' objects}
+    12674    0.005    0.000    0.005    0.000 {method 'split' of 'str' objects}
+      123    0.002    0.000    0.002    0.000 {method 'splitlines' of 'str' objects}
+      171    0.000    0.000    0.000    0.000 {method 'start' of '_sre.SRE_Match' objects}
+        1    0.000    0.000    0.000    0.000 {method 'startswith' of 'bytes' objects}
+    20679    0.003    0.000    0.003    0.000 {method 'startswith' of 'str' objects}
+       38    0.000    0.000    0.000    0.000 {method 'strftime' of 'datetime.date' objects}
+     1677    0.000    0.000    0.000    0.000 {method 'strip' of 'str' objects}
+     1122    0.011    0.000    0.011    0.000 {method 'sub' of '_sre.SRE_Pattern' objects}
+        4    0.000    0.000    0.000    0.000 {method 'title' of 'str' objects}
+       12    0.000    0.000    0.000    0.000 {method 'tolist' of 'memoryview' objects}
+        2    0.000    0.000    0.000    0.000 {method 'toordinal' of 'datetime.date' objects}
+       84    0.000    0.000    0.000    0.000 {method 'translate' of 'bytearray' objects}
+      114    0.000    0.000    0.000    0.000 {method 'translate' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'union' of 'set' objects}
+     6923    0.003    0.000    0.003    0.000 {method 'update' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
+      524    0.000    0.000    0.001    0.000 {method 'values' of 'mappingproxy' objects}
+        1    0.000    0.000    0.000    0.000 {method 'view' of 'numpy.ndarray' objects}
+        3    0.000    0.000    0.000    0.000 {method 'write' of '_io.BufferedRandom' objects}
+        2    0.000    0.000    0.000    0.000 {method 'write' of '_io.BufferedWriter' objects}
+       72    0.001    0.000    0.001    0.000 {method 'write' of '_io.TextIOWrapper' objects}
+        1    0.000    0.000    0.000    0.000 {pandas.lib.is_integer}
+        2    0.000    0.000    0.000    0.000 {pandas.lib.isscalar}
+
+

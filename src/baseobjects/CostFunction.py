@@ -1,4 +1,5 @@
 import numpy as np
+from .Parameters import Parameters
 
 class Cost:
     @staticmethod
@@ -7,8 +8,8 @@ class Cost:
 
     @staticmethod
     def euclidean_cust(c1, c2):
-        return np.sqrt((c1.x - c2.x)**2 + (c1.y - c2.y)**2)
-
+        dist = lambda c1, c2: np.sqrt((c1.x - c2.x)**2 + (c1.y - c2.y)**2) 
+        return dist(c1,c2) 
 
     @staticmethod
     def gnnh(delta, vehicle, customer): #s:start, e:customer customers

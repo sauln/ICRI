@@ -87,9 +87,9 @@ def summarize_on_all(files, prefix=''):
     problemdict = group_results(results, prefix)
 
     for key, value in problemdict.items():
-        LOGGER.info("Results of all {} problems:".format(key))
+        print("{}".format(key))
         sums = np.mean(np.array([x[1:] for x in value]), axis=0)
-        LOGGER.info("({})".format(sums))
+        print("{} {}".format(*sums))
 
 
 def make_line(problem):

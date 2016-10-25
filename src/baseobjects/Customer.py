@@ -5,6 +5,12 @@ class Point():
     def __eq__(self, other):
         return self.x == other.x and \
                self.y == other.y
+    def __hash__(self):
+        return hash((self.x, self.y))
+    def __str__(self):
+        return "({},{})".format(self.x, self.y)
+    def __repr__(self):
+        return self.__str__()
 
 class Customer():
     #todo: change these to camel case

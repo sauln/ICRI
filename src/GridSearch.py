@@ -20,7 +20,6 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    # @Utils.timeit
     def run_algo(self, lam, algo, filename, dispatch, count, trunc, depth, width):
         Utils.increment()
         c = Utils.value()
@@ -29,9 +28,9 @@ class Tuning:
         solution = algo().run(dispatch, depth, width) 
         num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
         res = Solution(num_veh, t_dist, lam, solution)  
-        Validator(solution, filename).validate()
+        # Validator(solution, filename).validate()
        
-        LOGGER.info("{}/{}: ({}, {}) grid search on {}".format(\
+        LOGGER.debug("{}/{}: ({}, {}) grid search on {}".format(\
             c, count, num_veh, t_dist, lam))
         return res
 
@@ -51,7 +50,7 @@ class Tuning:
 
 class Random_search(Tuning):
     def generator(self, count):
-        np.random.seed(0)
+        # np.random.seed(0)
         lambdas = np.random.random_sample((count, 5))
         return lambdas
 
@@ -70,12 +69,12 @@ class Shadow_search(Tuning):
             lambdas[:,pos] = np.linspace(0, 1, num=count)
             yield lambdas
 
-switch_search = {"grid_search": Grid_search, \
+switch_search = {   "grid_search":Grid_search, \
                   "shadow_search":Shadow_search, \
                   "random_search":Random_search}
 
 
-def search(algo_type, filename,trunc=0, \
+def search(algo_type, filename, trunc=0, \
            count=5, search_type="random_search", \
            width=10, depth=10):
     
@@ -94,12 +93,12 @@ def search(algo_type, filename,trunc=0, \
 
     return bestFound, costs
 
-def search_improvement(dispatch, trunc=0, \
+def search_improvement(algo_type, dispatch, filename, trunc=0, \
                        count=5, search_type="random_search", \
                        width=10, depth=10):
 
-    costs = switch[search_type]().find_costs(\
-        feed, dispatch, trunc=trunc, count=count, depth=depth, width=width)
+    costs = switch_search[search_type]().find_costs(\
+        algo_type, filename, dispatch, trunc=trunc, count=count, depth=depth, width=width)
     
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)

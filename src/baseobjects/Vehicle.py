@@ -13,7 +13,7 @@ class TimeWindows(object):
         return Cost.euclidean_cust(self.last().location, customer.location)
 
     def travel_time(self, customer):
-        return self.travel_dist(customer) 
+        return Cost.euclidean_cust(self.last().location, customer.location)
     
     def canMakeItHomeInTime(self, customer):
         return self.total_time + self.travel_time(customer) + \

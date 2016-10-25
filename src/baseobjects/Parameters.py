@@ -7,6 +7,7 @@ class Parameters:
             self.distMatrix = None
             self.timeMatrix = None
             self.params = None
+            self.func_cache = dict()
 
         def __getattr__(self, name):
             return getattr(self.params, name)

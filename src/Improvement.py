@@ -11,9 +11,9 @@ import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Parameters, Dispatch, Plotter, Cost
+from .baseobjects import Parameters, Dispatch, Plotter, Cost, Solution
 from .RollOut import RollOut
-from .GridSearch import search
+from .GridSearch import search, search_improvement
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,29 +49,37 @@ class Improvement:
         """ Setup very simple memoization"""
         self.previous_candidates = []
     
-    def run(self, dispatch, iterations, count):
+    def run(self, search_algo, dispatch, filename, iterations, count):
         """ Master function for this class - initiates optimization """
-        dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
+        # dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
         for i in range(iterations):
             if not i%5: LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
-            self.improve(dispatch, count)
+            dispatch = self.improve(search_algo, dispatch, filename, count)
 
-        log_solution(dispatch, dispatch_backup)
+        # num_vehicles, total_distance, params, solution, name
+        # log_solution(dispatch, dispatch_backup)
+        nv, td = Cost.of_vehicles(dispatch.vehicles)
+        solution = Solution(nv, td, [1]*7, dispatch, filename)
+        return solution
 
-        return dispatch
-
-    def improve(self, dispatch, count):
+    def improve(self, search_algo, dispatch, filename, count):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
-        solution = search(tmp_dispatch, count=count)
+        
+        if(len(old_vehicles) > 2): 
+            solution, all_solutions = search_improvement(search_algo, tmp_dispatch, \
+                                                         filename, count=count)
 
-        if self.should_replace_with(old_vehicles, solution.solution.vehicles):
-            self.replace_vehicles(dispatch, old_vehicles, solution.solution.vehicles)
-        else:
-            LOGGER.debug("Wont replace because {} is worse than {}".format( \
-                Cost.of_vehicles(solution.solution.vehicles),\
-                Cost.of_vehicles(old_vehicles)))
+            if self.should_replace_with(old_vehicles, solution.solution.vehicles):
+                dispatch = self.replace_vehicles(dispatch, old_vehicles, \
+                                                 solution.solution.vehicles)
+            else:
+                LOGGER.debug("Wont replace because {} is worse than {}".format( \
+                    Cost.of_vehicles(solution.solution.vehicles),\
+                    Cost.of_vehicles(old_vehicles)))
+        
+        return dispatch
 
     def replace_vehicles(self, dispatch, old_vehicles, new_vehicles):
         """ Replace the old vehicles in a dispatch object with new vehicles """
@@ -83,7 +91,8 @@ class Improvement:
             dispatch.vehicles.remove(v)
         for v in new_vehicles:
             dispatch.vehicles.append(v)
-    
+        return dispatch
+
     def should_replace_with(self, old_vehicles, new_vehicles):
         """ Criterion for replacing vehicle sets for improvement """
         new_num, new_dist = Cost.of_vehicles(new_vehicles)
@@ -141,7 +150,7 @@ class Improvement:
 
     def flatten_vehicles(self, vehicles):
         """ Get all customers from many vehicles """
-        return list({c for v in vehicles for c in v.customerHistory})
+        return list({c for v in vehicles for c in v.customer_history})
 
 
 if __name__ == "__main__":

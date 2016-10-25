@@ -41,8 +41,7 @@ class Dispatch():
         '''
         vehicles = list(set(self.vehicles))
 
-        if clean_veh:
-            if self.new_vehicle() not in vehicles:
+        if clean_veh and self.new_vehicle() not in vehicles:
                 vehicles.append(self.new_vehicle())
         
         return vehicles 
@@ -52,6 +51,7 @@ class Dispatch():
                         for vehicle in vehicles \
                         for customer in self.customers \
                         if vehicle.isFeasible(customer) ]
+        
         cs = SortedListWithKey(key=itemgetter(2))
         cs.update(next_pairs)
         return cs[:count]

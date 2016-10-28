@@ -55,7 +55,7 @@ def run_improvement(algo, filename):
     solution = Utils.open_sp(filename, root="data/solutions/search/rollout_")
     
     Parameters().build(Utils.open_sp(filename))
-    new_solution = Improvement().run(algo, solution.solution, filename, 10, 10)
+    new_solution = Improvement().run(algo, solution.solution, filename, 50, 5)
     
     LOGGER.info("Original solution to {} is {}".format(filename, \
         (solution.num_vehicles, solution.total_distance)))

@@ -54,7 +54,10 @@ class Improvement:
         # dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
         for i in range(iterations):
-            if not i%5: LOGGER.debug("Improvement phase {}/{}".format(i, iterations))
+            if not i%5: 
+
+                sys.stdout.write("Improvement phase {}/{} \r".format(i, iterations))
+                #print("Improvement phase [%d%%]/[%d%%]\r"%(i, iterations))
             dispatch = self.improve(search_algo, dispatch, filename, count)
 
         # num_vehicles, total_distance, params, solution, name

@@ -91,6 +91,20 @@ def summarize_on_all(files, prefix=''):
         sums = np.mean(np.array([x[1:] for x in value]), axis=0)
         print("{} {}".format(*sums))
 
+def write_solution(solutions):
+    sol_lines = [write_line(sol, fil) for sol, fil in solutions]
+    lines = [line for solution in sol_lines for line in solution]
+    labels = ["filename", "num_veh", "dist", "d0", "d1", "d2", "d3", "d4"]
+    
+    filename = "data/" + "random_search" + "_trial.csv"
+    DUtil.write_csv(labels, lines, filename)
+
+def write_line(solutions, filename):
+    lines = []
+    for solution in solutions:
+        lines.append([filename, solution.num_vehicles, \
+            solution.total_distance] + list(solution.params))
+    return lines
 
 def make_line(problem):
     basic_props = (problem.problemName, problem.numVehicles, \

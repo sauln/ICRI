@@ -6,7 +6,7 @@ from .Parameters import Parameters
 from .Vehicle import Vehicle
 from .CostFunction import Cost
 
-class Heuristic_wOnDeck:
+class HeuristicWOnDeck:
     def run(self, dispatch, width=10, depth=10):
         dispatch = copy.deepcopy(dispatch)
         while dispatch.customers:
@@ -91,14 +91,8 @@ class Heuristic:
         return dispatch
 '''
 
-#class Heuristic(Heuristic_sorted):
-#    pass
-#class Heuristic(Heuristic_greed):
-#    pass
-class Heuristic(Heuristic_wOnDeck):
+class Heuristic(HeuristicWOnDeck):
     pass
-
-
 
 if __name__ == "__main__":
     import Utils

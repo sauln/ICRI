@@ -20,7 +20,7 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def run_algo(self, lam, algo, filename, dispatch, count, trunc, depth, width):
+    def run_algo(self, lam, algo, dispatch, count, trunc, depth, width):
         Utils.increment()
         c = Utils.value()
         
@@ -34,13 +34,13 @@ class Tuning:
             c, count, num_veh, t_dist, lam))
         return res
 
-    def find_costs(self, algo, filename, dispatch, \
+    def find_costs(self, algo, dispatch, \
                          count=5, trunc=0, depth=10, width=10):
         results = []
         counter = Value('i', 0)
         Utils.init(counter)        
        
-        algo_partial = partial(self.run_algo, algo=algo, filename=filename,
+        algo_partial = partial(self.run_algo, algo=algo, 
                                   dispatch=dispatch, 
                                   count=count,  trunc=trunc, 
                                   depth=depth,  width=width)
@@ -48,19 +48,19 @@ class Tuning:
         results = [algo_partial(lam) for lam in lambdas]
         return results
 
-class Random_search(Tuning):
+class RandomSearch(Tuning):
     def generator(self, count):
         # np.random.seed(0)
         lambdas = np.random.random_sample((count, 5))
         return lambdas
 
-class Grid_search(Tuning):
+class GridSearch(Tuning):
     def generator(self, count):
         width = 5
         lambdas = lhs(width, samples=count, criterion='cm')
         return lambdas
 
-class Shadow_search(Tuning):
+class ShadowSearch(Tuning):
     def generator(self, count):
         num_vars = 5
 
@@ -69,13 +69,16 @@ class Shadow_search(Tuning):
             lambdas[:,pos] = np.linspace(0, 1, num=count)
             yield lambdas
 
-switch_search = {   "grid_search":Grid_search, \
-                  "shadow_search":Shadow_search, \
-                  "random_search":Random_search}
+class Search(GridSearch):
+    pass
+
+#switch_search = {   "grid_search":Grid_search, \
+#                  "shadow_search":Shadow_search, \
+#                  "random_search":Random_search}
 
 
 def search(algo_type, filename, trunc=0, \
-           count=5, search_type="random_search", \
+           count=5, \
            width=10, depth=10):
     
     sp = Utils.open_sp(filename)
@@ -84,8 +87,8 @@ def search(algo_type, filename, trunc=0, \
     num_customers = 5 if trunc else len(sp.customers)
     dispatch = Dispatch(sp.customers[:num_customers+1])
     
-    costs = switch_search[search_type]().find_costs(\
-        algo_type, filename, dispatch, trunc=trunc, count=count, depth=depth, width=width)
+    costs = Search().find_costs(\
+        algo_type, dispatch, trunc=trunc, count=count, depth=depth, width=width)
     
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
@@ -93,12 +96,12 @@ def search(algo_type, filename, trunc=0, \
 
     return bestFound, costs
 
-def search_improvement(algo_type, dispatch, filename, trunc=0, \
-                       count=5, search_type="random_search", \
+def search_improvement(algo_type, dispatch, trunc=0, \
+                       count=5, \
                        width=10, depth=10):
 
-    costs = switch_search[search_type]().find_costs(\
-        algo_type, filename, dispatch, trunc=trunc, count=count, depth=depth, width=width)
+    costs = Search().find_costs(\
+        algo_type, dispatch, trunc=trunc, count=count, depth=depth, width=width)
     
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)

@@ -13,34 +13,30 @@ class Result(Base):
     id = Column(Integer, primary_key=True)
     problem = Column(String)
     num_vehicles = Column(Integer)
-    total_dist = Column(Float)
+    total_distance = Column(Float)
     vehicles = Column(String) # nosql like, just for storage
-    # timestamp
-    # parameters: reference a Parameters row
-
-    def __repr__(self):
-        return "<Result(problem='%s', num_vehicles='%s', total_dist='%s')>"%(\
-            self.problem, self.num_vehicles, self.total_dist)
-
-class Parameters(Base):
-    ''' All the information needed to perfectly replicate the results of an experiment
-    '''
-    __tablename__ = 'parameter_sets'
-
-    id = Column(Integer, primary_key=True)
+    solution_string = Column(String)    
+    
     width = Column(Integer)
     depth = Column(Integer)
-    searchs = Column(Integer)
-    improvements = Column(Integer)
+    count = Column(Integer)
+    
     search_type = Column(String)
     heuristic_type = Column(String)
     rollout_type = Column(String)
-    repo_version = Column(String) # probably based on `git rev-parse --short HEAD`
-
-    delta_1 = Column(Float) # these probably aren't necessary?
-    delta_2 = Column(Float)
-    delta_3 = Column(Float)
-    delta_4 = Column(Float)
-    delta_5 = Column(Float)
+    algo_type = Column(String)
+    run_type = Column(String)
+    
+    d0 = Column(Float)
+    d1 = Column(Float) # these probably aren't necessary?
+    d2 = Column(Float)
+    d3 = Column(Float)
+    d4 = Column(Float)
+    
+    def __repr__(self):
+        return "<Result(problem='%s', %s, %s, %s num_vehicles='%s', total_distance='%s')>"%(\
+            self.problem, self.search_type, self.heuristic_type, self.rollout_type, \
+            self.num_vehicles, self.total_distance)
 
 Base.metadata.create_all(engine)
+

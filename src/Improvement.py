@@ -55,11 +55,11 @@ class Improvement:
 
         for i in range(iterations):
             if not i%5: 
-
                 sys.stdout.write("Improvement phase {}/{} \r".format(i, iterations))
-                #print("Improvement phase [%d%%]/[%d%%]\r"%(i, iterations))
             dispatch = self.improve(search_algo, dispatch, filename, count)
 
+        # need to record actual deltas used
+        
         # num_vehicles, total_distance, params, solution, name
         # log_solution(dispatch, dispatch_backup)
         nv, td = Cost.of_vehicles(dispatch.vehicles)

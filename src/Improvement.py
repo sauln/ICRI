@@ -11,7 +11,7 @@ import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Parameters, Dispatch, Plotter, Cost, Solution
+from .baseobjects import Parameters, Dispatch, Cost, Solution
 from .RollOut import RollOut
 from .GridSearch import search, search_improvement
 

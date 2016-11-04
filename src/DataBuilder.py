@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-import click
 import logging
-from dotenv import find_dotenv, load_dotenv
 import pickle
 
 from .baseobjects import Customer, Point, SolomonProblem, Utils

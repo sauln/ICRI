@@ -5,6 +5,9 @@ import random
 from multiprocessing import Pool
 from functools import partial
 
+sys.path.append('.')
+
+
 import demo_util as DUtil
 from src import Heuristic, RollOut, search, Search, Improvement, Dispatch, Cost 
 from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic
@@ -29,6 +32,7 @@ class Params:
             self.run_type, self.algo_type, self.width, self.depth, self.count)
 
 def run_search(algo_type=None, filename=None):
+    LOGGER.info("Run {}".format(filename))
     random.seed(0)
     params = Params(5,5,5, algo_type.__name__.lower(), "search")
 
@@ -82,10 +86,10 @@ def main(argv):
         for key in argv:
             algo, src = switch_algo[key], src_lambda(key)
             
-            #runner = partial(run_type, algo, src)
-            #results = Pool().map(runner, outfiles)
-            results = [run_type(algo, filename) for filename in outfiles]            
-            results = [runner(filename) for filename in outfiles]
+            runner = partial(run_type, algo, src)
+            results = Pool().map(runner, outfiles)
+            #results = [run_type(algo, filename) for filename in outfiles]            
+            #results = [runner(filename) for filename in outfiles]
 
             DUtil.write_solution(key, results)
             DUtil.summarize_on_all(outfiles, prefix=src)

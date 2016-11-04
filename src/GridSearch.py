@@ -8,7 +8,7 @@ import time
 from multiprocessing import Pool, Value
 from functools import partial
 
-from .baseobjects import Dispatch, Parameters, Solution, Plotter, Utils
+from .baseobjects import Dispatch, Parameters, Solution, Utils
 from .baseobjects import Cost, Validator, Heuristic
 from .RollOut import RollOut
 

@@ -1,5 +1,11 @@
 # Welcome to blineVRP 
 
+Setup on cloud compute. To access:
+
+gcloud compute ssh instance-1
+
+
+
 ## Summary
 This repository will both serve as a
 

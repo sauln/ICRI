@@ -6,8 +6,6 @@ import logging
 from src.main.BaseObjects.Customer import Customer, Point
 
 logger = logging.getLogger(__name__)
-log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 def tweak(customer, index):
     demand = customer.demand + random.randrange(-10, 10)

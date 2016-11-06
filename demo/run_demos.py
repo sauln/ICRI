@@ -7,55 +7,60 @@ from functools import partial
 
 sys.path.append('.')
 
-
 import demo_util as DUtil
 from src import Heuristic, RollOut, search, Search, Improvement, Dispatch, Cost 
 from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic
 
-from db.add_data import save_result_to_db 
+from db import add_data, queries
 
 LOGGER = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+#logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
 
 class Params:
-    def __init__(self, width, depth, count, algo_type, run_type):
+    def __init__(self, width, depth, count, algo_type, run_type, problem):
         self.width=width
         self.depth=depth
         self.count=count
         self.algo_type=algo_type
         self.run_type=run_type
+        self.problem=problem
 
     def __repr__(self):
-        return "{} {} {} {} {}".format(\
-            self.run_type, self.algo_type, self.width, self.depth, self.count)
+        return "{} {} {} {} {} {}".format(\
+            self.problem, self.run_type, self.algo_type, 
+            self.width, self.depth, self.count)
 
-def run_search(algo_type=None, filename=None):
+def run_search(algo_type, filename):
     LOGGER.info("Run {}".format(filename))
     random.seed(0)
-    params = Params(5,5,5, algo_type.__name__.lower(), "search")
-
-    best_solution, all_solutions = search(algo_type, filename, trunc=0, count=params.count, \
-                                          width=params.width, depth=params.depth)
-    
-    Utils.save_sp(best_solution, "search/" +algo_type.__name__.lower()+ "_" +filename)
-    
-    #LOGGER.info("Solution to {} is {}".format(filename, \
-    #    (best_solution.num_vehicles, best_solution.total_distance)))
-
     problem_name=filename.replace(".p", "")
+    params = Params(5,5,5, algo_type.__name__.lower(), "search", problem_name)
 
-    for sol in all_solutions: 
-        save_result_to_db(problem_name, sol, params)
-    
+    if not queries.params_in(params):
+        best_solution, all_solutions = search(algo_type, filename, trunc=0, \
+                                              count=params.count, \
+                                              width=params.width, depth=params.depth)
+        
+        for sol in all_solutions: 
+            add_data.save_result_to_db(params, sol)
+    else:
+        all_solutions = queries.get_solutions(params)
+
     return all_solutions, filename
 
 def profile():
     outfiles = DUtil.setup()[:1]
     algo, src= switch_algo["heuristic"], "search/heuristic_" 
     results = [run_search(algo, filename) for filename in outfiles]            
-    
+
+def execute_algorithms(f, t, files):
+    runner = partial(f, t)
+    #results = Pool().map(runner, files)
+    results = [runner(filename) for filename in files]
+    return results
+
 def main(argv):
     outfiles = DUtil.setup()
     # tmps = ['r207.p', 'r210.p', 'r211.p', 'rc103.p', 'rc104.p', 'rc107.p', 'rc108.p']
@@ -66,36 +71,26 @@ def main(argv):
 
     if argv[0] == "summarize":
         argv.pop(0)
-        for key in argv:
-            DUtil.summarize_on_all(outfiles, prefix=key)
+        for key in argv: DUtil.summarize_on_all(outfiles, prefix=key)
+
     elif argv[0] == "profile":
         profile()
+    
     else:
         if argv[0] == "search":
-            argv.pop(0)
-            run_type = run_search
-            src_lambda = lambda key: "search/" + key + "_"
+            argv.pop(0), 
+            algo= switch_algo[argv[0]]
+            results = execute_algorithms(run_search, algo, outfiles)
         elif argv[0] == "improve":
             argv.pop(0)
-            run_type = run_improvement
-            src_lambda = lambda key: "improve/" + key + "_"
+            algo= switch_algo[argv[0]]
+            results = execute_algorithms(run_improvement, algo, outfiles)
         else:
-            run_type = run_single
-            src_lambda = lambda key: key + "/"
-    
-        for key in argv:
-            algo, src = switch_algo[key], src_lambda(key)
-            
-            runner = partial(run_type, algo, src)
-            results = Pool().map(runner, outfiles)
-            #results = [run_type(algo, filename) for filename in outfiles]            
-            #results = [runner(filename) for filename in outfiles]
+            algo= switch_algo[argv[0]]
+            results = execute_algorithms(run_single, algo, outfiles)
+             
+        #queries.print_results()
 
-            DUtil.write_solution(key, results)
-            DUtil.summarize_on_all(outfiles, prefix=src)
-
-
-'''
 def run_single(algo_type, filename):
     LOGGER.info("Run on {}".format(filename))
     sp = Utils.open_sp(filename)
@@ -122,23 +117,14 @@ def run_improvement(algo, filename):
     
     Parameters().build(Utils.open_sp(filename))
     new_solution = Improvement().run(algo, solution.solution, iterations=50, count=5)
-    
-    #LOGGER.info("Original solution to {} is {}".format(filename, \
-    #    (solution.num_vehicles, solution.total_distance)))
-    
-    #LOGGER.info("Solution to {} is {}".format(filename, \
-    #    (len(new_solution.solution.vehicles), new_solution.total_distance)))
-
-    Utils.save_sp(new_solution, filename, root="data/solutions/improve/rollout_")
+    #Utils.save_sp(new_solution, filename, root="data/solutions/improve/rollout_")
     
     problem_name=filename.replace(".p", "")
-
     for sol in all_solutions: 
-        save_result_to_db("search", problem_name, sol, params)
+        add_data.save_result_to_db(params, sol)
 
     #LOGGER.info("Finished {}".format(filename))
     return [new_solution], filename
-'''
 
 if __name__ == "__main__":
     main(sys.argv[1:])

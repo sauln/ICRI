@@ -7,7 +7,6 @@ import csv
 import pandas as pd
 import numpy as np
 
-
 from src import DataBuilder, Cost, Dispatch, Solution, Utils
 
 LOGGER = logging.getLogger(__name__)
@@ -154,17 +153,6 @@ def aggregate_results(result_type):
     out_filename = "data/results/" + result_type + "_w_summaries.csv"
     
     results = merge_results_and_summary(summary_filename, results_filename)
-    #results.to_csv(out_filename, index=False)
-
-
     return results
-
-
-
-
-
-
-
-
 
 

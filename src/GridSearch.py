@@ -69,13 +69,12 @@ class ShadowSearch(Tuning):
             lambdas[:,pos] = np.linspace(0, 1, num=count)
             yield lambdas
 
-class Search(GridSearch):
+class Search(RandomSearch):
     pass
 
 #switch_search = {   "grid_search":Grid_search, \
 #                  "shadow_search":Shadow_search, \
 #                  "random_search":Random_search}
-
 
 def search(algo_type, filename, trunc=0, \
            count=5, \

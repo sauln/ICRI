@@ -10,12 +10,9 @@ sys.path.append('.')
 import demo_util as DUtil
 from src import Heuristic, RollOut, search, Search, Improvement, Dispatch, Cost 
 from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic
-
 from db import add_data, queries
 
 LOGGER = logging.getLogger(__name__)
-#logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-
 switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
 
 class Params:
@@ -36,17 +33,13 @@ def run_search(algo_type, filename):
     LOGGER.info("Run {}".format(filename))
     random.seed(0)
     problem_name=filename.replace(".p", "")
-    params = Params(5,5,5, algo_type.__name__.lower(), "search", problem_name)
+    params = Params(15,10,10, algo_type.__name__.lower(), "search", problem_name)
 
-    if not queries.params_in(params):
-        best_solution, all_solutions = search(algo_type, filename, trunc=0, \
-                                              count=params.count, \
-                                              width=params.width, depth=params.depth)
-        
-        for sol in all_solutions: 
-            add_data.save_result_to_db(params, sol)
-    else:
-        all_solutions = queries.get_solutions(params)
+    best_solution, all_solutions = search(algo_type, filename, trunc=0, \
+                                          count=params.count, \
+                                          width=params.width, depth=params.depth)
+    for sol in all_solutions: 
+        add_data.save_result_to_db(params, sol)
 
     return all_solutions, filename
 
@@ -63,8 +56,6 @@ def execute_algorithms(f, t, files):
 
 def main(argv):
     outfiles = DUtil.setup()
-    # tmps = ['r207.p', 'r210.p', 'r211.p', 'rc103.p', 'rc104.p', 'rc107.p', 'rc108.p']
-    # outfiles = [f for f in outfiles if "r1" in f]
     print(outfiles)
     if(len(argv) == 0):
         argv.append("profile")
@@ -72,10 +63,8 @@ def main(argv):
     if argv[0] == "summarize":
         argv.pop(0)
         for key in argv: DUtil.summarize_on_all(outfiles, prefix=key)
-
     elif argv[0] == "profile":
         profile()
-    
     else:
         if argv[0] == "search":
             argv.pop(0), 
@@ -88,8 +77,6 @@ def main(argv):
         else:
             algo= switch_algo[argv[0]]
             results = execute_algorithms(run_single, algo, outfiles)
-             
-        #queries.print_results()
 
 def run_single(algo_type, filename):
     LOGGER.info("Run on {}".format(filename))

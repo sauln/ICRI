@@ -34,10 +34,11 @@ class Result(Base):
     d4 = Column(Float)
     
     def __repr__(self):
-        return "<Result(problem=%s', (%s, %s), (%s, %s, %s), (%s, %s)>"%(self.problem, 
+        return "<Result(problem=%s', (%s, %s), (%s, %s, %s), (%s, %s) [%s]>"%(self.problem, 
                     self.algo_type, self.run_type, 
                     self.search_type, self.heuristic_type, self.rollout_type, 
-                    self.num_vehicles, self.total_distance)
+                    self.num_vehicles, self.total_distance, [self.d0, self.d1,
+                        self.d2, self.d3, self.d4])
 
 Base.metadata.create_all(engine)
 

@@ -5,7 +5,7 @@ from db.setup import Result
 
 from src import Heuristic, Search, RollOut
 
-engine = create_engine('sqlite:///db/results.db', echo=True)
+engine = create_engine('sqlite:///db/results.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 

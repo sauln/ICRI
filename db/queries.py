@@ -9,7 +9,7 @@ engine = create_engine('sqlite:///db/results.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def remove_duplicates():
+#def remove_duplicates():
    
 
 

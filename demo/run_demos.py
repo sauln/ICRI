@@ -30,7 +30,7 @@ class Params:
             self.width, self.depth, self.count)
 
 def run_search(algo_type, filename):
-    LOGGER.info("Run {}".format(filename))
+    print("Run {}".format(filename))
     random.seed(0)
     problem_name=filename.replace(".p", "")
     params = Params(15,10,10, algo_type.__name__.lower(), "search", problem_name)
@@ -50,8 +50,8 @@ def profile():
 
 def execute_algorithms(f, t, files):
     runner = partial(f, t)
-    #results = Pool().map(runner, files)
-    results = [runner(filename) for filename in files]
+    results = Pool().map(runner, files)
+    #results = [runner(filename) for filename in files]
     return results
 
 def main(argv):

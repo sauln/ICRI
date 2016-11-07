@@ -7,6 +7,8 @@ import numpy as np
 import time
 from multiprocessing import Pool, Value
 from functools import partial
+import sys
+
 
 from .baseobjects import Dispatch, Parameters, Solution, Utils
 from .baseobjects import Cost, Validator, Heuristic
@@ -26,6 +28,8 @@ class Tuning:
         Utils.increment()
         c = Utils.value()
         print("Start search for {} using {}".format(algo, params.problem))
+        
+        sys.stdout.flush()
         dispatch.set_delta(lam)
         solution = algo().run(dispatch, depth, width) 
         num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
@@ -38,6 +42,7 @@ class Tuning:
 
         print("{}/{}: ({}, {}) grid search on {}".format(\
             c, count, num_veh, t_dist, lam))
+        sys.stdout.flush()
         return res
 
     def find_costs(self, algo, dispatch, \

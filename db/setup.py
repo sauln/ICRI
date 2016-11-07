@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///db/results.db', echo=True)
 Base = declarative_base()
  
 class Result(Base):
@@ -40,5 +39,10 @@ class Result(Base):
                     self.num_vehicles, self.total_distance, [self.d0, self.d1,
                         self.d2, self.d3, self.d4])
 
-Base.metadata.create_all(engine)
+if __name__=="__main__":
+    engine = create_engine('sqlite:///db/results.db')
+    Base.metadata.create_all(engine)
+
+
+
 

@@ -25,7 +25,6 @@ class Tuning:
     def run_algo(self, lam, algo, dispatch, count, trunc, depth, width, params=None):
         Utils.increment()
         c = Utils.value()
-        
         print("Start search for {} using {}".format(algo, params.problem))
         dispatch.set_delta(lam)
         solution = algo().run(dispatch, depth, width) 
@@ -98,7 +97,7 @@ def search(algo_type, filename, trunc=0, \
     
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
-    LOGGER.debug("Found best {}".format(bestFound))
+    print("Found best {}".format(bestFound))
 
     return bestFound, costs
 

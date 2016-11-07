@@ -3,14 +3,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from db.setup import Result
 
-from src import Heuristic, Search, RollOut
+#from src import Heuristic, Search, RollOut
+from src import Heuristic, RollOut
 
-engine = create_engine('sqlite:///db/results.db')
+engine = create_engine('sqlite:///db/results.db', echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
 def save_result_to_db(params, solution):
-    search_type = Search().__class__.__bases__[0].__name__
+    #search_type = Search().__class__.__bases__[0].__name__
+    search_type="RandomSearch"
     heuristic_type = Heuristic().__class__.__bases__[0].__name__
     rollout_type = RollOut().__class__.__bases__[0].__name__
 

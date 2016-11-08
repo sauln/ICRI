@@ -26,27 +26,28 @@ class Params:
 
     def __repr__(self):
         return "{} {} {} {} {} {}".format(\
-            self.problem, self.run_type, self.algo_type, 
+            self.problem, self.run_type, self.algo_type,
             self.width, self.depth, self.count)
 
 def run_search(algo_type, filename):
     print("Run {}".format(filename))
-    random.seed(0)
+    random.seed(999)
     problem_name=filename.replace(".p", "")
-    params = Params(15,15,15, algo_type.__name__.lower(), "search", problem_name)
+    params = Params(10,10,20, algo_type.__name__.lower(), "search", problem_name)
 
-    best_solution, all_solutions = search(algo_type, filename, params=params, trunc=0, \
-                                          count=params.count, \
+    best_solution, all_solutions = search(algo_type, filename,
+                                          params=params, trunc=0,
+                                          count=params.count,
                                           width=params.width, depth=params.depth)
-    for sol in all_solutions: 
+    for sol in all_solutions:
         add_data.save_result_to_db(params, sol)
 
     return all_solutions, filename
 
 def profile():
     outfiles = DUtil.setup()[:1]
-    algo, src= switch_algo["heuristic"], "search/heuristic_" 
-    results = [run_search(algo, filename) for filename in outfiles]            
+    algo, src= switch_algo["heuristic"], "search/heuristic_"
+    results = [run_search(algo, filename) for filename in outfiles]
 
 def execute_algorithms(f, t, files):
     runner = partial(f, t)
@@ -56,7 +57,7 @@ def execute_algorithms(f, t, files):
 
 def main(argv):
     outfiles = DUtil.setup()
-    outfiles = [f for f in outfiles if 'r' in f and 'c' not in f]
+    outfiles = [f for f in outfiles if 'r1' in f and 'c' not in f]
     print(outfiles)
     if(len(argv) == 0):
         argv.append("profile")
@@ -68,7 +69,7 @@ def main(argv):
         profile()
     else:
         if argv[0] == "search":
-            argv.pop(0), 
+            argv.pop(0),
             algo= switch_algo[argv[0]]
             results = execute_algorithms(run_search, algo, outfiles)
         elif argv[0] == "improve":
@@ -90,25 +91,25 @@ def run_single(algo_type, filename):
 
     solution = algo_type().run(dispatch, 10, 10)
     num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
-    res = Solution(num_veh, t_dist, delta, solution)  
+    res = Solution(num_veh, t_dist, delta, solution)
     Validator(solution, filename).validate()
-    
+
     Utils.save_sp(solution, "rollout/"+filename)
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for rollout: {}".format(solution.pretty_print()))
-    return [res], filename 
+    return [res], filename
 
 def run_improvement(algo, filename):
     LOGGER.info("Run improvement on {}".format(filename))
 
     solution = Utils.open_sp(filename, root="data/solutions/search/rollout_")
-    
+
     Parameters().build(Utils.open_sp(filename))
     new_solution = Improvement().run(algo, solution.solution, iterations=50, count=5)
     #Utils.save_sp(new_solution, filename, root="data/solutions/improve/rollout_")
-    
+
     problem_name=filename.replace(".p", "")
-    for sol in all_solutions: 
+    for sol in all_solutions:
         add_data.save_result_to_db(params, sol)
 
     #LOGGER.info("Finished {}".format(filename))

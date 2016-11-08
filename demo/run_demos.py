@@ -33,9 +33,9 @@ def run_search(algo_type, filename):
     print("Run {}".format(filename))
     random.seed(0)
     problem_name=filename.replace(".p", "")
-    params = Params(15,10,10, algo_type.__name__.lower(), "search", problem_name)
+    params = Params(15,15,15, algo_type.__name__.lower(), "search", problem_name)
 
-    best_solution, all_solutions = search(algo_type, filename, trunc=0, \
+    best_solution, all_solutions = search(algo_type, filename, params=params, trunc=0, \
                                           count=params.count, \
                                           width=params.width, depth=params.depth)
     for sol in all_solutions: 
@@ -56,6 +56,7 @@ def execute_algorithms(f, t, files):
 
 def main(argv):
     outfiles = DUtil.setup()
+    outfiles = [f for f in outfiles if 'r' in f and 'c' not in f]
     print(outfiles)
     if(len(argv) == 0):
         argv.append("profile")

@@ -39,10 +39,13 @@ class Result(Base):
                     self.num_vehicles, self.total_distance, [self.d0, self.d1,
                         self.d2, self.d3, self.d4])
 
-if __name__=="__main__":
-    engine = create_engine('sqlite:///db/results.db')
+def initialize():
+    engine = create_engine('sqlite:///db/results.db', echo=True)
     Base.metadata.create_all(engine)
 
+
+if __name__=="__main__":
+    initialize()
 
 
 

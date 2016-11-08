@@ -24,38 +24,29 @@ class Tuning:
     @abstractmethod
     def generator(self, count): pass
 
-    def run_algo(self, lam, algo, dispatch, count, trunc, depth, width, params=None):
-        Utils.increment()
-        c = Utils.value()
-        print("Start search for {} using {}".format(algo, params.problem))
-        
+    def run_algo(self, lam, dispatch, algo, params):
+        print("Start search for {} using {}".format(params.run_type,
+                                                    params.problem))
         sys.stdout.flush()
-        dispatch.set_delta(lam)
-        solution = algo().run(dispatch, depth, width) 
-        num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
-        res = Solution(num_veh, t_dist, lam, solution)  
-        # Validator(solution, filename).validate()
-       
 
+        dispatch.set_delta(lam)
+        solution = algo().run(dispatch, params.depth, params.width)
+        num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
+        res = Solution(num_veh, t_dist, lam, solution)
         add_data.save_result_to_db(params, res)
 
-
-        print("{}/{}: ({}, {}) grid search on {}".format(\
-            c, count, num_veh, t_dist, lam))
+        print("n/{}: ({}, {}) grid search on {}".format(\
+            params.count, num_veh, t_dist, lam))
         sys.stdout.flush()
+
         return res
 
-    def find_costs(self, algo, dispatch, \
-                         count=5, trunc=0, depth=10, width=10, params=None):
-        results = []
-        counter = Value('i', 0)
-        Utils.init(counter)        
-       
-        algo_partial = partial(self.run_algo, algo=algo, 
-                                  dispatch=dispatch, 
-                                  count=count,  trunc=trunc, 
-                                  depth=depth,  width=width, params=params)
-        lambdas = self.generator(count)
+    def find_costs(self, dispatch, algo, params):
+        algo_partial = partial(self.run_algo,
+                               dispatch=dispatch,
+                               algo=algo,
+                               params=params)
+        lambdas = self.generator(params.count)
         results = [algo_partial(lam) for lam in lambdas]
         return results
 
@@ -83,36 +74,21 @@ class ShadowSearch(Tuning):
 class Search(RandomSearch):
     pass
 
-#switch_search = {   "grid_search":Grid_search, \
-#                  "shadow_search":Shadow_search, \
-#                  "random_search":Random_search}
-
-def search(algo_type, filename, trunc=0, \
-           count=5, \
-           width=10, depth=10, params=None):
-    
-    sp = Utils.open_sp(filename)
+def search(algo_type, params):
+    sp = Utils.open_sp(params.problem+".p")
     Parameters().build(sp)
-    
-    num_customers = 5 if trunc else len(sp.customers)
-    dispatch = Dispatch(sp.customers[:num_customers+1])
-    
-    costs = Search().find_costs(\
-        algo_type, dispatch, trunc=trunc, count=count, depth=depth, width=width, params=params)
-    
+
+    dispatch = Dispatch(sp.customers)
+    costs = Search().find_costs(dispatch, algo_type, params)
+
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
     print("Found best {}".format(bestFound))
-
     return bestFound, costs
 
-def search_improvement(algo_type, dispatch, trunc=0, \
-                       count=5, \
-                       width=10, depth=10):
+def search_improvement(dispatch, algo_type, search_params):
+    costs = Search().find_costs(dispatch, algo_type, search_params)
 
-    costs = Search().find_costs(\
-        algo_type, dispatch, trunc=trunc, count=count, depth=depth, width=width)
-    
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
     LOGGER.debug("Found best {}".format(bestFound))

@@ -24,7 +24,7 @@ class RollOutBase:
 
     @abstractmethod
     def rollout(self, count): pass
-   
+
     def duplicate_env(self, dispatch, vehicle):
         ''' Copy environment so we can modify dispatch at will for experimentation '''
         tmp_dispatch = dispatch_copy(dispatch)
@@ -33,7 +33,7 @@ class RollOutBase:
         if tmp_vehicle in tmp_dispatch.vehicles:
             find = tmp_dispatch.vehicles.index(tmp_vehicle)
             tmp_dispatch.vehicles[find] = tmp_vehicle
-        
+
         if tmp_vehicle not in tmp_dispatch.vehicles:
             tmp_dispatch.vehicles.append(tmp_vehicle)
 

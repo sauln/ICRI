@@ -1,6 +1,6 @@
 ''' short script to run rollout algorithm on all problems '''
-import logging 
-import sys 
+import logging
+import sys
 import random
 from multiprocessing import Pool
 from functools import partial
@@ -8,7 +8,7 @@ from functools import partial
 sys.path.append('.')
 
 import demo_util as DUtil
-from src import Heuristic, RollOut, search, Search, Improvement, Dispatch, Cost 
+from src import Heuristic, RollOut, search, Improvement, Dispatch, Cost
 from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic
 from db import add_data, queries
 
@@ -33,16 +33,40 @@ def run_search(algo_type, filename):
     print("Run {}".format(filename))
     random.seed(999)
     problem_name=filename.replace(".p", "")
-    params = Params(10,10,20, algo_type.__name__.lower(), "search", problem_name)
+    params = Params(10,10,20, algo_type.__name__.lower(),
+                           "search", problem_name)
 
-    best_solution, all_solutions = search(algo_type, filename,
-                                          params=params, trunc=0,
-                                          count=params.count,
-                                          width=params.width, depth=params.depth)
-    for sol in all_solutions:
-        add_data.save_result_to_db(params, sol)
+    best_solution, all_solutions = search(algo_type, params)
 
     return all_solutions, filename
+
+
+def run_improvement(algo_type, filename):
+    LOGGER.info("Run improvement on {}".format(filename))
+    #solution = Utils.open_sp(filename, root="data/solutions/search/rollout_")
+    #Parameters().build(Utils.open_sp(filename))
+
+    # need some initial solution:
+    problem_name=filename.replace(".p", "")
+    search_params = Params(10,10,20, algo_type.__name__.lower(),
+                           "search", problem_name)
+
+    improv_params = {"iterations":5, "count":5}
+
+
+    improved_solution = Improvement().run(base_solution=None,
+                                          search_params=search_params,
+                                          improv_params=improv_params)
+
+    #new_solution = Improvement().run(algo_type, solution.solution,
+    #                                 iterations=50, count=5)
+
+    add_data.save_imp_result_to_db(improved_solution,
+                                   search_params,
+                                   improved_params)
+
+    return improved_solution, filename
+
 
 def profile():
     outfiles = DUtil.setup()[:1]
@@ -51,8 +75,8 @@ def profile():
 
 def execute_algorithms(f, t, files):
     runner = partial(f, t)
-    results = Pool().map(runner, files)
-    #results = [runner(filename) for filename in files]
+    #results = Pool().map(runner, files)
+    results = [runner(filename) for filename in files]
     return results
 
 def main(argv):
@@ -80,6 +104,9 @@ def main(argv):
             algo= switch_algo[argv[0]]
             results = execute_algorithms(run_single, algo, outfiles)
 
+
+
+'''
 def run_single(algo_type, filename):
     LOGGER.info("Run on {}".format(filename))
     sp = Utils.open_sp(filename)
@@ -98,22 +125,8 @@ def run_single(algo_type, filename):
     LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
     LOGGER.debug("Solution for rollout: {}".format(solution.pretty_print()))
     return [res], filename
+'''
 
-def run_improvement(algo, filename):
-    LOGGER.info("Run improvement on {}".format(filename))
-
-    solution = Utils.open_sp(filename, root="data/solutions/search/rollout_")
-
-    Parameters().build(Utils.open_sp(filename))
-    new_solution = Improvement().run(algo, solution.solution, iterations=50, count=5)
-    #Utils.save_sp(new_solution, filename, root="data/solutions/improve/rollout_")
-
-    problem_name=filename.replace(".p", "")
-    for sol in all_solutions:
-        add_data.save_result_to_db(params, sol)
-
-    #LOGGER.info("Finished {}".format(filename))
-    return [new_solution], filename
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -11,12 +11,11 @@ import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Parameters, Dispatch, Cost, Solution
+from .baseobjects import Dispatch, Cost, Solution
 from .RollOut import RollOut
 from .GridSearch import search, search_improvement
 
 LOGGER = logging.getLogger(__name__)
-
 
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
@@ -48,40 +47,37 @@ class Improvement:
     def __init__(self):
         """ Setup very simple memoization"""
         self.previous_candidates = []
-    
-    def run(self, search_algo, dispatch, filename, iterations, count):
+
+    def run(self, base_solution=None, search_params=None, improv_params=None):
         """ Master function for this class - initiates optimization """
-        # dispatch_backup = copy.deepcopy(dispatch) # keep for comparison purposes
 
-        for i in range(iterations):
-            if not i%5: 
-                sys.stdout.write("Improvement phase {}/{} \r".format(i, iterations))
-            dispatch = self.improve(search_algo, dispatch, filename, count)
+        dispatch=base_solution.solution
+        for i in range(improv_params["iterations"]):
+            dispatch, solution = self.improve(dispatch,
+                      search_params,
+                      improv_params)
 
-        # need to record actual deltas used
-        
-        # num_vehicles, total_distance, params, solution, name
-        # log_solution(dispatch, dispatch_backup)
-        nv, td = Cost.of_vehicles(dispatch.vehicles)
-        solution = Solution(nv, td, [1]*7, dispatch, filename)
         return solution
 
     def improve(self, search_algo, dispatch, filename, count):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
-        
-        if(len(old_vehicles) > 2): 
-            solution, all_solutions = search_improvement(search_algo, tmp_dispatch, \
-                                                         filename, count=count)
 
-            if self.should_replace_with(old_vehicles, solution.solution.vehicles):
-                dispatch = self.replace_vehicles(dispatch, old_vehicles, \
+        if(len(old_vehicles) > 2):
+            solution, all_solutions = search_improvement(search_algo,
+                     tmp_dispatch,
+                     filename,
+                     count=count)
+
+            if self.should_replace_with(old_vehicles,
+                                        solution.solution.vehicles):
+                dispatch = self.replace_vehicles(dispatch, old_vehicles,
                                                  solution.solution.vehicles)
             else:
-                LOGGER.debug("Wont replace because {} is worse than {}".format( \
-                    Cost.of_vehicles(solution.solution.vehicles),\
+                LOGGER.debug("Wont replace because {} is worse than {}".format(
+                    Cost.of_vehicles(solution.solution.vehicles),
                     Cost.of_vehicles(old_vehicles)))
-        
+
         return dispatch
 
     def replace_vehicles(self, dispatch, old_vehicles, new_vehicles):
@@ -103,7 +99,7 @@ class Improvement:
 
         LOGGER.debug("New solution: {}".format((new_num, new_dist)))
         LOGGER.debug("Original solution: {}".format((old_num, old_dist)))
-       
+
         if new_num < old_num:
             replace = 1
         else:
@@ -155,20 +151,3 @@ class Improvement:
         """ Get all customers from many vehicles """
         return list({c for v in vehicles for c in v.customer_history})
 
-
-if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-    with open("data/interim/SolutionR101.p", "rb") as f:
-        routes = pickle.load(f)
-    
-
-    # I don't like this - can't this be part of the constructor?
-    with open("data/interim/r101.p", "rb") as f:
-        sp = pickle.load(f)
-    parameters = Parameters()
-    parameters.build(sp, 10, 20)
-
-    improv_iterations = 10
-    gs_count = 20
-
-    newRoutes = Improvement().run(routes, iterations=improv_iterations, count=gs_count)

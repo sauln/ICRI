@@ -42,24 +42,19 @@ def run_search(algo_type, filename):
 
 
 def run_improvement(algo_type, filename):
-    LOGGER.info("Run improvement on {}".format(filename))
-    #solution = Utils.open_sp(filename, root="data/solutions/search/rollout_")
-    #Parameters().build(Utils.open_sp(filename))
 
+
+
+    LOGGER.info("Run improvement on {}".format(filename))
     # need some initial solution:
     problem_name=filename.replace(".p", "")
     search_params = Params(10,10,20, algo_type.__name__.lower(),
                            "search", problem_name)
-
     improv_params = {"iterations":5, "count":5}
-
 
     improved_solution = Improvement().run(base_solution=None,
                                           search_params=search_params,
                                           improv_params=improv_params)
-
-    #new_solution = Improvement().run(algo_type, solution.solution,
-    #                                 iterations=50, count=5)
 
     add_data.save_imp_result_to_db(improved_solution,
                                    search_params,
@@ -103,30 +98,6 @@ def main(argv):
         else:
             algo= switch_algo[argv[0]]
             results = execute_algorithms(run_single, algo, outfiles)
-
-
-
-'''
-def run_single(algo_type, filename):
-    LOGGER.info("Run on {}".format(filename))
-    sp = Utils.open_sp(filename)
-    Parameters().build(sp)
-
-    dispatch = Dispatch(sp.customers)
-    delta = [1]*5
-    dispatch.set_delta(delta)
-
-    solution = algo_type().run(dispatch, 10, 10)
-    num_veh, t_dist = Cost.of_vehicles(solution.vehicles)
-    res = Solution(num_veh, t_dist, delta, solution)
-    Validator(solution, filename).validate()
-
-    Utils.save_sp(solution, "rollout/"+filename)
-    LOGGER.info("Solution: {}".format(Cost.of_vehicles(solution.vehicles)))
-    LOGGER.debug("Solution for rollout: {}".format(solution.pretty_print()))
-    return [res], filename
-'''
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

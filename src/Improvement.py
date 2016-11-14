@@ -15,7 +15,10 @@ from .baseobjects import Dispatch, Cost, Solution
 from .RollOut import RollOut
 from .GridSearch import search, search_improvement
 
+from db.queries import get_best_solutions
 LOGGER = logging.getLogger(__name__)
+
+best_solutions = get_best_solutions()
 
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
@@ -50,6 +53,10 @@ class Improvement:
 
     def run(self, base_solution=None, search_params=None, improv_params=None):
         """ Master function for this class - initiates optimization """
+
+        if base_solution == None:
+            pass
+
 
         dispatch=base_solution.solution
         for i in range(improv_params["iterations"]):

@@ -16,23 +16,23 @@ def save_result_to_db(params, solution):
     heuristic_type = Heuristic().__class__.__bases__[0].__name__
     rollout_type = RollOut().__class__.__bases__[0].__name__
 
-    res = Result(problem=params.problem, 
-                 search_type=search_type, 
-                 heuristic_type=heuristic_type, 
+    res = Result(problem=params.problem,
+                 search_type=search_type,
+                 heuristic_type=heuristic_type,
                  rollout_type=rollout_type,
                  run_type=params.run_type,
                  algo_type=params.algo_type,
-                 num_vehicles=solution.num_vehicles, 
+                 num_vehicles=solution.num_vehicles,
                  total_distance=solution.total_distance,
-                 width=params.width, 
-                 depth=params.depth, 
+                 width=params.width,
+                 depth=params.depth,
                  count=params.count,
-                 d0=solution.params[0], 
-                 d1=solution.params[1], 
+                 d0=solution.params[0],
+                 d1=solution.params[1],
                  d2=solution.params[2],
-                 d3=solution.params[3], 
-                 d4=solution.params[4], 
-                 solution_string=solution.solution.pretty_print()
+                 d3=solution.params[3],
+                 d4=solution.params[4],
+                 solution_string=solution.solution.save_print()
                  )
 
     session.add(res)

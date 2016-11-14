@@ -30,28 +30,28 @@ class Dispatch():
 
         self.customers = list(customers)
         self.depot = depot
-        self.visitedCustomers = [] 
+        self.visitedCustomers = []
         self.vehicles = []
         self.capacity = Parameters().params.capacity
         self.delta = None
 
     def get_available_vehicles(self, clean_veh=0):
-        ''' Return set of vehicles that have not reached the depot 
+        ''' Return set of vehicles that have not reached the depot
              if no vehicles yet, return an empty vehicle
         '''
         vehicles = list(set(self.vehicles))
 
         if clean_veh and self.new_vehicle() not in vehicles:
                 vehicles.append(self.new_vehicle())
-        
-        return vehicles 
+
+        return vehicles
 
     def get_feasible_next_customers(self, vehicles, count=None):
         next_pairs = [ (vehicle, customer, Cost.gnnh(self.delta, vehicle, customer)) \
                         for vehicle in vehicles \
                         for customer in self.customers \
                         if vehicle.isFeasible(customer) ]
-        
+
         cs = SortedListWithKey(key=itemgetter(2))
         cs.update(next_pairs)
         return cs[:count]
@@ -59,10 +59,10 @@ class Dispatch():
     def add_customer(self, vehicle, customer):
         if vehicle not in self.vehicles:
             self.vehicles.append(vehicle)
-        
+
         vehicle.serve(customer)
         self.customers.remove(customer)
-    
+
     def set_delta(self, delta):
         self.delta = delta
 
@@ -80,6 +80,17 @@ class Dispatch():
         vehstr = "\n".join([str(v) for v in self.vehicles])
         return "Vehicles: {}=> \n{} ".format(Cost.of_vehicles(self.vehicles), vehstr)
 
+    def save_print(self):
+        format_vehicle = lambda v: ','.join([str(c.custNo) for c in
+                                             v.customer_history])
+        vehstr = '|'.join([format_vehicle(v) for v in self.vehicles])
+        return vehstr
+
     def total_dist(self):
         return sum([v.total_dist for v in self.vehicles])
+
+
+def construct_dispatch_from_string(veh_str):
+    for a in veh_str:
+        pass
 

@@ -11,7 +11,7 @@ import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Dispatch, Cost, Solution
+from .baseobjects import Dispatch, Cost, Solution, Utils
 from .RollOut import RollOut
 from .GridSearch import search, search_improvement
 
@@ -45,6 +45,13 @@ def log_solution(dispatch, dispatch_backup):
         old_num_veh - new_num_veh,\
         old_dist - new_dist))
 
+
+def build_solution_from_str(solution_str, problem_name):
+    ''' build a dispatch out of the string '''
+    # load the original problem - organize solution from it
+    problem_def = Utils.open_sp(problem_name + ".p")
+
+
 class Improvement:
     """ Encapslates the improvement algorithm """
     def __init__(self):
@@ -55,14 +62,14 @@ class Improvement:
         """ Master function for this class - initiates optimization """
 
         if base_solution == None:
-            pass
-
+            problem = search_params.problem
+            found = best_solutions.loc[best_solutions['problem'] == problem]
+            base_solution_str = found['solution_string']
+            base_solution = build_solution_from_str(base_solution_str, problem)
 
         dispatch=base_solution.solution
         for i in range(improv_params["iterations"]):
-            dispatch, solution = self.improve(dispatch,
-                      search_params,
-                      improv_params)
+            dispatch, solution = self.improve(dispatch, search_params, improv_params)
 
         return solution
 

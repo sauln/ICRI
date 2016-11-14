@@ -11,7 +11,6 @@ class DataBuilder:
     def __init__(self, input_filepath, output_filepath):
         self.input_filepath = input_filepath
         self.output_filepath = output_filepath
-   
         self.lines = self.loadLines()
         self.problem = self.getProblemDefinition()
         Utils.save_sp(self.problem, self.output_filepath, "")
@@ -25,7 +24,7 @@ class DataBuilder:
         header = lines[7]
         customers_lines = lines[9:]
         customers = [self.extractCustomer(c) for c in customers_lines]
-        return SolomonProblem(problem_name, num_vehicles, capacity, customers) 
+        return SolomonProblem(problem_name, num_vehicles, capacity, customers)
 
     def extractCustomer(self, line):
         data = [int(d) for d in line.split()]
@@ -43,15 +42,15 @@ class DataBuilder:
 
 def load_files(data_root):
     files = os.listdir(data_root)
-    outfiles = [f.replace(".txt", ".p") for f in files] 
+    outfiles = [f.replace(".txt", ".p") for f in files]
     return (files, outfiles)
 
 def convert_all():
     data_root = "data/raw"
-    
+
     LOGGER = logging.getLogger(__name__)
     LOGGER.info('parsing all problems in'.format(data_root))
-    
+
     files, outfiles = load_files(data_root)
     for f, of in zip(files, outfiles):
         DataBuilder(data_root + "/" + f, "data/interim/"+of)

@@ -1,6 +1,6 @@
 import pickle
 import time
-import logging 
+import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def open_sp(fname, root = "data/interim/"):
     return sp
 
 def save_sp(solution, fname, root="data/solutions/"):
-    output_filepath = root + fname 
+    output_filepath = root + fname
     with open(output_filepath, "wb") as f:
         pickle.dump(solution, f)
 

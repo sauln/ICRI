@@ -14,12 +14,12 @@ class TimeWindows(object):
 
     def travel_time(self, customer):
         return Cost.euclidean_cust(self.last().location, customer.location)
-    
+
     def canMakeItHomeInTime(self, customer):
         return self.total_time + self.travel_time(customer) + \
                Cost.euclidean_cust(customer.location, self.depot.location) <= \
                self.depot.dueDate
-        
+
     def update_time(self, customer):
         arrival_time = self.total_time + self.travel_time(customer)
         served_time = max(arrival_time, customer.readyTime)
@@ -36,7 +36,7 @@ class Capacity(object):
 
     def is_not_full(self, customer):
         return self.remaining_slack() >= customer.demand
-    
+
     def remaining_slack(self):
         return self.max_capacity - self.cur_capacity
 
@@ -48,7 +48,7 @@ class CustomerHistory(object):
 
     def update_history(self, customer):
         self.customer_history.append(customer)
-    
+
     def __len__(self):
         return len(self.customer_history)
 
@@ -75,17 +75,17 @@ def vehicle_copy(vehicle):
 
 class Vehicle(TimeWindows, Capacity, CustomerHistory):
     def __init__(self, depot, capacity):
-        super(Vehicle, self).__init__(depot, capacity)            
+        super(Vehicle, self).__init__(depot, capacity)
         self.update_history(depot)
         self.total_dist = 0
-    
+
     def isFeasible(self, customer):
         return self.is_valid_time(customer) \
                and self.is_not_full(customer) \
                and self.canMakeItHomeInTime(customer)
-    
+
     def serve(self, customer):
-        assert self.isFeasible(customer), self.feasibilityStr(customer) 
+        assert self.isFeasible(customer), self.feasibilityStr(customer)
 
         self.total_dist += self.travel_dist(customer)
         self.update_time(customer)
@@ -106,7 +106,7 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
             "["+", ".join(str(c.custNo) for c in self.customer_history) +"]", \
             self.total_dist, \
             self.last().custNo)
-    
+
     def __repr__(self):
         return self.__str__()
 
@@ -123,4 +123,4 @@ class Vehicle(TimeWindows, Capacity, CustomerHistory):
                 item, self, self.feasibilityStr(item), \
                 self.total_time, self.travel_time(item), item.dueDate, \
                 self.max_capacity, item.demand, self.cur_capacity)
-            
+

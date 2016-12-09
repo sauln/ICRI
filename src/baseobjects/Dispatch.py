@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from sortedcontainers import SortedListWithKey
 from operator import itemgetter
@@ -21,7 +22,7 @@ def dispatch_copy(dispatch):
 
 
 class Dispatch():
-    def __init__(self, customers, depot=None):
+    def __init__(self, customers, depot=None, capacity=None):
         ''' Dispatch will organize the vehicles and customers'''
         self.max_vehicles = 25
         if depot is None:
@@ -32,7 +33,11 @@ class Dispatch():
         self.depot = depot
         self.visitedCustomers = []
         self.vehicles = []
-        self.capacity = Parameters().params.capacity
+        if capacity is None:
+            self.capacity = Parameters().params.capacity
+        else:
+            self.capacity = capacity
+
         self.delta = None
 
     def get_available_vehicles(self, clean_veh=0):
@@ -81,10 +86,10 @@ class Dispatch():
         return "Vehicles: {}=> \n{} ".format(Cost.of_vehicles(self.vehicles), vehstr)
 
     def save_print(self):
-        format_vehicle = lambda v: ','.join([str(c.custNo) for c in
-                                             v.customer_history])
-        vehstr = '|'.join([format_vehicle(v) for v in self.vehicles])
-        return vehstr
+        vehicles = map(lambda x: x.customer_history, self.vehicles)
+        vehicles = [list(map(lambda x: x.custNo, v)) for v in vehicles]
+        veh_json = json.dumps(vehicles)
+        return veh_json
 
     def total_dist(self):
         return sum([v.total_dist for v in self.vehicles])

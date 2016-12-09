@@ -42,15 +42,12 @@ def run_search(algo_type, filename):
 
 
 def run_improvement(algo_type, filename):
-
-
-
     LOGGER.info("Run improvement on {}".format(filename))
     # need some initial solution:
     problem_name=filename.replace(".p", "")
     search_params = Params(10,10,20, algo_type.__name__.lower(),
                            "search", problem_name)
-    improv_params = {"iterations":5, "count":5}
+    improv_params = {"iterations":5, "count":5, "algo":algo_type}
 
     improved_solution = Improvement().run(base_solution=None,
                                           search_params=search_params,

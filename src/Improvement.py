@@ -6,19 +6,19 @@ import pickle
 import logging
 import sys
 import copy
+import json
 
 import sortedcontainers
 import numpy as np
 from math import ceil
 
-from .baseobjects import Dispatch, Cost, Solution, Utils
+from .baseobjects import Dispatch, Vehicle, Cost, Solution, Utils
 from .RollOut import RollOut
 from .GridSearch import search, search_improvement
 
 from db.queries import get_best_solutions
 LOGGER = logging.getLogger(__name__)
 
-best_solutions = get_best_solutions()
 
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
@@ -46,10 +46,24 @@ def log_solution(dispatch, dispatch_backup):
         old_dist - new_dist))
 
 
-def build_solution_from_str(solution_str, problem_name):
+def build_solution_from_str(solution_obj, problem_name):
     ''' build a dispatch out of the string '''
     # load the original problem - organize solution from it
     problem_def = Utils.open_sp(problem_name + ".p")
+    vehs = json.loads(solution_obj[6])
+
+    cust_dict = dict(zip(map(lambda x: x.custNo, problem_def.customers),
+                         problem_def.customers))
+
+    new_dispatch = Dispatch(problem_def.customers,
+                            capacity=problem_def.capacity)
+    for veh in vehs:
+        vehicle = Vehicle(problem_def.customers[0], problem_def.capacity)
+        for c in veh[1:]:
+            vehicle.serve(cust_dict[c])
+        new_dispatch.vehicles.append(vehicle)
+
+    return new_dispatch
 
 
 class Improvement:
@@ -60,31 +74,31 @@ class Improvement:
 
     def run(self, base_solution=None, search_params=None, improv_params=None):
         """ Master function for this class - initiates optimization """
+        best_solutions = get_best_solutions()
 
         if base_solution == None:
             problem = search_params.problem
             found = best_solutions.loc[best_solutions['problem'] == problem]
-            base_solution_str = found['solution_string']
-            base_solution = build_solution_from_str(base_solution_str, problem)
+            base_solution_obj = found['solution_string']
+            dispatch = build_solution_from_str(base_solution_obj, problem)
 
-        dispatch=base_solution.solution
         for i in range(improv_params["iterations"]):
-            dispatch, solution = self.improve(dispatch, search_params, improv_params)
+            dispatch, solution = self.improve(dispatch, search_params,
+                                              improv_params)
 
         return solution
 
-    def improve(self, search_algo, dispatch, filename, count):
+    def improve(self, dispatch, search_params, improv_params):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
+        import pdb; pdb.set_trace()
 
         if(len(old_vehicles) > 2):
-            solution, all_solutions = search_improvement(search_algo,
-                     tmp_dispatch,
-                     filename,
-                     count=count)
+            solution, all_solutions = search_improvement(tmp_dispatch,
+                                                         improv_params["algo"],
+                                                         search_params)
 
-            if self.should_replace_with(old_vehicles,
-                                        solution.solution.vehicles):
+            if self.should_replace_with(old_vehicles, solution.solution.vehicles):
                 dispatch = self.replace_vehicles(dispatch, old_vehicles,
                                                  solution.solution.vehicles)
             else:
@@ -157,7 +171,7 @@ class Improvement:
         """ With the candidate vehicles, setup the rollout algorithm """
         similar_vehicles = self.candidate_vehicles(dispatch)
         customers = self.flatten_vehicles(similar_vehicles)
-        new_dispatch = Dispatch(customers)
+        new_dispatch = Dispatch(customers, capacity=dispatch.capacity)
         new_dispatch.set_delta(dispatch.delta)
         return new_dispatch, similar_vehicles
 

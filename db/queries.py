@@ -9,9 +9,11 @@ from db.setup import Result
 from src import Heuristic, RollOut
 
 tab_root = 'sqlite:///db/'
-tables = ['results.db', 'results/gcloud_r.db', 'results/gcloud_results.db',
-          'results/gcloud_results_large.db', 'results/other_results.db',
-          'results/unknown_params_results.db']
+#tables = ['results.db', 'results/gcloud_r.db', 'results/gcloud_results.db',
+#          'results/gcloud_results_large.db', 'results/other_results.db',
+#          'results/unknown_params_results.db']
+tables = ['results.db']
+
 
 def get_best_solutions():
     res = aggregate_results(tables)

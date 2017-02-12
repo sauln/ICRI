@@ -37,9 +37,7 @@ def run_search(algo_type, filename):
                            "search", problem_name)
 
     best_solution, all_solutions = search(algo_type, params)
-
     return all_solutions, filename
-
 
 def run_improvement(algo_type, filename):
     LOGGER.info("Run improvement on {}".format(filename))
@@ -49,13 +47,10 @@ def run_improvement(algo_type, filename):
                            "search", problem_name)
     improv_params = {"iterations":5, "count":5, "algo":algo_type}
 
-    improved_solution = Improvement().run(base_solution=None,
-                                          search_params=search_params,
+    improved_solution = Improvement().run(base_solution=None, search_params=search_params,
                                           improv_params=improv_params)
 
-    add_data.save_imp_result_to_db(improved_solution,
-                                   search_params,
-                                   improved_params)
+    add_data.save_improvement_result(improved_solution, search_params, improv_params)
 
     return improved_solution, filename
 

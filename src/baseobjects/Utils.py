@@ -4,6 +4,21 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
+
+class Params:
+    def __init__(self, width, depth, count, algo_type, run_type, problem):
+        self.width=width
+        self.depth=depth
+        self.count=count
+        self.algo_type=algo_type
+        self.run_type=run_type
+        self.problem=problem
+
+    def __repr__(self):
+        return "{} {} {} {} {} {}".format(\
+            self.problem, self.run_type, self.algo_type,
+            self.width, self.depth, self.count)
+
 ''' timing decorator '''
 def timeit(f):
     def timed(*args, **kw):

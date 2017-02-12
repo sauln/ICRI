@@ -52,21 +52,21 @@ class RollOutBase:
 
         dispatch = copy.deepcopy(dispatch)
         logger.debug("Run rollout with deltas {}".format(dispatch.delta))
-        
-        dispatch = self.rollout(dispatch, depth, width) 
+
+        dispatch = self.rollout(dispatch, depth, width)
         dispatch.finish()
-        
+
         logger.debug("Solution to rollout: {}, {}".format(\
-            len(dispatch.vehicles), dispatch.total_dist())) 
-        
-        return dispatch 
+            len(dispatch.vehicles), dispatch.total_dist()))
+
+        return dispatch
 
 class RollOutWOnDeck(RollOutBase):
     def rollout(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles(1)
-            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width)
 
             best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in top_customers:
@@ -85,10 +85,10 @@ class RollOutWOnDeck(RollOutBase):
 class RollOutTypical(RollOutBase):
     def rollout(self, dispatch, depth, width):
         ''' Run rollout algorithm '''
-       
+
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
-            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width)
 
             best = Best( (float('inf'), float('inf')), None, None, None)
             for vehicle, customer, _ in top_customers:
@@ -103,7 +103,7 @@ class RollOutTypical(RollOutBase):
             if(best.vehicle is None or best.customer is None):
                 v = dispatch.new_vehicle()
                 dispatch.vehicles.append(v)
-            else: 
+            else:
                 dispatch.add_customer(best.vehicle, best.customer)
 
         return dispatch
@@ -118,16 +118,16 @@ class RollOutLikeHeuristic(RollOutBase):
 
                 tmp_dispatch = self.setup_dispatch_env(dispatch, v, c)
                 tmp_solution = Heuristic().run(tmp_dispatch)
-                
+
                 cost = Cost.of_vehicles(tmp_solution.vehicles)
                 if(cost < best.cost):
                     best = Best(cost, c, v, tmp_solution)
-                    
+
             if best.vehicle == None:
                 v = dispatch.new_vehicle() #Vehicle(dispatch.depot)
                 dispatch.vehicles.append(v)
                 best = Best(None, c, v, None)
-            
+
             dispatch.add_customer(best.vehicle, best.customer)
 
         return dispatch

@@ -5,17 +5,18 @@ from .Dispatch import Dispatch
 from .Parameters import Parameters
 from .Vehicle import Vehicle
 from .CostFunction import Cost
+from .Utils import *
 
 class HeuristicWOnDeck:
     def run(self, dispatch, width=10, depth=10):
         dispatch = copy.deepcopy(dispatch)
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles(1)
-            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
-            
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width)
+
             lowestCost, nexts = float("inf"), None
             for vehicle, customer, _ in top_customers:
-                cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                cost = Cost.gnnh(dispatch.delta, vehicle, customer)
                 if cost < lowestCost:
                     nexts = (vehicle, customer)
                     lowestCost = cost
@@ -30,11 +31,11 @@ class Heuristic_greed:
     def run(self, dispatch, width=10, depth=10):
         while dispatch.customers:
             vehicles = dispatch.get_available_vehicles()
-            top_customers = dispatch.get_feasible_next_customers(vehicles, width) 
-            
+            top_customers = dispatch.get_feasible_next_customers(vehicles, width)
+
             lowestCost, nexts = float("inf"), None
             for vehicle, customer, _ in top_customers:
-                cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                cost = Cost.gnnh(dispatch.delta, vehicle, customer)
                 if cost < lowestCost:
                     nexts = (vehicle, customer)
                     lowestCost = cost
@@ -45,7 +46,7 @@ class Heuristic_greed:
             else:
                 veh, cust = nexts
                 dispatch.add_customer(veh, cust)
-           
+
         dispatch.finish()
         return dispatch
 
@@ -59,8 +60,8 @@ class Heuristic_sorted:
             lowestCost = float("inf")
             nexts = None
             for vehicle in dispatch.vehicles:
-                if vehicle.isFeasible(customer): 
-                    cost = Cost.gnnh(dispatch.delta, vehicle, customer) 
+                if vehicle.isFeasible(customer):
+                    cost = Cost.gnnh(dispatch.delta, vehicle, customer)
                     if cost < lowestCost:
                         nexts = (vehicle, customer)
                         lowestCost = cost
@@ -95,9 +96,11 @@ class Heuristic(HeuristicWOnDeck):
     pass
 
 if __name__ == "__main__":
-    import Utils
-    sp = Utils.load_sp(input_filepath, "")
+    sp = open_sp("r101.p")
     Parameters().build(sp)
     dispatch = Dispatch(sp.customers)
     solution = Heuristic().run(dispatch)
     print(solution.pretty_print())
+
+
+

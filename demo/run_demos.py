@@ -9,25 +9,16 @@ sys.path.append('.')
 
 import demo_util as DUtil
 from src import Heuristic, RollOut, search, Improvement, Dispatch, Cost
-from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic
+from src.baseobjects import Utils, Validator, Parameters, Solution, Heuristic, Params
+
+
+
 from db import add_data, queries
 
 LOGGER = logging.getLogger(__name__)
-switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
 
-class Params:
-    def __init__(self, width, depth, count, algo_type, run_type, problem):
-        self.width=width
-        self.depth=depth
-        self.count=count
-        self.algo_type=algo_type
-        self.run_type=run_type
-        self.problem=problem
 
-    def __repr__(self):
-        return "{} {} {} {} {} {}".format(\
-            self.problem, self.run_type, self.algo_type,
-            self.width, self.depth, self.count)
+
 
 def run_search(algo_type, filename):
     print("Run {}".format(filename))
@@ -51,9 +42,7 @@ def run_improvement(algo_type, filename):
                                           improv_params=improv_params)
 
     add_data.save_improvement_result(improved_solution, search_params, improv_params)
-
     return improved_solution, filename
-
 
 def profile():
     outfiles = DUtil.setup()[:1]
@@ -70,12 +59,14 @@ def main(argv):
     outfiles = DUtil.setup()
     outfiles = [f for f in outfiles if 'r1' in f and 'c' not in f]
     print(outfiles)
+    switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
     if(len(argv) == 0):
         argv.append("profile")
 
     if argv[0] == "summarize":
         argv.pop(0)
-        for key in argv: DUtil.summarize_on_all(outfiles, prefix=key)
+        for key in argv:
+            DUtil.summarize_on_all(outfiles, prefix=key)
     elif argv[0] == "profile":
         profile()
     else:

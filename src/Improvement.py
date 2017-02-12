@@ -19,7 +19,6 @@ from .GridSearch import search, search_improvement
 from db.queries import get_best_solutions
 LOGGER = logging.getLogger(__name__)
 
-
 def geographic_similarity(dispatch, vehicle):
     """ Ranks vehicles in dispatch by geographic similarity to input vehicle """
     dist_f = lambda x: np.linalg.norm(np.asarray(vehicle.geographic_center()) \
@@ -45,12 +44,12 @@ def log_solution(dispatch, dispatch_backup):
         old_num_veh - new_num_veh,\
         old_dist - new_dist))
 
-
 def build_solution_from_str(solution_obj, problem_name):
     ''' build a dispatch out of the string '''
     # load the original problem - organize solution from it
     problem_def = Utils.open_sp(problem_name + ".p")
-    vehs = json.loads(solution_obj[6])
+
+    vehs = json.loads(solution_obj.values[0])
 
     cust_dict = dict(zip(map(lambda x: x.custNo, problem_def.customers),
                          problem_def.customers))
@@ -64,7 +63,6 @@ def build_solution_from_str(solution_obj, problem_name):
         new_dispatch.vehicles.append(vehicle)
 
     return new_dispatch
-
 
 class Improvement:
     """ Encapslates the improvement algorithm """
@@ -83,15 +81,13 @@ class Improvement:
             dispatch = build_solution_from_str(base_solution_obj, problem)
 
         for i in range(improv_params["iterations"]):
-            dispatch, solution = self.improve(dispatch, search_params,
-                                              improv_params)
+            dispatch = self.improve(dispatch, search_params, improv_params)
 
-        return solution
+        return dispatch
 
     def improve(self, dispatch, search_params, improv_params):
         """ Workhorse of Improvement. Manages the improve phase"""
         tmp_dispatch, old_vehicles = self.setup_next_round(dispatch)
-        import pdb; pdb.set_trace()
 
         if(len(old_vehicles) > 2):
             solution, all_solutions = search_improvement(tmp_dispatch,
@@ -138,13 +134,11 @@ class Improvement:
 
         return replace
 
-
     def chose_candidates(self, dispatch, worst, count=5):
         """ method for choosing the vehicles for improvement"""
         criterion = geographic_similarity
         all_cands =  criterion(dispatch, worst)
         return all_cands[: ceil(len(all_cands)/3)]
-
 
     def candidate_vehicles(self, dispatch):
         """ Find next vehicles to improve """

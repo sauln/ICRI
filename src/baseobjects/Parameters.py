@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
+''' this has fallen out of use
+    it needs to be reintegrated into the algo
+    '''
+
+
+
 class Parameters:
     class __Parameters:
         def __init__(self):
@@ -14,7 +20,7 @@ class Parameters:
 
         def __str__(self):
             return str(self.params) + str(self.distMatrix) + str(self.timeMatrix)
-        
+
         def build(self, problemSet):
             self.depot = problemSet.customers[0]
 
@@ -23,9 +29,9 @@ class Parameters:
             self.timeMatrix = self.buildTimeMatrix(problemSet.customers)
 
         def buildDistMatrix(self, customers):
-            coords = np.asarray([[c.location.x, c.location.y] for c in customers]) 
+            coords = np.asarray([[c.location.x, c.location.y] for c in customers])
             distm = squareform(pdist(coords, 'euclidean'))
-            return distm 
+            return distm
 
         def buildTimeMatrix(self, customers):
             return self.distMatrix
@@ -45,4 +51,4 @@ class Parameters:
         return getattr(self.instance, name)
     def __setattr(self, name):
         return setattr(self.instance, name)
-    
+

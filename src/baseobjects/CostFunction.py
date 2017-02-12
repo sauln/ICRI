@@ -8,8 +8,10 @@ class Cost:
 
     @staticmethod
     def euclidean_cust(c1, c2):
-        dist = lambda c1, c2: np.sqrt((c1.x - c2.x)**2 + (c1.y - c2.y)**2) 
-        return dist(c1,c2) 
+        # this function is way too much of computation time.
+        # precompute for the entire customer set
+        dist = lambda c1, c2: np.sqrt((c1.x - c2.x)**2 + (c1.y - c2.y)**2)
+        return dist(c1,c2)
 
     @staticmethod
     def gnnh(delta, vehicle, customer): #s:start, e:customer customers
@@ -23,6 +25,6 @@ class Cost:
         timeSlack = customer.dueDate - (vehicle.total_time + vehicle.travel_time(customer))
         capSlack = vehicle.remaining_slack() - customer.demand # slack
         c = np.array( [isDepot, travel_dist, remaining, timeSlack, capSlack] )
-        cost = np.dot(delta, c)    
+        cost = np.dot(delta, c)
         return cost
 

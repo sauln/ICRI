@@ -1,4 +1,5 @@
 import pickle
+import random
 import logging
 import csv
 from pyDOE import *
@@ -9,8 +10,10 @@ from multiprocessing import Pool, Value
 from functools import partial
 import sys
 
+sys.path.append('.')
 
-from .baseobjects import Dispatch, Parameters, Solution, Utils
+
+from .baseobjects import Dispatch, Parameters, Solution, Utils, Params
 from .baseobjects import Cost, Validator, Heuristic
 from .RollOut import RollOut
 
@@ -71,29 +74,38 @@ class ShadowSearch(Tuning):
             lambdas[:,pos] = np.linspace(0, 1, num=count)
             yield lambdas
 
+
+# switch to decide which to expose
 class Search(RandomSearch):
     pass
 
-def search(algo_type, params):
-    sp = Utils.open_sp(params.problem+".p")
-    Parameters().build(sp)
-
-    dispatch = Dispatch(sp.customers)
-    costs = Search().find_costs(dispatch, algo_type, params)
-
-    crit = lambda x: (x.num_vehicles, x.total_distance)
-    bestFound = min(costs, key=crit)
-    print("Found best {}".format(bestFound))
-    return bestFound, costs
-
-def search_improvement(dispatch, algo_type, search_params):
+def search_core(dispatch, algo_type, search_params):
     costs = Search().find_costs(dispatch, algo_type, search_params)
 
     crit = lambda x: (x.num_vehicles, x.total_distance)
     bestFound = min(costs, key=crit)
     LOGGER.debug("Found best {}".format(bestFound))
-
     return bestFound, costs
+
+def search(algo_type, search_params):
+    sp = Utils.open_sp(search_params.problem+".p")
+    Parameters().build(sp)
+    dispatch = Dispatch(sp.customers)
+
+    return search_core(dispatch, algo_type, search_params)
+
+def search_improvement(dispatch, algo_type, search_params):
+    return search_core(dispatch, algo_type, search_params)
+
+def run_search(filename):
+    print("Run {}".format(filename))
+    random.seed(999)
+    problem_name=filename.replace(".p", "")
+    params = Params(3,3,3, RollOut.__name__.lower(),
+                           "search", problem_name)
+
+    best_solution, all_solutions = search(RollOut, params)
+    return all_solutions, filename
 
 if __name__ == "__main__":
     best = run_search("r101.p")

@@ -2,7 +2,8 @@ import pickle
 import random
 import logging
 import csv
-from pyDOE import *
+# from pyDOE import *
+# import pyDOE
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import time
@@ -59,11 +60,12 @@ class RandomSearch(Tuning):
         lambdas = np.random.random_sample((count, 5))
         return lambdas
 
-class GridSearch(Tuning):
-    def generator(self, count):
-        width = 5
-        lambdas = lhs(width, samples=count, criterion='cm')
-        return lambdas
+# pyDOE needs scipy
+# class GridSearch(Tuning):
+#     def generator(self, count):
+#         width = 5
+#         lambdas = pyDOE.lhs(width, samples=count, criterion='cm')
+#         return lambdas
 
 class ShadowSearch(Tuning):
     def generator(self, count):

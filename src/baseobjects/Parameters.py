@@ -1,5 +1,6 @@
 import numpy as np
-from scipy.spatial.distance import pdist, squareform
+# from scipy.spatial.distance import pdist, squareform
+from .scipy_workarounds import pdist
 
 ''' this has fallen out of use
     it needs to be reintegrated into the algo
@@ -30,7 +31,9 @@ class Parameters:
 
         def buildDistMatrix(self, customers):
             coords = np.asarray([[c.location.x, c.location.y] for c in customers])
-            distm = squareform(pdist(coords, 'euclidean'))
+            distm = pdist(coords)
+            #
+            #    squareform(pdist(coords, 'euclidean'))
             return distm
 
         def buildTimeMatrix(self, customers):

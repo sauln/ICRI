@@ -17,7 +17,7 @@ from db import add_data, queries
 
 LOGGER = logging.getLogger(__name__)
 
-
+switch_algo = {"rollout": RollOut, "heuristic": Heuristic}
 
 
 def run_search(algo_type, filename):
@@ -59,7 +59,7 @@ def main(argv):
     outfiles = DUtil.setup()
     outfiles = [f for f in outfiles if 'r1' in f and 'c' not in f]
     print(outfiles)
-    switch_algo = {"rollout":RollOut, "heuristic":Heuristic}
+
     if(len(argv) == 0):
         argv.append("profile")
 
